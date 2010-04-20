@@ -76,8 +76,23 @@ namespace FSharp.ProjectExtender
             RegisterProjectFactory(new FSharp.ProjectExtender.Factory(this));
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             mcs.AddCommand(new Commands.ProjectExtender());
-            //mcs.AddCommand(new Commands.ShowAll());
+            mcs.AddCommand(RegisterHandler(new Commands.ShowAll()));
 
+        }
+
+        List<IDisposable> handlers = new List<IDisposable>();
+        private T RegisterHandler<T>(T handler) where T:IDisposable
+        {
+            handlers.Add(handler);
+            return handler;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                foreach (var handler in handlers)
+                    handler.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

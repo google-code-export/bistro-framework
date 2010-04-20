@@ -5,10 +5,7 @@
   </TestList>
   <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d">
     <TestLinks>
-      <TestLink id="0eb0575b-e750-a1bf-9af2-36c5928204de" name="CreateApplication" storage="projectextender\projectextender_integrationtestproject\bin\debug\projectextender_integrationtestproject.dll" enabled="false" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
       <TestLink id="b38e2fca-2f22-0ca8-bf98-6d18294923b0" name="PackageLoadTest" storage="projectextender\projectextender_integrationtestproject\bin\debug\projectextender_integrationtestproject.dll" enabled="false" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
-      <TestLink id="f110ea6f-c509-30a2-b265-636670ae001d" name="ShowPageTest" storage="projectextender\projectextender_integrationtestproject\bin\debug\projectextender_integrationtestproject.dll" enabled="false" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
-      <TestLink id="eca49091-6494-1899-0447-2c2c72a95dea" name="CreateEmptySolution" storage="projectextender\projectextender_integrationtestproject\bin\debug\projectextender_integrationtestproject.dll" enabled="false" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
     </TestLinks>
   </TestList>
 </TestLists>

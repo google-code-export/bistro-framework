@@ -91,8 +91,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ProjectCTXCommand.cs" />
     <Compile Include="Commands\ProjectExtender.cs" />
-    <None Include="Commands\ShowAll.cs" />
+    <Compile Include="Commands\ShowAll.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -104,12 +105,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="ProjectManager\IProjectManager.cs" />
-    <Compile Include="ProjectManager\ItemList.cs" />
-    <Compile Include="ProjectManager\ItemNode.cs" />
+    <Compile Include="Project\IProjectManager.cs" />
+    <Compile Include="Project\ItemList.cs" />
+    <Compile Include="Project\ItemNode.cs" />
     <Compile Include="MSBuildUtilities\BuildElement.cs" />
     <Compile Include="MSBuildUtilities\MSBuildManager.cs" />
-    <Compile Include="ProjectManager\ProjectManager.cs" />
+    <Compile Include="Project\ProjectManager.cs" />
     <Compile Include="CompileOrderDialog\Page.cs" />
     <Compile Include="CompileOrderDialog\Viewer.cs">
       <SubType>UserControl</SubType>

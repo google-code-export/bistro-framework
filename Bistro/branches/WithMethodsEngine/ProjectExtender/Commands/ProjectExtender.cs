@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace FSharp.ProjectExtender.Commands
 {
-    public class ProjectExtender : OleMenuCommand
+    public class ProjectExtender : ProjectCTXCommand
     {
         public ProjectExtender()
             : base(Execute, new CommandID(Constants.guidProjectExtenderCmdSet, (int)Constants.cmdidProjectExtender))
@@ -21,15 +21,7 @@ namespace FSharp.ProjectExtender.Commands
 
         private static IVsSolution solution = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
         private static EnvDTE.DTE dte = (EnvDTE.DTE)Package.GetGlobalService(typeof(SDTE));
-        private static IVsTrackSelectionEx selectionTracker = get_selectionTracker();
 
-        private static IVsTrackSelectionEx get_selectionTracker()
-        {
-            IVsTrackSelectionEx result;
-            ErrorHandler.ThrowOnFailure(((IVsMonitorSelection2)Package.GetGlobalService(typeof(IVsMonitorSelection))).GetEmptySelectionContext(out result));
-            return result;
-        }
-         
         private const string enable_extender_text = "Enable F# project extender";
         private const string disable_extender_text = "Disable F# project extender";
 
@@ -53,25 +45,6 @@ namespace FSharp.ProjectExtender.Commands
                 ModifyProject(project, disable_extender);
             else
                 ModifyProject(project, enable_extender);
-        }
-
-        /// <summary>
-        /// retrieves the IVsProject interface for currentll selected project
-        /// </summary>
-        /// <returns></returns>
-        private static IVsProject get_current_project()
-        {
-            IntPtr ppHier = IntPtr.Zero;
-            uint pitemid;
-            IVsMultiItemSelect ppMIS;
-            IntPtr ppSC;
-
-            ErrorHandler.ThrowOnFailure(selectionTracker.GetCurrentSelection(out ppHier, out pitemid, out ppMIS, out ppSC));
-            var result = (IVsProject)Marshal.GetObjectForIUnknown(ppHier);
-            Marshal.Release(ppHier);
-            if (!IntPtr.Zero.Equals(ppSC))
-                Marshal.Release(ppSC);
-            return result;
         }
 
         /// <summary>

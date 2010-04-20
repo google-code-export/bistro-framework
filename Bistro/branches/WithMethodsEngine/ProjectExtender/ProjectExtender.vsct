@@ -81,7 +81,7 @@
         <CommandFlag>TextChanges</CommandFlag>
       </Button>
 
-      <!-- Button guid="guidProjectExtender_DesignerCmdSet" id="cmdidProjectRefresh" priority="0x0200" type="Button">
+      <Button guid="guidProjectExtender_DesignerCmdSet" id="cmdidProjectRefresh" priority="0x0200" type="Button">
         <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidSolutionExplorerButtons"/>
         <Icon guid="guidSHLMainMenu" id="6"/>
         <Strings>
@@ -95,11 +95,11 @@
         <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidSolutionExplorerButtons"/>
         <Icon guid="guidSharedBmps" id="bmpidShowAllFiles"/>
         <Strings>
-          <ButtonText>Show All</ButtonText>
+          <ButtonText>Show All Files</ButtonText>
         </Strings>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
-      </Button-->
+      </Button>
 
     </Buttons>
    
