@@ -105,7 +105,7 @@ namespace FSharp.ProjectExtender
                 item.BuildItem.RemoveMetadata(moveByTag);
                 itemList.Add(item);
                 count++;
-                string path = '\\' + Path.GetDirectoryName(item.Path);
+                string path = /*'\\' + */Path.GetDirectoryName(item.Path);
                 string partial_path = path;
                 int location;
                 while (true)
@@ -150,7 +150,6 @@ namespace FSharp.ProjectExtender
                 while (true)
                 {
                     fixup_dictionary[partial_path] = location + 1; // the index for the slot to put the next item in
-
                     var ndx = partial_path.LastIndexOf('\\');
                     if (ndx < 0)
                         break;

@@ -39,12 +39,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Folder1\File4.fs" />
-    <Compile Include="Folder1\File3.fs" />
-    <Compile Include="Folder1\Sub1\SubSub1\File1.fs" />
-    <Compile Include="Folder1\Sub1\File2.fs" />
-    <Compile Include="Folder1\File1.fs" />
     <Compile Include="Program.fs" />
+    <Compile Include="Program2.fs">
+      <move-by>5</move-by>
+    </Compile>
+    <Compile Include="Program3.fs">
+      <move-by>5</move-by>
+    </Compile>
+    <Compile Include="Folder1\File3.fs" />
+    <Compile Include="Folder1\File4.fs" />
+    <Compile Include="Folder1\Sub1\File2.fs" />
+    <Compile Include="Folder1\Sub1\SubSub1\File1.fs" />
+    <Compile Include="Folder1\File1.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

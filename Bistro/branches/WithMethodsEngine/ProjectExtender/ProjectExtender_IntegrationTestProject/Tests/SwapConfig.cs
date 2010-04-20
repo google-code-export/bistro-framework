@@ -98,7 +98,6 @@ namespace IntegrationTests
         }
         private void CleanUp()
         {
-            ((IProjectManager)ctx.Properties["hierarchy"]).BuildManager.FixupProject();
             ((CompileOrderViewer)ctx.Properties["viewer"]).Dispose();
             ((IVsSolution)ctx.Properties["solution"]).CloseSolutionElement
                 ((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_SLNSAVEOPT_MASK, null, 0);
