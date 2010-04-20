@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ProjectExtender.cs" />
-    <Compile Include="Commands\ShowAll.cs" />
+    <None Include="Commands\ShowAll.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -39,7 +39,7 @@ namespace FSharp.ProjectExtender
 
         uint hierarchy_event_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
         uint document_tracker_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
-        private ItemList itemList;
+        ItemList itemList;
         Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode FSProjectManager;
 
         protected override void OnAggregationComplete()
@@ -48,7 +48,6 @@ namespace FSharp.ProjectExtender
 
             FSProjectManager = getFSharpProjectNode(innerProject);
             BuildManager = new MSBuildManager(FSProjectManager.BuildProject);
-
             itemList = new ItemList(this);
             hierarchy_event_cookie = AdviseHierarchyEvents(itemList);
             IVsTrackProjectDocuments2 documentTracker = (IVsTrackProjectDocuments2)Package.GetGlobalService(typeof(SVsTrackProjectDocuments));

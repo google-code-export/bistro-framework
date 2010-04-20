@@ -76,7 +76,7 @@ namespace FSharp.ProjectExtender
             RegisterProjectFactory(new FSharp.ProjectExtender.Factory(this));
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             mcs.AddCommand(new Commands.ProjectExtender());
-            mcs.AddCommand(new Commands.ShowAll());
+            //mcs.AddCommand(new Commands.ShowAll());
 
         }
     }
