@@ -100,7 +100,7 @@ namespace FSharp.ProjectExtender
                 MoveElement(CompileItems.SelectedNode, Direction.Down);
         }
 
-        internal enum Direction { Up, Down }
+        public enum Direction { Up, Down }
 
         /// <summary>
         /// Moves a compile item in the compilation order list one position up or down

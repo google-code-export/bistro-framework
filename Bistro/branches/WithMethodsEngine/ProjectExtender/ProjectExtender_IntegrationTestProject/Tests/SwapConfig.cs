@@ -2,46 +2,122 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using FSharp.ProjectExtender;
+using System.Reflection;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VSSDK.Tools.VsIdeTesting;
+
 namespace IntegrationTests
 {
-    internal struct MoveOp
+    public struct MoveOp
     {
         public int Index { get; set; }
         public CompileOrderViewer.Direction Dir { get; set; }
     }
-    internal interface ISwapConfig
+    public interface ISwapConfig
     {
-        ISwapConfig SetOrder(params string[] filenames);
-        ISwapConfig SetMoves(params MoveOp[] moves);
-        List<string> FileOrder { get; }
-        List<MoveOp> Moves { get; }
-        string ConfigName { get;}
+        ISwapConfig ExpectedOrder(params string[] filenames);
+        ISwapConfig Move(params MoveOp[] moves);
+        void Run();
     }
-    internal class SwapConfig : ISwapConfig
+    public class SwapConfig : ISwapConfig
     {
-        List<string> fileList = new List<string>();
-        List<MoveOp> actions = new List<MoveOp>();
+        List<string> fileList;
+        List<MoveOp> actions;
         string name;
-        internal SwapConfig(string configName)
+        TestContext ctx;
+        internal SwapConfig(string configName,ref TestContext testContext)
         {
-            this.name = configName;
+            name = configName;
+            ctx = testContext;
+            fileList = new List<string>();
+            actions = new List<MoveOp>();
         }
-        public ISwapConfig SetOrder(params string[] filenames)
+        public ISwapConfig ExpectedOrder(params string[] filenames)
         {
             foreach (string item in filenames)
                 fileList.Add(item);
             return this;
         }
-        public ISwapConfig SetMoves(params MoveOp[] moves)
+        public ISwapConfig Move(params MoveOp[] moves)
         {
             foreach (MoveOp move in moves)
                 actions.Add(move);
             return this;
 
         }
-        public List<string> FileOrder { get { return fileList; } }
-        public List<MoveOp> Moves { get { return actions; } }
-        public string ConfigName { get { return name; } }
+        public void Run()
+        {
+            Initialize();
+            CompileOrderViewer viewer;
+            viewer = ctx.Properties["viewer"] as CompileOrderViewer;
+            foreach (MoveOp move in actions)
+                typeof(CompileOrderViewer).InvokeMember("MoveElement",
+                    BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance, null, viewer, new object[] { viewer.CompileItemsTree.Nodes[move.Index], move.Dir });
+
+            Check1_OntheFly();
+            //Check order 2 (in project file - on the disk before open)
+            Check3_Reopen();
+
+        }
+        private void Check1_OntheFly()
+        {
+            //Check order 1 (Changes to project file On-the-fly)
+            IProjectManager project = (IProjectManager)ctx.Properties["hierarchy"] ;
+            int i = 0;
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile"))
+            {
+                Assert.AreEqual(fileList[i], item.ToString(),
+                    "Test {0} : Compilation order is wrong at {1} position", name, i);
+                i++;
+            }
+            CleanUp();
+
+        }
+        private void Check3_Reopen()
+        {
+            //Check order 3 (Reopen project - check changes have been saved correctly)
+            IVsSolution sln = (ctx.Properties["solution"] as IVsSolution);
+            IVsHierarchy hier;
+            sln.OpenSolutionFile(
+                (uint)__VSSLNOPENOPTIONS.SLNOPENOPT_Silent, ctx.Properties["slnfile"].ToString());
+            sln.GetProjectOfUniqueName(ctx.Properties["testfile"].ToString(), out hier);
+            IProjectManager project = (IProjectManager)hier;
+            int i = 0;
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile"))
+            {
+                Assert.AreEqual(item.ToString(), fileList[i],
+                    "Test {0} after reopen : Compilation order is wrong at {1} position", name, i);
+                i++;
+            }
+
+            sln.CloseSolutionElement((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_SLNSAVEOPT_MASK, null, 0);
+
+        }
+        private void CleanUp()
+        {
+            ((IProjectManager)ctx.Properties["hierarchy"]).BuildManager.FixupProject();
+            ((CompileOrderViewer)ctx.Properties["viewer"]).Dispose();
+            ((IVsSolution)ctx.Properties["solution"]).CloseSolutionElement
+                ((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_SLNSAVEOPT_MASK, null, 0);
+
+        }
+        private void Initialize()
+        {
+            File.Copy(ctx.Properties["projfile"].ToString(), ctx.Properties["testfile"].ToString(), true);
+            IVsHierarchy hier;
+            IVsSolution sln = VsIdeTestHostContext.ServiceProvider.GetService(typeof(IVsSolution)) as IVsSolution;
+            sln.OpenSolutionFile((uint)__VSSLNOPENOPTIONS.SLNOPENOPT_Silent, ctx.Properties["slnfile"].ToString());
+            sln.GetProjectOfUniqueName(ctx.Properties["testfile"].ToString(), out hier);
+            Assert.IsNotNull(hier, "Project is not IProjectManager");
+            CompileOrderViewer viewer = new CompileOrderViewer((IProjectManager)hier);
+            Assert.IsNotNull(viewer, "Fail to create Viewer");
+            ctx.Properties["viewer"] = viewer;
+            ctx.Properties["solution"] = sln;
+            ctx.Properties["hierarchy"] = hier;
+        }
+
     }
 }
