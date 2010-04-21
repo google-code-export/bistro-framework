@@ -96,6 +96,7 @@
     <Compile Include="Commands\Refresh.cs" />
     <Compile Include="Commands\ShowAll.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="Project\Excluded\FileNode.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

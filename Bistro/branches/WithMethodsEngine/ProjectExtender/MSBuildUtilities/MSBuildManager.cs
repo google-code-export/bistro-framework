@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Build.BuildEngine;
 using System.IO;
+using BuildProject = Microsoft.Build.BuildEngine.Project;
 
 namespace FSharp.ProjectExtender
 {
@@ -27,7 +28,7 @@ namespace FSharp.ProjectExtender
 
 
         private const string moveByTag = "move-by";
-        private Project project;
+        private BuildProject project;
 
         /// <summary>
         /// Creates an instance of the MSBuildManager. As a part of instance creation moves back project items  
@@ -42,7 +43,7 @@ namespace FSharp.ProjectExtender
         /// <see cref="M:FixupProject"/> method. After the FSharp base project system is done loading the project these 
         /// elements are moevd back to their original positions
         /// </remarks>
-        public MSBuildManager(Project project)
+        public MSBuildManager(BuildProject project)
         {
             this.project = project;
 
