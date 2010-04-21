@@ -41,4 +41,12 @@
     <RegistryValue Name="TemplatesDir" Value="[INSTALLDIR].\NullPath" Type="string" />
   </RegistryKey>
 
+  <RegistryKey Root="HKLM" Key="Software\Hill30\ProjectExtender" >
+    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />
+  </RegistryKey>
+
+  <RegistryKey Root="HKLM" Key="Software\Hill30\Bistro" >
+    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />
+  </RegistryKey>
+
 </Include>
