@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="100" xml:space="preserve">
+    <value>DCQDH3H9PEK8AQHJHJZKKEP2JZA2C1ZKIHR1KIKDCZZ9CACDDEDPDQZHMRPZP9CMMJKTC2KAZZDHQHQ0M8E9E8M0ERE8ZAKID3DHHJKKZKK3CKK0PKQIJ3K2ZARAPHIM</value>
+    <comment>PLK</comment>
+  </data>
   <data name="110" xml:space="preserve">
     <value>F# Project Extender</value>
   </data>

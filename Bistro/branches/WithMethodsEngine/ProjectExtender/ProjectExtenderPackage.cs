@@ -44,7 +44,7 @@ namespace FSharp.ProjectExtender
     // package needs to have a valid load key (it can be requested at 
     // http://msdn.microsoft.com/vstudio/extend/). This attributes tells the shell that this 
     // package has a load key embedded in its resources.
-    //[ProvideLoadKey("Standard", "1.0", "F# Project System Extender", "Hill30 Inc", 1)]
+    [ProvideLoadKey("Standard", "1.0", "F# Project System Extender", "Hill30 Inc", 100)]
     // Provide the F# project extender project project factory. This is a flavored project and it does not
     // introduce any new templates
     [ProvideProjectFactory(typeof(FSharp.ProjectExtender.Factory), "ProjectExtender", null, null, null, null)]
