@@ -106,8 +106,11 @@ namespace FSharp.ProjectExtender
 
         internal int GetProperty(uint itemId, int propId, out object property)
         {
+            ItemNode node;
+            if (itemMap.TryGetValue(itemId, out node))
+                return node.GetProperty(propId, out property);
             property = null;
-            return VSConstants.S_OK;
+            return VSConstants.E_INVALIDARG;
         }
 
         public const int FakeNodeStart = 0x010000;

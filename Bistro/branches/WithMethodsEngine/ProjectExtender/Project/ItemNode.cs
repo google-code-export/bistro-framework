@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio;
 using System.IO;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace FSharp.ProjectExtender
 {
@@ -123,6 +124,39 @@ namespace FSharp.ProjectExtender
                 foreach (var child in children.Values)
                     child.SetShowAll(show_all);
             }
+        }
+
+        internal int GetProperty(int propId, out object property)
+        {
+            switch ((__VSHPROPID)propId)
+            {
+                case __VSHPROPID.VSHPROPID_FirstChild:
+                case __VSHPROPID.VSHPROPID_FirstVisibleChild:
+                    property = FirstChild;
+                    return VSConstants.S_OK;
+                
+                case __VSHPROPID.VSHPROPID_NextSibling:
+                case __VSHPROPID.VSHPROPID_NextVisibleSibling:
+                    property = NextSibling;
+                    return VSConstants.S_OK;
+                
+                case __VSHPROPID.VSHPROPID_Expandable:
+                    property = false;
+                    return VSConstants.S_OK;
+
+                case __VSHPROPID.VSHPROPID_Caption:
+                    property = node_key;
+                    return VSConstants.S_OK;
+
+                case __VSHPROPID.VSHPROPID_IconIndex:
+                    property = 9;
+                    return VSConstants.S_OK;
+                
+                default:
+                    break;
+            }
+            property = null;
+            return VSConstants.E_INVALIDARG;
         }
     }
 }
