@@ -61,12 +61,28 @@ namespace IntegrationTests
             Check_Reopen();
 
         }
+        public void NoneChanged()
+        {
+            Initialize();
+            IProjectManager project = ((IProjectManager)ctx.Properties["hierarchy"]);
+            project.BuildManager.FixupProject();
+            int i = 0;
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" || n.Name == "Content" || n.Name == "None"))
+            {
+                Assert.AreEqual(fileList[i], item.ToString(),
+                    "Test {0} : Compilation order is wrong at {1} position", name, i);
+                i++;
+            }
+            CleanUp();
+
+
+        }
         private void Check_OntheFly()
         {
             //Check order 1 (Changes to project file On-the-fly)
-            IProjectManager project = (IProjectManager)ctx.Properties["hierarchy"] ;
+            IProjectManager project = (IProjectManager)ctx.Properties["hierarchy"];
             int i = 0;
-            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile"))
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" || n.Name == "Content" || n.Name == "None"))
             {
                 Assert.AreEqual(fileList[i], item.ToString(),
                     "Test {0} : Compilation order is wrong at {1} position", name, i);
@@ -85,7 +101,7 @@ namespace IntegrationTests
             sln.GetProjectOfUniqueName(ctx.Properties["testfile"].ToString(), out hier);
             IProjectManager project = (IProjectManager)hier;
             int i = 0;
-            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile"))
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" || n.Name == "Content" || n.Name == "None"))
             {
                 Assert.AreEqual(item.ToString(), fileList[i],
                     "Test {0} after reopen : Compilation order is wrong at {1} position", name, i);
@@ -104,7 +120,7 @@ namespace IntegrationTests
         }
         private void Initialize()
         {
-            //File.Delete(ctx.Properties["suo"].ToString());
+            File.Delete(ctx.Properties["suo"].ToString());
             File.Copy(ctx.Properties["projfile"].ToString(), ctx.Properties["testfile"].ToString(), true);
             IVsHierarchy hier;
             IVsSolution sln = VsIdeTestHostContext.ServiceProvider.GetService(typeof(IVsSolution)) as IVsSolution;

@@ -39,18 +39,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.fs" />
-    <Compile Include="Program3.fs">
-      <move-by>3</move-by>
+    <Compile Include="Program3.fs" />
+    <Compile Include="Program.fs">
+      <move-by>7</move-by>
     </Compile>
     <Compile Include="Program2.fs">
-      <move-by>5</move-by>
+      <move-by>7</move-by>
     </Compile>
     <Compile Include="Folder1\File3.fs" />
-    <Compile Include="Folder1\File4.fs" />
     <Compile Include="Folder1\Sub1\File2.fs" />
-    <Compile Include="Folder1\Sub1\SubSub1\File1.fs" />
-    <Compile Include="Folder1\File1.fs" />
+    <Compile Include="Folder1\Sub1\SubSub1\File1.fs">
+      <move-by>2</move-by>
+    </Compile>
+    <Compile Include="Folder1\Sub2\File1.fs">
+      <move-by>2</move-by>
+    </Compile>
+    <Compile Include="Folder1\File1.fs">
+      <move-by>2</move-by>
+    </Compile>
+    <Compile Include="Folder1\File4.fs" />
+    <Compile Include="Folder2\File1.fs" />
+    <Compile Include="Folder3\CompileFile1.fs" />
+    <Content Include="Folder3\ContentFile1.fs" />
+    <None Include="Folder3\NoneFile1.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
