@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio;
+using System.IO;
 
 namespace FSharp.ProjectExtender
 {
@@ -10,23 +11,34 @@ namespace FSharp.ProjectExtender
     {
         ItemList items;
         ItemNode parent;
+        string node_key;
 
         SortedList<string, ItemNode> children = new SortedList<string, ItemNode>();
         Dictionary<uint, int> childrenMap;
 
         public ItemNode(ItemList items, uint itemId)
+            : this(items, itemId, items.GetNodeKey(itemId))
         {
-            this.items = items;
-            ItemId = itemId;
             uint child = items.GetNodeFirstChild(itemId);
             while (child != VSConstants.VSITEMID_NIL)
             {
                 ItemNode node = new ItemNode(items, child);
                 node.parent = this;
-                children.Add(items.GetNodeKey(child), node);
+                children.Add(node.node_key, node);
                 child = items.GetNodeSibling(child);
             }
             mapChildren();
+        }
+
+        public ItemNode(ItemList items, string node_key)
+            : this(items, items.GetNextItemID(), node_key)
+        { }
+
+        public ItemNode(ItemList items, uint itemId, string node_key)
+        {
+            this.items = items;
+            ItemId = itemId;
+            this.node_key = node_key;
             items.Register(this);
         }
 
@@ -67,7 +79,7 @@ namespace FSharp.ProjectExtender
         {
             ItemNode node = new ItemNode(items, itemidAdded);
             node.parent = this;
-            children.Add(items.GetNodeKey(itemidAdded), node);
+            children.Add(node.node_key, node);
             mapChildren();
         }
 
@@ -86,8 +98,31 @@ namespace FSharp.ProjectExtender
         {
             parent.children.RemoveAt(parent.childrenMap[ItemId]);
             parent.childrenMap.Remove(ItemId);
-            parent.children.Add(items.GetNodeKey(ItemId), this);
+            parent.children.Add(node_key, this);
             parent.mapChildren();
+        }
+
+        internal void SetShowAll(bool show_all)
+        {
+            string path = null;
+            if (node_key.StartsWith(";"))
+                path = Path.GetDirectoryName(node_key.Substring(1));
+            else if (node_key.StartsWith("d;"))
+                path = node_key.Substring(2);
+            if (path != null)
+            {
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    if (children.ContainsKey("e;" + file))
+                        continue;
+                    ItemNode node = new ItemNode(items, "e;" + file);
+                    node.parent = this;
+                    children.Add(node.node_key, node);
+                    mapChildren();
+                }
+                foreach (var child in children.Values)
+                    child.SetShowAll(show_all);
+            }
         }
     }
 }

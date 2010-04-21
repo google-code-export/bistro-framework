@@ -23,11 +23,12 @@ namespace FSharp.ProjectExtender
     {
         ProjectManager project;
         Dictionary<uint, ItemNode> itemMap = new Dictionary<uint, ItemNode>();
+        ItemNode root;
 
         public ItemList(ProjectManager project)
         {
             this.project = project;
-            new ItemNode(this, VSConstants.VSITEMID_ROOT);
+            root = new ItemNode(this, VSConstants.VSITEMID_ROOT);
         }
 
         public int GetNextSibling(uint itemId, out object value)
@@ -103,6 +104,20 @@ namespace FSharp.ProjectExtender
                 return sort_order + ';' + (string)name;
         }
 
+        internal int GetProperty(uint itemId, int propId, out object property)
+        {
+            property = null;
+            return VSConstants.S_OK;
+        }
+
+        public const int FakeNodeStart = 0x010000;
+        uint nextItemId = FakeNodeStart;
+
+        internal uint GetNextItemID()
+        {
+            return nextItemId++;
+        }
+
         internal uint GetNodeSibling(uint itemId)
         {
             return project.GetNodeSibling(itemId);
@@ -116,6 +131,11 @@ namespace FSharp.ProjectExtender
         internal void Unregister(uint itemId)
         {
             itemMap.Remove(itemId);
+        }
+
+        internal void SetShowAll(bool show_all)
+        {
+            root.SetShowAll(show_all);
         }
 
         #region IVsHierarchyEvents Members
@@ -172,6 +192,5 @@ namespace FSharp.ProjectExtender
         }
 
         #endregion
-
     }
 }

@@ -11,5 +11,6 @@ namespace FSharp.ProjectExtender
     public interface IProjectManager
     {
         MSBuildManager BuildManager { get; }
+        void FlipShowAll();
     }
 }

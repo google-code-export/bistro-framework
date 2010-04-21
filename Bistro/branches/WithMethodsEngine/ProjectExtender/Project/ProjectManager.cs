@@ -19,11 +19,9 @@ namespace FSharp.ProjectExtender
 {
     [ComVisible(true)]
     public class ProjectManager : FlavoredProjectBase, IProjectManager, IOleCommandTarget, IVsTrackProjectDocumentsEvents2
-                                    
     {
 
-        public ProjectManager()
-            : base()
+        public ProjectManager() : base()
         { }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace FSharp.ProjectExtender
 
         uint hierarchy_event_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
         uint document_tracker_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
-        ItemList itemList;
+        private ItemList itemList;
         Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode FSProjectManager;
 
         protected override void OnAggregationComplete()
@@ -48,6 +46,7 @@ namespace FSharp.ProjectExtender
 
             FSProjectManager = getFSharpProjectNode(innerProject);
             BuildManager = new MSBuildManager(FSProjectManager.BuildProject);
+
             itemList = new ItemList(this);
             hierarchy_event_cookie = AdviseHierarchyEvents(itemList);
             IVsTrackProjectDocuments2 documentTracker = (IVsTrackProjectDocuments2)Package.GetGlobalService(typeof(SVsTrackProjectDocuments));
@@ -72,6 +71,9 @@ namespace FSharp.ProjectExtender
         bool renaimng_in_progress = false;
         protected override int GetProperty(uint itemId, int propId, out object property)
         {
+            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
+                return itemList.GetProperty(itemId, propId, out property);
+
             if (!renaimng_in_progress)
                 switch ((__VSHPROPID)propId)
                 {
@@ -211,9 +213,17 @@ namespace FSharp.ProjectExtender
             InvalidateParentItems(itemIds);
         }
 
+        private bool show_all = false;
         #region IProjectManager Members
 
         public MSBuildManager BuildManager { get; private set; }
+        
+        public void FlipShowAll()
+        {
+            show_all = !show_all;
+            itemList.SetShowAll(show_all);
+        }
+
         #endregion
 
         #region IOleCommandTarget Members
@@ -248,6 +258,8 @@ namespace FSharp.ProjectExtender
             if (pguidCmdGroup.Equals(Constants.guidProjectExtenderCmdSet) && prgCmds[0].cmdID == (uint)Constants.cmdidProjectShowAll)
             {
                 prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_SUPPORTED | (uint)OLECMDF.OLECMDF_ENABLED;
+                if (show_all)
+                    prgCmds[0].cmdf |= (uint)OLECMDF.OLECMDF_LATCHED;
                 return VSConstants.S_OK;
             }
 
