@@ -40,10 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.fs" />
-    <Compile Include="Program2.fs">
-      <move-by>5</move-by>
-    </Compile>
     <Compile Include="Program3.fs">
+      <move-by>3</move-by>
+    </Compile>
+    <Compile Include="Program2.fs">
       <move-by>5</move-by>
     </Compile>
     <Compile Include="Folder1\File3.fs" />

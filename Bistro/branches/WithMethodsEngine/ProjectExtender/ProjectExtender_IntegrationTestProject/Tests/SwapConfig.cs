@@ -57,12 +57,11 @@ namespace IntegrationTests
                 typeof(CompileOrderViewer).InvokeMember("MoveElement",
                     BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance, null, viewer, new object[] { viewer.CompileItemsTree.Nodes[move.Index], move.Dir });
 
-            Check1_OntheFly();
-            //Check order 2 (in project file - on the disk before open)
-            Check3_Reopen();
+            Check_OntheFly();
+            Check_Reopen();
 
         }
-        private void Check1_OntheFly()
+        private void Check_OntheFly()
         {
             //Check order 1 (Changes to project file On-the-fly)
             IProjectManager project = (IProjectManager)ctx.Properties["hierarchy"] ;
@@ -76,7 +75,7 @@ namespace IntegrationTests
             CleanUp();
 
         }
-        private void Check3_Reopen()
+        private void Check_Reopen()
         {
             //Check order 3 (Reopen project - check changes have been saved correctly)
             IVsSolution sln = (ctx.Properties["solution"] as IVsSolution);
@@ -105,6 +104,7 @@ namespace IntegrationTests
         }
         private void Initialize()
         {
+            //File.Delete(ctx.Properties["suo"].ToString());
             File.Copy(ctx.Properties["projfile"].ToString(), ctx.Properties["testfile"].ToString(), true);
             IVsHierarchy hier;
             IVsSolution sln = VsIdeTestHostContext.ServiceProvider.GetService(typeof(IVsSolution)) as IVsSolution;
