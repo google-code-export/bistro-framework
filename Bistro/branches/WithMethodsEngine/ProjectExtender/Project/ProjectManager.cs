@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using System.ComponentModel.Design;
 using Microsoft.Build.BuildEngine;
 using System.IO;
+using FSharp.ProjectExtender.Project;
 
 namespace FSharp.ProjectExtender
 {
@@ -222,6 +223,9 @@ namespace FSharp.ProjectExtender
         {
             show_all = !show_all;
             itemList.SetShowAll(show_all);
+            // as kludgy as it looks this is the only way I found to force the
+            // refresh of the solution explorer window
+            FSProjectManager.FirstChild.OnInvalidateItems(FSProjectManager);
         }
 
         #endregion

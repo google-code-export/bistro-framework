@@ -140,6 +140,113 @@
     <Compile Include="$(CommonRegAttributes)\ProvideMSBuildTargetAttribute.cs">
       <Link>RegistrationAttributes\ProvideMSBuildTargetAttribute.cs</Link>
     </Compile>
+    <Compile Include="ProjectBase\AssemblyReferenceNode.cs" />
+    <Compile Include="ProjectBase\Attributes.cs" />
+    <Compile Include="ProjectBase\Automation\AutomationScope.cs" />
+    <Compile Include="ProjectBase\Automation\OAFileItem.cs" />
+    <Compile Include="ProjectBase\Automation\OAFolderItem.cs" />
+    <Compile Include="ProjectBase\Automation\OANavigableProjectItems.cs" />
+    <Compile Include="ProjectBase\Automation\OANestedProjectItem.cs" />
+    <Compile Include="ProjectBase\Automation\OANullProperty.cs" />
+    <Compile Include="ProjectBase\Automation\OAProject.cs" />
+    <Compile Include="ProjectBase\Automation\OAProjectItem.cs" />
+    <Compile Include="ProjectBase\Automation\OAProjectItems.cs" />
+    <Compile Include="ProjectBase\Automation\OAProperties.cs" />
+    <Compile Include="ProjectBase\Automation\OAProperty.cs" />
+    <Compile Include="ProjectBase\Automation\OAReferenceFolderItem.cs" />
+    <Compile Include="ProjectBase\Automation\OAReferenceItem.cs" />
+    <Compile Include="ProjectBase\Automation\OASolutionFolder.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAAssemblyReference.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OABuildManager.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAComReference.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAProjectReference.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAReferenceBase.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAReferences.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAVSProject.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAVSProjectItem.cs" />
+    <Compile Include="ProjectBase\BuildDependency.cs" />
+    <Compile Include="ProjectBase\BuildPropertyPage.cs" />
+    <Compile Include="ProjectBase\ComReferenceNode.cs" />
+    <Compile Include="ProjectBase\ConfigProvider.cs" />
+    <Compile Include="ProjectBase\ConfigurationProperties.cs" />
+    <Compile Include="ProjectBase\DataObject.cs" />
+    <Compile Include="ProjectBase\DependentFileNode.cs" />
+    <Compile Include="ProjectBase\DesignPropertyDescriptor.cs" />
+    <Compile Include="ProjectBase\DocumentManager.cs" />
+    <Compile Include="ProjectBase\DontShowAgainDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectBase\DontShowAgainDialog.Designer.cs">
+      <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectBase\EnumDependencies.cs" />
+    <Compile Include="ProjectBase\FileChangeManager.cs" />
+    <Compile Include="ProjectBase\FileDocumentManager.cs" />
+    <Compile Include="ProjectBase\FileNode.cs" />
+    <Compile Include="ProjectBase\FolderNode.cs" />
+    <Compile Include="ProjectBase\GlobalPropertyHandler.cs" />
+    <Compile Include="ProjectBase\GlobalSuppressions.cs" />
+    <Compile Include="ProjectBase\HierarchyNode.cs" />
+    <Compile Include="ProjectBase\IDEBuildLogger.cs" />
+    <Compile Include="ProjectBase\ImageHandler.cs" />
+    <Compile Include="ProjectBase\Interfaces.cs" />
+    <Compile Include="ProjectBase\LocalizableProperties.cs" />
+    <Compile Include="ProjectBase\Misc\ConnectionPointContainer.cs" />
+    <Compile Include="ProjectBase\Misc\ExternDll.cs" />
+    <Compile Include="ProjectBase\Misc\NativeMethods.cs" />
+    <Compile Include="ProjectBase\Misc\UnsafeNativeMethods.cs" />
+    <Compile Include="ProjectBase\NestedProjectBuildDependency.cs" />
+    <Compile Include="ProjectBase\NestedProjectNode.cs" />
+    <Compile Include="ProjectBase\NodeProperties.cs" />
+    <Compile Include="ProjectBase\OleServiceProvider.cs" />
+    <Compile Include="ProjectBase\Output.cs" />
+    <Compile Include="ProjectBase\OutputGroup.cs" />
+    <Compile Include="ProjectBase\ProjectBase.cs" />
+    <Compile Include="ProjectBase\ProjectConfig.cs" />
+    <Compile Include="ProjectBase\ProjectContainerNode.cs" />
+    <Compile Include="ProjectBase\ProjectDesignerDocumentManager.cs" />
+    <Compile Include="ProjectBase\ProjectDocumentsListener.cs" />
+    <Compile Include="ProjectBase\ProjectElement.cs" />
+    <Compile Include="ProjectBase\ProjectFactory.cs" />
+    <Compile Include="ProjectBase\ProjectFileConstants.cs" />
+    <Compile Include="ProjectBase\ProjectNode.CopyPaste.cs" />
+    <Compile Include="ProjectBase\ProjectNode.cs" />
+    <Compile Include="ProjectBase\ProjectNode.Events.cs" />
+    <Compile Include="ProjectBase\ProjectOptions.cs" />
+    <Compile Include="ProjectBase\ProjectPackage.cs" />
+    <Compile Include="ProjectBase\ProjectReferenceNode.cs" />
+    <Compile Include="ProjectBase\ProjectSecurityChecker.cs" />
+    <Compile Include="ProjectBase\PropertiesEditorLauncher.cs" />
+    <Compile Include="ProjectBase\ReferenceContainerNode.cs" />
+    <Compile Include="ProjectBase\ReferenceNode.cs" />
+    <Compile Include="ProjectBase\RegisteredProjectType.cs" />
+    <Compile Include="ProjectBase\SecurityWarningDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectBase\SecurityWarningDialog.Designer.cs">
+      <DependentUpon>SecurityWarningDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectBase\SelectionListener.cs" />
+    <Compile Include="ProjectBase\SettingsPage.cs" />
+    <Compile Include="ProjectBase\SingleFileGenerator.cs" />
+    <Compile Include="ProjectBase\SingleFileGeneratorFactory.cs" />
+    <Compile Include="ProjectBase\SolutionListener.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForBuildDependencyUpdate.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForProjectEvents.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForProjectOpen.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForProjectReferenceUpdate.cs" />
+    <Compile Include="ProjectBase\StructuresEnums.cs" />
+    <Compile Include="ProjectBase\SuspendFileChanges.cs" />
+    <Compile Include="ProjectBase\TokenProcessor.cs" />
+    <Compile Include="ProjectBase\Tracing.cs" />
+    <Compile Include="ProjectBase\TrackDocumentsHelper.cs" />
+    <Compile Include="ProjectBase\TypeConverters.cs" />
+    <Compile Include="ProjectBase\UpdateSolutionEventsListener.cs" />
+    <Compile Include="ProjectBase\Url.cs" />
+    <Compile Include="ProjectBase\UserProjectSecurityChecker.cs" />
+    <Compile Include="ProjectBase\Utilities.cs" />
+    <Compile Include="ProjectBase\VsCommands.cs" />
+    <Compile Include="ProjectBase\VSShellUtilities.cs" />
     <Compile Include="Projects\FSharp\ProjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +267,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
+    <None Include="ProjectBase\Diagrams\AutomationClasses.cd" />
+    <None Include="ProjectBase\Diagrams\ConfigurationClasses.cd" />
+    <None Include="ProjectBase\Diagrams\DocumentManagerClasses.cd" />
+    <None Include="ProjectBase\Diagrams\HierarchyClasses.cd" />
+    <None Include="ProjectBase\Diagrams\PropertiesClasses.cd" />
+    <None Include="ProjectBase\Diagrams\ReferenceClasses.cd" />
+    <EmbeddedResource Include="ProjectBase\DontShowAgainDialog.resx">
+      <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectBase\ProjectBase.resx">
+      <DependentUpon>ProjectBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectBase\SecurityWarningDialog.resx">
+      <DependentUpon>SecurityWarningDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images_32bit.bmp" />
     <EmbeddedResource Include="Resources\Images_24bit.bmp" />
     <EmbeddedResource Include="Resources\Root.bmp" />

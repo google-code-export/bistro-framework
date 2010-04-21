@@ -23,13 +23,21 @@ namespace FSharp.ProjectExtender
         public const string CompileOrder = "Compilation Order";
         public const string DependsOn = "DependsOn";
 
-        public const string guidFSharpProject = "f2a71f9b-5d33-465a-a702-920d77279786";
+        public const string guidFSharpProjectString = "f2a71f9b-5d33-465a-a702-920d77279786";
+        public static readonly Guid guidFSharpProject = new Guid(guidFSharpProjectString);
         public static readonly Guid guidStandardCommandSet97 = new Guid("5efc7975-14bc-11cf-9b2b-00aa00573819");
         public static readonly Guid guidStandardCommandSet2K = new Guid("1496A755-94DE-11D0-8C3F-00C04FC2AAE2");
         public static readonly Guid guidFSharpProjectCmdSet = new Guid("75AC5611-A912-4195-8A65-457AE17416FB");
 
         public const uint cmdidExploreFolderInWindows = 0x663;
         public const uint cmdidNewFolder = 0xf5;
+
+        public enum ImageName
+        {
+            ExcludedFolder = 9,
+            OpenExcludedFolder = 10,
+            ExcludedFile = 11,
+        }
 
     };
 

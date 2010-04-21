@@ -24,6 +24,11 @@ namespace FSharp.ProjectExtender.Commands
         private static void Execute(object sender, EventArgs e)
         {
             var project = get_current_project();
+            if (project != null)
+            {
+                ((IProjectManager)project).FlipShowAll();
+                ((IProjectManager)project).FlipShowAll();
+            }
         }
 
     }

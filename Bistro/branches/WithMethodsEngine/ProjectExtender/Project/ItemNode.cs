@@ -6,42 +6,62 @@ using Microsoft.VisualStudio;
 using System.IO;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace FSharp.ProjectExtender
+namespace FSharp.ProjectExtender.Project
 {
-    public class ItemNode
+    abstract class ItemNode: IEnumerable<ItemNode>
     {
-        ItemList items;
+        protected ItemNode(ItemList items, ItemNode parent, uint itemId, ItemNodeType type, string path)
+        {
+            Items = items;
+            this.parent = parent;
+            ItemId = itemId;
+            this.type = type;
+            Path = path;
+            items.Register(this);
+        }
+
+        protected ItemList Items { get; private set; }
         ItemNode parent;
-        string node_key;
+        ItemNodeType type;
+        protected string Path { get; private set; }
+        string sort_key { get { return SortOrder + ';' + Path; } }
+
+        protected void CreateChildNode(uint child)
+        {
+            AddChildNode(Items.CreateNode(this, child));
+        }
+
+        protected void AddChildNode(ItemNode child)
+        {
+            children.Add(child.sort_key, child);
+        }
+
+        protected bool ChildExists(string key)
+        {
+            return children.ContainsKey(key);
+        }
+
+        internal void CreatenMapChildNode(uint itemidAdded)
+        {
+            CreateChildNode(itemidAdded);
+            MapChildren();
+        }
+
+        protected abstract string SortOrder { get; }
+
+        protected void MapChildren()
+        {
+            if (childrenMap == null)
+                childrenMap = new Dictionary<uint, int>(children.Count);
+            else
+                childrenMap.Clear();
+            int i = 0;
+            foreach (var item in children)
+                childrenMap.Add(item.Value.ItemId, i++);
+        }
 
         SortedList<string, ItemNode> children = new SortedList<string, ItemNode>();
         Dictionary<uint, int> childrenMap;
-
-        public ItemNode(ItemList items, uint itemId)
-            : this(items, itemId, items.GetNodeKey(itemId))
-        {
-            uint child = items.GetNodeFirstChild(itemId);
-            while (child != VSConstants.VSITEMID_NIL)
-            {
-                ItemNode node = new ItemNode(items, child);
-                node.parent = this;
-                children.Add(node.node_key, node);
-                child = items.GetNodeSibling(child);
-            }
-            mapChildren();
-        }
-
-        public ItemNode(ItemList items, string node_key)
-            : this(items, items.GetNextItemID(), node_key)
-        { }
-
-        public ItemNode(ItemList items, uint itemId, string node_key)
-        {
-            this.items = items;
-            ItemId = itemId;
-            this.node_key = node_key;
-            items.Register(this);
-        }
 
         public uint ItemId { get; private set; }
 
@@ -72,91 +92,46 @@ namespace FSharp.ProjectExtender
         {
             parent.children.RemoveAt(parent.childrenMap[ItemId]);
             parent.childrenMap.Remove(ItemId);
-            parent.mapChildren();
-            items.Unregister(ItemId);
-        }
-
-        internal void AddChild(uint itemidAdded)
-        {
-            ItemNode node = new ItemNode(items, itemidAdded);
-            node.parent = this;
-            children.Add(node.node_key, node);
-            mapChildren();
-        }
-
-        private void mapChildren()
-        {
-            if (childrenMap == null)
-                childrenMap = new Dictionary<uint, int>(children.Count);
-            else
-                childrenMap.Clear();
-            int i = 0;
-            foreach (var item in children)
-                childrenMap.Add(item.Value.ItemId, i++);
+            parent.MapChildren();
+            Items.Unregister(ItemId);
         }
 
         internal void Remap()
         {
             parent.children.RemoveAt(parent.childrenMap[ItemId]);
             parent.childrenMap.Remove(ItemId);
-            parent.children.Add(node_key, this);
-            parent.mapChildren();
+            parent.children.Add(sort_key, this);
+            parent.MapChildren();
         }
 
-        internal void SetShowAll(bool show_all)
+        internal virtual void SetShowAll(bool show_all)
         {
-            string path = null;
-            if (node_key.StartsWith(";"))
-                path = Path.GetDirectoryName(node_key.Substring(1));
-            else if (node_key.StartsWith("d;"))
-                path = node_key.Substring(2);
-            if (path != null)
-            {
-                foreach (var file in Directory.GetFiles(path))
-                {
-                    if (children.ContainsKey("e;" + file))
-                        continue;
-                    ItemNode node = new ItemNode(items, "e;" + file);
-                    node.parent = this;
-                    children.Add(node.node_key, node);
-                    mapChildren();
-                }
-                foreach (var child in children.Values)
-                    child.SetShowAll(show_all);
-            }
         }
 
-        internal int GetProperty(int propId, out object property)
+        internal virtual int GetProperty(int propId, out object property)
         {
-            switch ((__VSHPROPID)propId)
-            {
-                case __VSHPROPID.VSHPROPID_FirstChild:
-                case __VSHPROPID.VSHPROPID_FirstVisibleChild:
-                    property = FirstChild;
-                    return VSConstants.S_OK;
-                
-                case __VSHPROPID.VSHPROPID_NextSibling:
-                case __VSHPROPID.VSHPROPID_NextVisibleSibling:
-                    property = NextSibling;
-                    return VSConstants.S_OK;
-                
-                case __VSHPROPID.VSHPROPID_Expandable:
-                    property = false;
-                    return VSConstants.S_OK;
-
-                case __VSHPROPID.VSHPROPID_Caption:
-                    property = node_key;
-                    return VSConstants.S_OK;
-
-                case __VSHPROPID.VSHPROPID_IconIndex:
-                    property = 9;
-                    return VSConstants.S_OK;
-                
-                default:
-                    break;
-            }
+            // this method should never be called for shadow nodes
             property = null;
             return VSConstants.E_INVALIDARG;
         }
+
+
+        #region IEnumerable<ItemNode> Members
+
+        public IEnumerator<ItemNode> GetEnumerator()
+        {
+            return children.Values.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return children.Values.GetEnumerator();
+        }
+
+        #endregion
     }
 }

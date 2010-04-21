@@ -101,7 +101,7 @@ namespace FSharp.ProjectExtender.Commands
                 // insert it after the ProjectGuid node
                 projectGuid.ParentNode.InsertAfter(projectTypeGuids, projectGuid);
                 // initialize the project type guid list
-                projectTypeGuids.InnerText = "{" + Constants.guidProjectExtenderFactoryString + "};{" + Constants.guidFSharpProject + "}";
+                projectTypeGuids.InnerText = "{" + Constants.guidProjectExtenderFactoryString + "};{" + Constants.guidFSharpProjectString + "}";
             }
             else
             {
