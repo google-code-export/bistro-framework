@@ -41,7 +41,7 @@ namespace Bistro.Designer
     // package needs to have a valid load key (it can be requested at 
     // http://msdn.microsoft.com/vstudio/extend/). This attributes tells the shell that this 
     // package has a load key embedded in its resources.
-    [ProvideLoadKey("Standard", "1.0", "Bistro Designer", "Hill30 Inc", 100)]
+    [ProvideLoadKey("Standard", "0.9", "Bistro Designer", "Hill30 Inc", 100)]
 
     [ProvideProjectFactory(
         typeof(Projects.FSharp.Factory), 
