@@ -46,6 +46,7 @@
     <Compile Include="Folder1\Sub1\SubSub1\File1.fs" />
     <Compile Include="Folder1\Sub2\File1.fs" />
     <Compile Include="Folder1\File1.fs"/>
+    <None Include = "Folder1\Web.config"/>
     <Compile Include="Folder2\File1.fs" />
     <Compile Include="Program.fs"/>
     <Compile Include="Program2.fs"/>

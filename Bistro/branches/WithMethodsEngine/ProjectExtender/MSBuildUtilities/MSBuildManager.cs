@@ -122,7 +122,7 @@ namespace FSharp.ProjectExtender
                         if (offset > 0)
                         {
                             // we only will need to moev back the items to be compiled - the rest of them will be moved permanently
-                            if (item.BuildItem.Name == "Compile")
+                            //if (item.BuildItem.Name == "Compile")
                                 item.BuildItem.SetMetadata(moveByTag, offset.ToString());
 
                             // add the item to the fixup list
