@@ -106,7 +106,9 @@ namespace FSharp.ProjectExtender
                 item.BuildItem.RemoveMetadata(moveByTag);
                 itemList.Add(item);
                 count++;
-                string path = /*'\\' + */Path.GetDirectoryName(item.Path);
+                string path = Path.GetDirectoryName(item.Path);
+                if (String.Compare(path, "") == 0) 
+                    path  = item.Path; 
                 string partial_path = path;
                 int location;
                 while (true)

@@ -67,7 +67,7 @@ namespace IntegrationTests
             IProjectManager project = ((IProjectManager)ctx.Properties["hierarchy"]);
             project.BuildManager.FixupProject();
             int i = 0;
-            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" || n.Name == "Content" || n.Name == "None"))
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile"))
             {
                 Assert.AreEqual(fileList[i], item.ToString(),
                     "Test {0} : Compilation order is wrong at {1} position", name, i);
@@ -82,7 +82,7 @@ namespace IntegrationTests
             //Check order 1 (Changes to project file On-the-fly)
             IProjectManager project = (IProjectManager)ctx.Properties["hierarchy"];
             int i = 0;
-            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" || n.Name == "Content" || n.Name == "None"))
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" ))
             {
                 Assert.AreEqual(fileList[i], item.ToString(),
                     "Test {0} : Compilation order is wrong at {1} position", name, i);
@@ -101,7 +101,8 @@ namespace IntegrationTests
             sln.GetProjectOfUniqueName(ctx.Properties["testfile"].ToString(), out hier);
             IProjectManager project = (IProjectManager)hier;
             int i = 0;
-            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" || n.Name == "Content" || n.Name == "None"))
+            
+            foreach (var item in project.BuildManager.GetElements(n => n.Name == "Compile" ))
             {
                 Assert.AreEqual(item.ToString(), fileList[i],
                     "Test {0} after reopen : Compilation order is wrong at {1} position", name, i);
