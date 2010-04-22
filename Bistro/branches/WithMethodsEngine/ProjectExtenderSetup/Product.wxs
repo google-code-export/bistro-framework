@@ -56,7 +56,7 @@
     <WixVariable Id="WixUIBannerBmp" Value="bitmaps\bannrbmp.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="bitmaps\dlgbmp.bmp" />
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="EXTENSIONSFILES" >
+      <!--<Directory Id="EXTENSIONSFILES" >
         <Directory Id="EXTENSIONSHILL30" Name="Hill30">
           <Directory Id="PROJECTEXTENDER" Name="ProjectExtender">
             <Component Id="ProjectExtender2010Files" Guid="AB80C8A8-63BE-4D5E-BACB-9FA941CD0C7C">
@@ -67,7 +67,7 @@
             </Component>
           </Directory>
         </Directory>
-      </Directory>
+      </Directory>-->
       <Directory Id="ProgramFilesFolder" Name="PFiles">
         <Directory Id="HILL30FILES" Name="Hill30">
           <Directory Id="INSTALLDIR" Name="ProjectExtender">
@@ -95,24 +95,22 @@
       <ComponentRef Id="RegistryExtenderVSX2008" />
     </Feature>
 
-    <Feature Id="Extender2010" Title="Visual Studio 2010 integration" Level="1">
+    <!--<Feature Id="Extender2010" Title="Visual Studio 2010 integration" Level="1">
       <ComponentRef Id="ProjectExtender2010Files" />
-    </Feature>
+    </Feature>-->
 
-    <Property Id="VS2010NEEDED" />
-    <Property Id="VS2008NEEDED" />
-    <Binary Id="EditFiles" SourceFile="versionWriterFull.exe" />
-    <CustomAction Id="UninstallDesignerFiles" Directory="PROJECTEXTENDER" ExeCommand="&quot;cmd.exe&quot; /c rmdir /s /q &quot;NDjangoDesigner&quot;" Return="ignore"/>
-    <CustomAction BinaryKey="EditFiles" ExeCommand="&quot;C:\Users\kskrygan\AppData\Local\Microsoft\VisualStudio\10.0\Extensions\Hill30\ProjectExtender\ProjectExtender.pkgdef&quot;" Id="EditProjectExtenderPkgdef" Return="ignore"/>
+    <!--VS2010 commented-->
+    <!--<Binary Id="EditFiles" SourceFile="versionWriterFull.exe" />-->
+    <!--<CustomAction Id="UninstallDesignerFiles" Directory="PROJECTEXTENDER" ExeCommand="&quot;cmd.exe&quot; /c rmdir /s /q &quot;NDjangoDesigner&quot;" Return="ignore"/>-->
+    <!--<CustomAction BinaryKey="EditFiles" ExeCommand="&quot;C:\Users\kskrygan\AppData\Local\Microsoft\VisualStudio\10.0\Extensions\Hill30\ProjectExtender\ProjectExtender.pkgdef&quot;" Id="EditProjectExtenderPkgdef" Return="ignore"/>-->
     <CustomAction Id="CA_DevenvSetup2008" Property="DEVENV_EXE_PATH2008" ExeCommand="/setup"  Impersonate="no" Execute="deferred" />
-    <CustomAction Id="CA_DevenvSetup2010" Property="DEVENV_EXE_PATH2010" ExeCommand="/setup"  Impersonate="no" Execute="deferred" />
+    <!--<CustomAction Id="CA_DevenvSetup2010" Property="DEVENV_EXE_PATH2010" ExeCommand="/setup"  Impersonate="no" Execute="deferred" />-->
     <InstallExecuteSequence>
-      <!--<Custom Action="CA_DevenvSetup2008" Before="InstallFinalize" ><![CDATA[(VS2008NEEDED <> NULL) OR REMOVE]]></Custom>-->
-      <!--<Custom Action="CA_DevenvSetup2010" Before="InstallFinalize" ><![CDATA[(VS2010NEEDED <> NULL) OR REMOVE]]></Custom>-->
-      <Custom Action="UninstallDesignerFiles" After="InstallInitialize"><![CDATA[REMOVE]]></Custom>
-      <Custom Action="EditProjectExtenderPkgdef" After="InstallFinalize">
+      <Custom Action="CA_DevenvSetup2008" Before="InstallFinalize" ><![CDATA[(VS2008NEEDED <> NULL) OR REMOVE]]></Custom>
+      <!--<Custom Action="UninstallDesignerFiles" After="InstallInitialize"><![CDATA[REMOVE]]></Custom>-->
+      <!--<Custom Action="EditProjectExtenderPkgdef" After="InstallFinalize">
         <![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL"))]]>
-      </Custom>
+      </Custom>-->
       <RemoveExistingProducts After="InstallInitialize" />
     </InstallExecuteSequence>
     
@@ -163,18 +161,14 @@
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
         <Control Id="Description" Type="Text" X="135" Y="105" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="!(loc.WelcomeDlgDescription)" />
         <Control Id="Title" Type="Text" X="135" Y="20" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="!(loc.WelcomeDlgTitle)" />
-        <Control Type="Text" Width="220" Height="60" X="135" Y="116" Id="FSharpNOTE" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}NOTE: This application requires FSharp 4.0" Hidden="yes" />
+        <Control Type="Text" Width="220" Height="60" X="135" Y="116" Id="FSharpNOTE" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}NOTE: This application requires FSharp 2.0" Hidden="yes" />
         <Control Type="Text" Id="Note" Width="192" Height="22" X="135" Y="79" Transparent="yes">
           <Text>This application was developed for using with .NET Framework 3.5 and Visual Studio 2008 or Visual Studio 2010.</Text>
         </Control>
       </Dialog>
       <Dialog Id="InstallDirDlgCustom" Width="370" Height="270" Title="!(loc.InstallDirDlg_Title)">
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
-          <Condition Action="disable"><![CDATA[ (VS2008NEEDED = NULL ) AND (VS2010NEEDED = NULL) ]]></Condition>
-          <Condition Action="enable"><![CDATA[ (VS2008NEEDED <> NULL ) OR (VS2010NEEDED <> NULL) ]]></Condition>
           <Publish Event="AddLocal" Value="ALL">1</Publish>
-          <Publish Event="Remove" Value="Extender2008"><![CDATA[ (VS2008NEEDED <> "1") OR (VS2008FOUND = NULL) ]]></Publish>
-          <Publish Event="Remove" Value="Extender2010"><![CDATA[ (VS2010NEEDED <> "1") OR (VS2010FOUND = NULL) ]]></Publish>
         </Control>
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
@@ -188,14 +182,6 @@
         <Control Id="FolderLabel" Type="Text" X="20" Y="60" Width="290" Height="30" NoPrefix="yes" Text="!(loc.InstallDirDlgFolderLabel)" />
         <Control Id="Folder" Type="PathEdit" X="20" Y="100" Width="320" Height="18" Property="WIXUI_INSTALLDIR" Indirect="yes"/>
         <Control Id="ChangeFolder" Type="PushButton" X="20" Y="120" Width="56" Height="17" Text="!(loc.InstallDirDlgChange)"/>
-        <Control Type="CheckBox" Id="CheckBox2008" Width="317" Height="17" X="22" Y="149" CheckBoxValue="1" Property="VS2008NEEDED" Text="Install Project Extender for Visual Studio 2008">
-          <Condition Action="enable"><![CDATA[ (VS2008FOUND <> NULL) ]]></Condition>
-          <Condition Action="disable"><![CDATA[ (VS2008FOUND = NULL)]]></Condition>
-        </Control>
-        <Control Type="CheckBox" Id="CheckBox2010" Width="230" Height="17" X="22" Y="169" Property="VS2010NEEDED" CheckBoxValue="1" Text="Install Project Extender for Visual Studio 2010">
-          <Condition Action="enable"><![CDATA[ VS2010FOUND <> NULL ]]></Condition>
-          <Condition Action="disable"><![CDATA[ VS2010FOUND = NULL ]]></Condition>
-        </Control>
       </Dialog>
       <InstallUISequence>
         <Show Dialog="WelcomeDlgCustom" Before="ProgressDlg">NOT Installed</Show>
