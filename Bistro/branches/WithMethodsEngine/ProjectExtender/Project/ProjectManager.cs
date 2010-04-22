@@ -69,17 +69,11 @@ namespace FSharp.ProjectExtender
             return OAProject.Project;
         }
 
-        protected override int QueryStatusCommand(uint itemId, ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
-        {
-            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
-                return itemList.QueryStatusCommand(itemId, ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
-            return base.QueryStatusCommand(itemId, ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
-        }
-
         protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
-                return itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            int result;
+            if (itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result))
+                return result;
             return base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
         }
 
@@ -371,5 +365,20 @@ namespace FSharp.ProjectExtender
         }
 
         #endregion
+
+        internal int AddItem(uint parentID, string Path)
+        {
+            Microsoft.VisualStudio.FSharp.ProjectSystem.HierarchyNode parent;
+            if (parentID == VSConstants.VSITEMID_ROOT)
+                parent = FSProjectManager;
+            else
+                parent = FSProjectManager.NodeFromItemId(parentID);
+
+            var node = FSProjectManager.AddNewFileNodeToHierarchy(parent, Path);
+
+            InvalidateParentItems(new uint[] { node.ID });
+
+            return VSConstants.S_OK;
+        }
     }
 }

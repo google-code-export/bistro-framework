@@ -13,15 +13,17 @@ namespace FSharp.ProjectExtender.Project
         protected ItemNode(ItemList items, ItemNode parent, uint itemId, ItemNodeType type, string path)
         {
             Items = items;
-            this.parent = parent;
+            this.Parent = parent;
             ItemId = itemId;
             this.type = type;
             Path = path;
             items.Register(this);
         }
 
+        public ItemNode Parent { get; private set; }
+        public uint ItemId { get; private set; }
+
         protected ItemList Items { get; private set; }
-        ItemNode parent;
         ItemNodeType type;
         protected string Path { get; private set; }
         string sort_key { get { return SortOrder + ';' + Path; } }
@@ -63,17 +65,15 @@ namespace FSharp.ProjectExtender.Project
         SortedList<string, ItemNode> children = new SortedList<string, ItemNode>();
         Dictionary<uint, int> childrenMap;
 
-        public uint ItemId { get; private set; }
-
         public uint NextSibling
         {
             get
             {
-                if (parent == null)
+                if (Parent == null)
                     return VSConstants.VSITEMID_NIL;
-                int index = parent.childrenMap[ItemId];
-                if (index + 1 < parent.children.Count)
-                    return parent.children.Values[index + 1].ItemId;
+                int index = Parent.childrenMap[ItemId];
+                if (index + 1 < Parent.children.Count)
+                    return Parent.children.Values[index + 1].ItemId;
                 return VSConstants.VSITEMID_NIL;
             }
         }
@@ -90,18 +90,18 @@ namespace FSharp.ProjectExtender.Project
 
         internal void Delete()
         {
-            parent.children.RemoveAt(parent.childrenMap[ItemId]);
-            parent.childrenMap.Remove(ItemId);
-            parent.MapChildren();
+            Parent.children.RemoveAt(Parent.childrenMap[ItemId]);
+            Parent.childrenMap.Remove(ItemId);
+            Parent.MapChildren();
             Items.Unregister(ItemId);
         }
 
         internal void Remap()
         {
-            parent.children.RemoveAt(parent.childrenMap[ItemId]);
-            parent.childrenMap.Remove(ItemId);
-            parent.children.Add(sort_key, this);
-            parent.MapChildren();
+            Parent.children.RemoveAt(Parent.childrenMap[ItemId]);
+            Parent.childrenMap.Remove(ItemId);
+            Parent.children.Add(sort_key, this);
+            Parent.MapChildren();
         }
 
         internal virtual void SetShowAll(bool show_all)
