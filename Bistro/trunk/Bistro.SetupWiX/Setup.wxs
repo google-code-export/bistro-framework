@@ -60,6 +60,7 @@
               <RemoveFolder Id="RemoveMain" Directory="INSTALLDIR" On="uninstall" />
               <File Id="Bistro.Core.dll" Name="$(var.Bistro.Core.TargetFileName)" Source="lib\Bistro.Core.dll" DiskId="1" />
               <File Id="Bistro.Extensions.dll" Name="$(var.Bistro.Extensions.TargetFileName)" Source="$(var.Bistro.Extensions.TargetPath)" DiskId="1" />
+              <File Id="Bistro.FSharpExtensions.dll" Name="Bistro.FSharpExtensions.dll" Source="lib\Bistro.FSharpExtensions.dll" />
               <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="..\lib\Newtonsoft.Json.dll" />
               <File Id="NDjango.BistroIntegration.dll" Name="$(var.BistroIntegration.TargetFileName)" Source="$(var.BistroIntegration.TargetPath)" />
               <File Id="NDJANGO" Name="NDjangoSetup.msi" Source="lib\NDjangoSetupExtended.msi" />
@@ -114,15 +115,12 @@
           </Component>
         </Directory>
       </Directory>
-
       <Component Id="RegistryDesignerVSX2008" DiskId="1" Guid="5F720FC6-EC7C-44E2-BEE4-8130CE1B3F09">
         <?include BistroDesigner2008Reg.wxi?>
       </Component>
-
       <Component Id="RegistryProjectExtender" DiskId="1" Guid="6F720FC6-EC7C-44E2-BEE4-8130CE1B3F09">
         <?include ExtenderReg.wxi?>
       </Component>
-
     </Directory>
 
     <Feature Id="ProductFeature" Level="1">
@@ -143,17 +141,17 @@
     <Property Id="WixShellExecTarget" Value="[INSTALLDIR]\NDjangoSetup.msi" />
     <Property Id="NDJANGONEEDED" Value="Yes"/>
     <CustomAction Id="InstallNDjango" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
-    <CustomAction Id="CA_DevenvSetup2008" Property="DEVENV_EXE_PATH2008" ExeCommand="/setup" Impersonate="no" Execute="deferred" />
-    <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]BistroProject2008.zip&quot;" Id="EditBistroProject2008CustomAction" Return="ignore" />
-    <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]BistroNHibernate2008.zip&quot;" Id="EditBistroNHibernate2008CustomAction" Return="ignore" />
-    <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]FSharp2008.zip&quot;" Id="EditFSharp2008CustomAction" Return="ignore" />
+    <CustomAction Id="CA_DevenvSetup2008" Property="DEVENV_EXE_PATH2008" ExeCommand="/setup" Impersonate="no" Execute="commit" />
+    <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]BistroProject2008.zip&quot;" Id="EditBistroProject2008CustomAction" Return="ignore" Execute="commit"/>
+    <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]BistroNHibernate2008.zip&quot;" Id="EditBistroNHibernate2008CustomAction" Return="ignore" Execute="commit"/>
+    <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]FSharp2008.zip&quot;" Id="EditFSharp2008CustomAction" Return="ignore" Execute="commit"/>
     <InstallExecuteSequence>
-      <Custom Action="EditBistroProject2008CustomAction" After="InstallFinalize"><![CDATA[Not Installed OR (Installer AND REMOVE <> "ALL")]]></Custom>
-      <Custom Action="EditBistroNHibernate2008CustomAction" After="InstallFinalize"><![CDATA[Not Installed OR (Installer AND REMOVE <> "ALL")]]></Custom>
-      <Custom Action="EditFSharp2008CustomAction" After="InstallFinalize"><![CDATA[Not Installed OR (Installer AND REMOVE <> "ALL")]]></Custom>
+      <!--It is important to update templates before calling devenv /setup-->
+      <Custom Action="EditBistroProject2008CustomAction" After="WriteRegistryValues"><![CDATA[Not Installed OR (Installer AND REMOVE <> "ALL")]]></Custom>
+      <Custom Action="EditBistroNHibernate2008CustomAction" After="EditBistroProject2008CustomAction"><![CDATA[Not Installed OR (Installer AND REMOVE <> "ALL")]]></Custom>
+      <Custom Action="EditFSharp2008CustomAction" After="EditBistroNHibernate2008CustomAction"><![CDATA[Not Installed OR (Installer AND REMOVE <> "ALL")]]></Custom>
+      <Custom Action="CA_DevenvSetup2008" After="EditFSharp2008CustomAction" />
       <Custom Action="InstallNDjango" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED]]></Custom>
-      <!--devenv /setup will be called later during ProjectExtender installation-->
-      <Custom Action="CA_DevenvSetup2008" Before="InstallFinalize" />
       <RemoveExistingProducts After="InstallInitialize" />
     </InstallExecuteSequence>
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
