@@ -261,6 +261,16 @@ namespace FSharp.ProjectExtender.Project
         }
 
         #endregion
+
+        internal int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        {
+            return VSConstants.S_OK;
+        }
+
+        internal int QueryStatusCommand(uint itemId, ref Guid pguidCmdGroup, uint cCmds, Microsoft.VisualStudio.OLE.Interop.OLECMD[] prgCmds, IntPtr pCmdText)
+        {
+            return VSConstants.S_OK;
+        }
     }
 
     public enum ItemNodeType

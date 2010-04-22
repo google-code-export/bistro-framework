@@ -39,6 +39,14 @@
     group; your package should define its own command set in order to avoid collisions  
     with command ids defined by other packages. -->
 
+    <Menus>
+      <Menu guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedCTXMenu" priority="0x0100" type="Context">
+        <Strings>
+          <CommandName>Extender.Context</CommandName>
+        </Strings>
+      </Menu>
+    </Menus>
+
     
     <!-- In this section you can define new menu groups. A menu group is a container for 
          other menus or buttons (commands); from a visual point of view you can see the 
@@ -52,6 +60,22 @@
 
       <Group guid="guidProjectExtender_DesignerCmdSet" id="cmdidSolutionExplorerButtons" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_TOOL_PROJWIN"/>
+      </Group>
+
+      <Group guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedOpenGroup" priority="0x0100">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedCTXMenu"/>        
+      </Group>
+
+      <Group guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedIncludeGroup" priority="0x0200">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedCTXMenu"/>
+      </Group>
+
+      <Group guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedCopyPasteGroup" priority="0x0300">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedCTXMenu"/>
+      </Group>
+
+      <Group guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedPropertiesGroup" priority="0x0400">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedCTXMenu"/>
       </Group>
 
     </Groups>
@@ -101,6 +125,30 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
       </Button>
 
+      <Button guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedFileOpen" priority="0x0100" type="Button">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedOpenGroup"/>
+        <Strings>
+          <ButtonText>Open</ButtonText>
+        </Strings>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+      </Button>
+
+      <Button guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedFileOpenWith" priority="0x0200" type="Button">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedOpenGroup"/>
+        <Strings>
+          <ButtonText>Open With ...</ButtonText>
+        </Strings>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+      </Button>
+
+      <Button guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedInclude" priority="0x0100" type="Button">
+        <Parent guid="guidProjectExtender_DesignerCmdSet" id="cmdidExcludedIncludeGroup"/>
+        <Strings>
+          <ButtonText>Include In Project</ButtonText>
+        </Strings>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+      </Button>
+
     </Buttons>
    
   </Commands>
@@ -120,9 +168,25 @@
     <GuidSymbol name="guidProjectExtender_DesignerCmdSet" value="{7bc39d92-dded-46ae-b491-075f3ded76aa}">
       <IDSymbol name="cmdidProjectExtenderGroup" value="0x1001" />
       <IDSymbol name="cmdidSolutionExplorerButtons" value="0x1002"/>
+      <IDSymbol name="cmdidExcludedOpenGroup" value="0x1003" />
+      <IDSymbol name="cmdidExcludedIncludeGroup" value="0x1004" />
+      <IDSymbol name="cmdidExcludedCopyPasteGroup" value="0x1005" />
+      <IDSymbol name="cmdidExcludedPropertiesGroup" value="0x1006" />
+
       <IDSymbol name="cmdidProjectExtender" value="0x2001" />
       <IDSymbol name="cmdidProjectRefresh" value="0x2002" />
       <IDSymbol name="cmdidProjectShowAll" value="0x2003" />
+      <IDSymbol name="cmdidExcludedFileOpen" value="0x2004" />
+      <IDSymbol name="cmdidExcludedFileOpenWith" value="0x2005" />
+      <IDSymbol name="cmdidExcludedInclude" value="0x2006" />
+      <IDSymbol name="cmdidExcludedCut" value="0x2007" />
+      <IDSymbol name="cmdidExcludedCopy" value="0x2008" />
+      <IDSymbol name="cmdidExcludedPaste" value="0x2009" />
+      <IDSymbol name="cmdidExcludedDelete" value="0x200a" />
+      <IDSymbol name="cmdidExcludedRename" value="0x200b" />
+      <IDSymbol name="cmdidExcludedProperties" value="0x200c" />
+
+      <IDSymbol name="cmdidExcludedCTXMenu" value="0x3001"/>
     </GuidSymbol>
     
   </Symbols>

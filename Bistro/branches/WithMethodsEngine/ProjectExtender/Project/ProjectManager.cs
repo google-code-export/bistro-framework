@@ -69,6 +69,20 @@ namespace FSharp.ProjectExtender
             return OAProject.Project;
         }
 
+        protected override int QueryStatusCommand(uint itemId, ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
+        {
+            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
+                return itemList.QueryStatusCommand(itemId, ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+            return base.QueryStatusCommand(itemId, ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+        }
+
+        protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        {
+            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
+                return itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            return base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+        }
+
         bool renaimng_in_progress = false;
         protected override int GetProperty(uint itemId, int propId, out object property)
         {
