@@ -11,6 +11,7 @@ using System.IO;
 using Microsoft.VisualStudio.Shell;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using Microsoft.VisualStudio.OLE.Interop;
+using FSharp.ProjectExtender.Project.Excluded;
 
 namespace FSharp.ProjectExtender.Project
 {
@@ -26,14 +27,35 @@ namespace FSharp.ProjectExtender.Project
     class ItemList: IVsHierarchyEvents
     {
         ProjectManager project;
+        IVsHierarchy root_hierarchy;
         Dictionary<uint, ItemNode> itemMap = new Dictionary<uint, ItemNode>();
         ItemNode root;
 
         public ItemList(ProjectManager project)
         {
             this.project = project;
+            root_hierarchy = (IVsHierarchy)project;
             root = CreateNode(null, VSConstants.VSITEMID_ROOT);
             //root = new ItemNode(this, VSConstants.VSITEMID_ROOT);
+        }
+
+        internal ItemNode CreateNode(uint itemId)
+        {
+            object parent;
+            ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Parent, out parent));
+            
+            string path;
+            ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
+            
+            ItemNode parent_node;
+            if (itemMap.TryGetValue((uint)parent, out parent_node))
+                return new FakeFileNode(this, parent_node, path.ToString());
+            return null;
+        }
+
+        internal void AddChild(ItemNode itemNode)
+        {
+            itemNode.Parent.AddChildNode(itemNode);
         }
 
         public ItemNode CreateNode(ItemNode parent, uint itemId)
@@ -44,25 +66,25 @@ namespace FSharp.ProjectExtender.Project
             switch (get_node_type(itemId))
             {
                 case ItemNodeType.Root:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetCanonicalName(itemId, out path));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new RootItemNode(this, Path.GetDirectoryName(path));
                 case ItemNodeType.PhysicalFolder:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetCanonicalName(itemId, out path));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new PhysicalFolderNode(this, parent, itemId, path);
                 case ItemNodeType.VirtualFolder:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Caption, out caption));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Caption, out caption));
                     return new VirtualFolderNode(this, parent, itemId, caption.ToString());
                 case ItemNodeType.SubProject:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetCanonicalName(itemId, out path));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new SubprojectNode(this, parent, itemId, path);
                 case ItemNodeType.Reference:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Caption, out caption));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Caption, out caption));
                     return new ShadowFileNode(this, parent, itemId, caption.ToString());
                 case ItemNodeType.PhysicalFile:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetCanonicalName(itemId, out path));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new ShadowFileNode(this, parent, itemId, path);
                 default:
-                    ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetCanonicalName(itemId, out path));
+                    ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     throw new Exception("Unexpected node type for node " + itemId + "(" + path + ")");
             }
         }
@@ -72,7 +94,7 @@ namespace FSharp.ProjectExtender.Project
             Guid type;
             try
             {
-                ErrorHandler.ThrowOnFailure(((IVsHierarchy)project).GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out type));
+                ErrorHandler.ThrowOnFailure(root_hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out type));
             }
             catch (COMException e)
             {

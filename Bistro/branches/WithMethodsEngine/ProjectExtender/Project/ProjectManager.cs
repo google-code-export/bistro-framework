@@ -71,10 +71,22 @@ namespace FSharp.ProjectExtender
 
         protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            ItemNode itemNode = null;
+            if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet2K) && nCmdID == (uint)VSConstants.VSStd2KCmdID.EXCLUDEFROMPROJECT && show_all)
+                itemNode = itemList.CreateNode(itemId);
+
             int result;
             if (itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result))
                 return result;
-            return base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            
+            result = base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+
+            if (itemNode != null)
+            {
+                itemList.AddChild(itemNode);
+            }
+
+            return result;
         }
 
         bool renaimng_in_progress = false;

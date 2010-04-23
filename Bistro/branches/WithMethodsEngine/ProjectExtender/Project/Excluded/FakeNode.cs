@@ -59,8 +59,8 @@ namespace FSharp.ProjectExtender.Project.Excluded
             if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet2K) && nCmdID == (uint)VSConstants.VSStd2KCmdID.INCLUDEINPROJECT)
                 return IncludeItem();
 
-            if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet97) && nCmdID == (uint)VSConstants.VSStd97CmdID.PropSheetOrProperties)
-                IncludeItem();
+            //if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet97) && nCmdID == (uint)VSConstants.VSStd97CmdID.PropSheetOrProperties)
+            //    IncludeItem();
 
             return VSConstants.S_OK;
         }

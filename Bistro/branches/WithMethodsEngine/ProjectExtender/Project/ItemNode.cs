@@ -33,7 +33,7 @@ namespace FSharp.ProjectExtender.Project
             AddChildNode(Items.CreateNode(this, child));
         }
 
-        protected void AddChildNode(ItemNode child)
+        public void AddChildNode(ItemNode child)
         {
             children.Add(child.sort_key, child);
         }

@@ -24,7 +24,7 @@ namespace FSharp.ProjectExtender.Project
 
         internal override void SetShowAll(bool show_all)
         {
-            if (show_all)
+            if (show_all && Directory.Exists(Path))
             {
                 foreach (var file in Directory.GetFiles(Path))
                 {
