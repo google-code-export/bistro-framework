@@ -71,22 +71,11 @@ namespace FSharp.ProjectExtender
 
         protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            ItemNode itemNode = null;
-            if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet2K) && nCmdID == (uint)VSConstants.VSStd2KCmdID.EXCLUDEFROMPROJECT && show_all)
-                itemNode = itemList.CreateNode(itemId);
-
             int result;
             if (itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result))
                 return result;
             
-            result = base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-
-            if (itemNode != null)
-            {
-                itemList.AddChild(itemNode);
-            }
-
-            return result;
+            return base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
         }
 
         bool renaimng_in_progress = false;
@@ -254,7 +243,17 @@ namespace FSharp.ProjectExtender
 
         int IOleCommandTarget.Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            ItemNode itemNode = null;
+            if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet2K) && nCmdID == (uint)VSConstants.VSStd2KCmdID.EXCLUDEFROMPROJECT && show_all)
+                itemNode = itemList.CreateNode();
+
             int result = innerTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+
+            if (itemNode != null)
+            {
+                itemList.AddChild(itemNode);
+            }
+
             // In certain situations the F# project manager throws an exception while adding files
             // to subdirectories. We are lucky that this is happening after all the job of adding the file
             // to the project is completed. Whereas we are handling the file ordering ourselves anyway

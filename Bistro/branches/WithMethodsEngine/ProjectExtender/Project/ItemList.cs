@@ -39,17 +39,17 @@ namespace FSharp.ProjectExtender.Project
             //root = new ItemNode(this, VSConstants.VSITEMID_ROOT);
         }
 
-        internal ItemNode CreateNode(uint itemId)
+        internal ItemNode CreateNode()
         {
-            object parent;
-            ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Parent, out parent));
+            //object parent;
+            //ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Parent, out parent));
             
-            string path;
-            ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
+            //string path;
+            //ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
             
-            ItemNode parent_node;
-            if (itemMap.TryGetValue((uint)parent, out parent_node))
-                return new FakeFileNode(this, parent_node, path.ToString());
+            //ItemNode parent_node;
+            //if (itemMap.TryGetValue((uint)parent, out parent_node))
+            //    return new FakeFileNode(this, parent_node, path.ToString());
             return null;
         }
 
