@@ -74,7 +74,11 @@ namespace FSharp.ProjectExtender
             int result;
             if (itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result))
                 return result;
-            
+
+            // disable the FSharp project commands on the file nodes (moveup movedown, add above, add below)
+            if (pguidCmdGroup.Equals(Constants.guidFSharpProjectCmdSet))
+                return VSConstants.S_OK;
+
             return base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
         }
 
