@@ -25,7 +25,7 @@ namespace FSharp.ProjectExtender.Project
 
         protected ItemList Items { get; private set; }
         ItemNodeType type;
-        protected string Path { get; private set; }
+        public string Path { get; private set; }
         string sort_key { get { return SortOrder + ';' + Path; } }
 
         protected void CreateChildNode(uint child)

@@ -12,5 +12,7 @@ namespace FSharp.ProjectExtender
     {
         MSBuildManager BuildManager { get; }
         void FlipShowAll();
+
+        void Refresh();
     }
 }

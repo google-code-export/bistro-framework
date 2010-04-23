@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Shell;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using Microsoft.VisualStudio.OLE.Interop;
 using FSharp.ProjectExtender.Project.Excluded;
+using System.Diagnostics;
 
 namespace FSharp.ProjectExtender.Project
 {
@@ -37,20 +38,6 @@ namespace FSharp.ProjectExtender.Project
             root_hierarchy = (IVsHierarchy)project;
             root = CreateNode(null, VSConstants.VSITEMID_ROOT);
             //root = new ItemNode(this, VSConstants.VSITEMID_ROOT);
-        }
-
-        internal ItemNode CreateNode()
-        {
-            //object parent;
-            //ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Parent, out parent));
-            
-            //string path;
-            //ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
-            
-            //ItemNode parent_node;
-            //if (itemMap.TryGetValue((uint)parent, out parent_node))
-            //    return new FakeFileNode(this, parent_node, path.ToString());
-            return null;
         }
 
         internal void AddChild(ItemNode itemNode)
@@ -248,14 +235,11 @@ namespace FSharp.ProjectExtender.Project
         static readonly IVsMonitorSelection selectionMonitor = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
         static readonly IVsUIShell shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
 
-        internal bool ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
+        public List<ItemNode> GetSelectedNodes()
         {
-            result = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
-            if (itemId < ItemList.FakeNodeStart || itemId == VSConstants.VSITEMID_ROOT)
-                return false;
-
-			IntPtr hierarchyPtr = IntPtr.Zero;
-			IntPtr selectionContainer = IntPtr.Zero;
+            var selected_nodes = new List<ItemNode>();
+            IntPtr hierarchyPtr = IntPtr.Zero;
+            IntPtr selectionContainer = IntPtr.Zero;
             try
             {
                 // Get the current project hierarchy, project item, and selection container for the current selection
@@ -272,72 +256,40 @@ namespace FSharp.ProjectExtender.Project
                     {
                         // This is a single selection. Compare hirarchy with our hierarchy and get node from itemid
                         ItemNode node;
-                        if (itemMap.TryGetValue(itemid, out node))
+                        if (IsSameComObject(project, hierarchy) && itemMap.TryGetValue(itemid, out node))
                         {
-                            if (pguidCmdGroup == VsMenus.guidVsUIHierarchyWindowCmds)
-                            {
-                                switch (nCmdID)
-                                {
-                                    case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_RightClick:
-                                        // The UIHWCMDID_RightClick is what tells an IVsUIHierarchy in a UIHierarchyWindow 
-                                        // to put up the context menu.  Since the mouse may have moved between the 
-                                        // mouse down and the mouse up, GetCursorPos won't tell you the right place 
-                                        // to put the context menu (especially if it came through the keyboard).  
-                                        // So we pack the proper menu position into pvaIn by
-                                        // memcpy'ing a POINTS struct into the VT_UI4 part of the pvaIn variant.  The
-                                        // code to unpack it looks like this:
-                                        //			ULONG ulPts = V_UI4(pvaIn);
-                                        //			POINTS pts;
-                                        //			memcpy((void*)&pts, &ulPts, sizeof(POINTS));
-                                        // You then pass that POINTS into DisplayContextMenu.
-
-                                        object variant = Marshal.GetObjectForNativeVariant(pvaIn);
-                                        UInt32 pointsAsUint = (UInt32)variant;
-                                        short x = (short)(pointsAsUint & 0x0000ffff);
-                                        short y = (short)((pointsAsUint & 0xffff0000) / 0x10000);
-
-                                        POINTS[] pnts = new POINTS[1];
-                                        pnts[0].x = x;
-                                        pnts[0].y = y;
-                                        Guid menu = VsMenus.guidSHLMainMenu;// Constants.guidProjectExtenderCmdSet;
-                                        result = shell.ShowContextMenu(0, ref menu, VsMenus.IDM_VS_CTXT_ITEMNODE, pnts, (Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget)node);
-                                        //var rc = shell.ShowContextMenu(0, ref pguidCmdGroup, (int)Constants.cmdidExcludedCTXMenu, pnts, (Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget)node);
-                                        return true;
-                                    default:
-                                        return false;
-                                }
-                            }
+                            selected_nodes.Add(node);
                         }
                     }
                     else if (multiItemSelect != null)
                     {
-                        //// This is a multiple item selection.
+                        // This is a multiple item selection.
 
-                        ////Get number of items selected and also determine if the items are located in more than one hierarchy
-                        //uint numberOfSelectedItems;
-                        //int isSingleHierarchyInt;
-                        //ErrorHandler.ThrowOnFailure(multiItemSelect.GetSelectionInfo(out numberOfSelectedItems, out isSingleHierarchyInt));
-                        //bool isSingleHierarchy = (isSingleHierarchyInt != 0);
+                        //Get number of items selected and also determine if the items are located in more than one hierarchy
+                        uint numberOfSelectedItems;
+                        int isSingleHierarchyInt;
+                        ErrorHandler.ThrowOnFailure(multiItemSelect.GetSelectionInfo(out numberOfSelectedItems, out isSingleHierarchyInt));
+                        bool isSingleHierarchy = (isSingleHierarchyInt != 0);
 
-                        //// Now loop all selected items and add to the list only those that are selected within this hierarchy
-                        //if (!isSingleHierarchy || (isSingleHierarchy && Utilities.IsSameComObject(this, hierarchy)))
-                        //{
-                        //    Debug.Assert(numberOfSelectedItems > 0, "Bad number of selected itemd");
-                        //    VSITEMSELECTION[] vsItemSelections = new VSITEMSELECTION[numberOfSelectedItems];
-                        //    uint flags = (isSingleHierarchy) ? (uint)__VSGSIFLAGS.GSI_fOmitHierPtrs : 0;
-                        //    ErrorHandler.ThrowOnFailure(multiItemSelect.GetSelectedItems(flags, numberOfSelectedItems, vsItemSelections));
-                        //    foreach (VSITEMSELECTION vsItemSelection in vsItemSelections)
-                        //    {
-                        //        if (isSingleHierarchy || Utilities.IsSameComObject(this, vsItemSelection.pHier))
-                        //        {
-                        //            HierarchyNode node = this.NodeFromItemId(vsItemSelection.itemid);
-                        //            if (node != null)
-                        //            {
-                        //                selectedNodes.Add(node);
-                        //            }
-                        //        }
-                        //    }
-                        //}
+                        // Now loop all selected items and add to the list only those that are selected within this hierarchy
+                        if (!isSingleHierarchy || (isSingleHierarchy && IsSameComObject(project, hierarchy)))
+                        {
+                            Debug.Assert(numberOfSelectedItems > 0, "Bad number of selected itemd");
+                            VSITEMSELECTION[] vsItemSelections = new VSITEMSELECTION[numberOfSelectedItems];
+                            uint flags = (isSingleHierarchy) ? (uint)__VSGSIFLAGS.GSI_fOmitHierPtrs : 0;
+                            ErrorHandler.ThrowOnFailure(multiItemSelect.GetSelectedItems(flags, numberOfSelectedItems, vsItemSelections));
+                            foreach (VSITEMSELECTION vsItemSelection in vsItemSelections)
+                            {
+                                if (isSingleHierarchy || IsSameComObject(project, vsItemSelection.pHier))
+                                {
+                                    ItemNode node;
+                                    if (itemMap.TryGetValue(vsItemSelection.itemid, out node))
+                                    {
+                                        selected_nodes.Add(node);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -352,7 +304,49 @@ namespace FSharp.ProjectExtender.Project
                     Marshal.Release(selectionContainer);
                 }
             }
-            return false;
+            return selected_nodes;
+        }
+
+        internal bool ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
+        {
+            result = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
+            if (itemId < ItemList.FakeNodeStart || itemId == VSConstants.VSITEMID_ROOT)
+                return false;
+
+            var nodes = GetSelectedNodes();
+            if (nodes.Count == 0 || pguidCmdGroup != VsMenus.guidVsUIHierarchyWindowCmds)
+                return false;
+
+            switch (nCmdID)
+            {
+                case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_RightClick:
+                    // The UIHWCMDID_RightClick is what tells an IVsUIHierarchy in a UIHierarchyWindow 
+                    // to put up the context menu.  Since the mouse may have moved between the 
+                    // mouse down and the mouse up, GetCursorPos won't tell you the right place 
+                    // to put the context menu (especially if it came through the keyboard).  
+                    // So we pack the proper menu position into pvaIn by
+                    // memcpy'ing a POINTS struct into the VT_UI4 part of the pvaIn variant.  The
+                    // code to unpack it looks like this:
+                    //			ULONG ulPts = V_UI4(pvaIn);
+                    //			POINTS pts;
+                    //			memcpy((void*)&pts, &ulPts, sizeof(POINTS));
+                    // You then pass that POINTS into DisplayContextMenu.
+
+                    object variant = Marshal.GetObjectForNativeVariant(pvaIn);
+                    UInt32 pointsAsUint = (UInt32)variant;
+                    short x = (short)(pointsAsUint & 0x0000ffff);
+                    short y = (short)((pointsAsUint & 0xffff0000) / 0x10000);
+
+                    POINTS[] pnts = new POINTS[1];
+                    pnts[0].x = x;
+                    pnts[0].y = y;
+                    Guid menu = VsMenus.guidSHLMainMenu;// Constants.guidProjectExtenderCmdSet;
+                    result = shell.ShowContextMenu(0, ref menu, VsMenus.IDM_VS_CTXT_ITEMNODE, pnts, 
+                        (Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget)nodes[0]);
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         internal int QueryStatusCommand(uint itemId, ref Guid pguidCmdGroup, uint cCmds, Microsoft.VisualStudio.OLE.Interop.OLECMD[] prgCmds, IntPtr pCmdText)
@@ -365,6 +359,93 @@ namespace FSharp.ProjectExtender.Project
         {
             node.Delete();
             return project.AddItem(node.Parent.ItemId, Path);
+        }
+
+        internal void Recreate(ItemNode node)
+        {
+            ItemNode parent;
+            if (itemMap.TryGetValue(node.Parent.ItemId, out parent))
+                parent.SetShowAll(true);
+        }
+
+        internal IEnumerable<ItemNode> RemapNodes(List<ItemNode> nodes)
+        {
+            return nodes;
+        }
+
+        /// <summary>
+        /// Verifies that two objects represent the same instance of a COM object.
+        /// This essentially compares the IUnkown pointers of the 2 objects.
+        /// This is needed in scenario where aggregation is involved.
+        /// </summary>
+        /// <param name="obj1">Can be an object, interface or IntPtr</param>
+        /// <param name="obj2">Can be an object, interface or IntPtr</param>
+        /// <returns>True if the 2 items represent the same thing</returns>
+        public static bool IsSameComObject(object obj1, object obj2)
+        {
+            IntPtr unknown1 = IntPtr.Zero;
+            IntPtr unknown2 = IntPtr.Zero;
+            try
+            {
+                // If we have 2 null, then they are not COM objects and as such "it's not the same COM object"
+                if (obj1 != null && obj2 != null)
+                {
+                    unknown1 = QueryInterfaceIUnknown(obj1);
+                    unknown2 = QueryInterfaceIUnknown(obj2);
+
+                    return IntPtr.Equals(unknown1, unknown2);
+                }
+                return false;
+            }
+            finally
+            {
+                if (unknown1 != IntPtr.Zero)
+                    Marshal.Release(unknown1);
+
+                if (unknown2 != IntPtr.Zero)
+                    Marshal.Release(unknown2);
+
+            }
+        }
+
+        /// <summary>
+        /// Retrieve the IUnknown for the managed or COM object passed in.
+        /// </summary>
+        /// <param name="objToQuery">Managed or COM object.</param>
+        /// <returns>Pointer to the IUnknown interface of the object.</returns>
+        internal static IntPtr QueryInterfaceIUnknown(object objToQuery)
+        {
+            bool releaseIt = false;
+            IntPtr unknown = IntPtr.Zero;
+            IntPtr result;
+            try
+            {
+                if (objToQuery is IntPtr)
+                {
+                    unknown = (IntPtr)objToQuery;
+                }
+                else
+                {
+                    // This is a managed object (or RCW)
+                    unknown = Marshal.GetIUnknownForObject(objToQuery);
+                    releaseIt = true;
+                }
+
+                // We might already have an IUnknown, but if this is an aggregated
+                // object, it may not be THE IUnknown until we QI for it.				
+                Guid IID_IUnknown = VSConstants.IID_IUnknown;
+                ErrorHandler.ThrowOnFailure(Marshal.QueryInterface(unknown, ref IID_IUnknown, out result));
+            }
+            finally
+            {
+                if (releaseIt && unknown != IntPtr.Zero)
+                {
+                    Marshal.Release(unknown);
+                }
+
+            }
+
+            return result;
         }
     }
 

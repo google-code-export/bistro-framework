@@ -92,7 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ProjectCTXCommand.cs" />
-    <Compile Include="Commands\ProjectExtender.cs" />
+    <Compile Include="Commands\ProjectExtender.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Commands\Refresh.cs" />
     <Compile Include="Commands\ShowAll.cs" />
     <Compile Include="NativeMethods.cs" />

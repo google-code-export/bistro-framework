@@ -46,7 +46,7 @@ namespace FSharp.ProjectExtender.Project.Excluded
                     break;
             }
             property = null;
-            return VSConstants.E_INVALIDARG;
+            return VSConstants.S_OK;
         }
 
         protected abstract int ImageIndex { get; }

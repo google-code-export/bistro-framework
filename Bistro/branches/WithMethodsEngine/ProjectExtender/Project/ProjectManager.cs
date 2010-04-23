@@ -22,7 +22,55 @@ namespace FSharp.ProjectExtender
     public class ProjectManager : FlavoredProjectBase, IProjectManager, IOleCommandTarget, IVsTrackProjectDocumentsEvents2
     {
 
-        public ProjectManager() : base()
+        static readonly IVsUIHierarchyWindow solutionExplorer = getSolutionExplorer();
+
+        private static IVsUIHierarchyWindow getSolutionExplorer()
+        {
+            IVsUIShell shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+
+            object pvar = null;
+            IVsWindowFrame frame = null;
+            Guid persistenceSlot = new Guid(EnvDTE.Constants.vsWindowKindSolutionExplorer);
+
+            ErrorHandler.ThrowOnFailure(shell.FindToolWindow(0, ref persistenceSlot, out frame));
+            ErrorHandler.ThrowOnFailure(frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out pvar));
+
+            return (IVsUIHierarchyWindow)pvar;
+        }
+
+        internal static Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode getFSharpProjectNode(IVsProject root)
+        {
+            IOLEServiceProvider sp;
+            ErrorHandler.ThrowOnFailure(root.GetItemContext(VSConstants.VSITEMID_ROOT, out sp));
+
+            IntPtr objPtr = IntPtr.Zero;
+            try
+            {
+                Guid hierGuid = typeof(VSLangProj.VSProject).GUID;
+                Guid UNKguid = NativeMethods.IID_IUnknown;
+                ErrorHandler.ThrowOnFailure(sp.QueryService(ref hierGuid, ref UNKguid, out objPtr));
+
+                var OAVSProject = (VSLangProj.VSProject)Marshal.GetObjectForIUnknown(objPtr);
+                var OAProject = (Microsoft.VisualStudio.FSharp.ProjectSystem.Automation.OAProject)OAVSProject.Project;
+                return OAProject.Project;
+            }
+            finally
+            {
+                if (objPtr != IntPtr.Zero)
+                    Marshal.Release(objPtr);
+            }
+        }
+
+        uint hierarchy_event_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
+        uint document_tracker_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
+        ItemList itemList;
+        Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode FSProjectManager;
+        IOleCommandTarget innerTarget;
+        IVsProject innerProject;
+        bool show_all = false;
+
+        public ProjectManager()
+            : base()
         { }
 
         /// <summary>
@@ -36,11 +84,6 @@ namespace FSharp.ProjectExtender
             return VSConstants.S_OK;
         }
 
-        uint hierarchy_event_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
-        uint document_tracker_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
-        private ItemList itemList;
-        Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode FSProjectManager;
-
         protected override void OnAggregationComplete()
         {
             base.OnAggregationComplete();
@@ -52,21 +95,6 @@ namespace FSharp.ProjectExtender
             hierarchy_event_cookie = AdviseHierarchyEvents(itemList);
             IVsTrackProjectDocuments2 documentTracker = (IVsTrackProjectDocuments2)Package.GetGlobalService(typeof(SVsTrackProjectDocuments));
             ErrorHandler.ThrowOnFailure(documentTracker.AdviseTrackProjectDocumentsEvents(this, out document_tracker_cookie));
-        }
-
-        internal static Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode getFSharpProjectNode(IVsProject root)
-        {
-            IOLEServiceProvider sp;
-            ErrorHandler.ThrowOnFailure(root.GetItemContext(VSConstants.VSITEMID_ROOT, out sp));
-
-            IntPtr objPtr;
-            Guid hierGuid = typeof(VSLangProj.VSProject).GUID;
-            Guid UNKguid = NativeMethods.IID_IUnknown;
-            ErrorHandler.ThrowOnFailure(sp.QueryService(ref hierGuid, ref UNKguid, out objPtr));
-
-            var OAVSProject = (VSLangProj.VSProject)Marshal.GetObjectForIUnknown(objPtr);
-            var OAProject = (Microsoft.VisualStudio.FSharp.ProjectSystem.Automation.OAProject)OAVSProject.Project;
-            return OAProject.Project;
         }
 
         protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
@@ -152,8 +180,6 @@ namespace FSharp.ProjectExtender
             innerTarget = (IOleCommandTarget)Marshal.GetObjectForIUnknown(innerIUnknown);
             innerProject = (IVsProject)innerTarget;
         }
-        IOleCommandTarget innerTarget;
-        IVsProject innerProject;
 
         protected override void Close()
         {
@@ -193,20 +219,8 @@ namespace FSharp.ProjectExtender
             }
 
             if (lastItemId != VSConstants.VSITEMID_NIL)
-            {
-                IVsUIShell shell = serviceProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+                solutionExplorer.ExpandItem(this, lastItemId, EXPANDFLAGS.EXPF_SelectItem);
 
-                object pvar = null;
-                IVsWindowFrame frame = null;
-                Guid persistenceSlot = new Guid(EnvDTE.Constants.vsWindowKindSolutionExplorer);
-
-                ErrorHandler.ThrowOnFailure(shell.FindToolWindow(0, ref persistenceSlot, out frame));
-                ErrorHandler.ThrowOnFailure(frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out pvar));
-
-                if (pvar != null)
-                    ErrorHandler.ThrowOnFailure(((IVsUIHierarchyWindow)pvar).ExpandItem(this, lastItemId, EXPANDFLAGS.EXPF_SelectItem));
-
-            }
         }
 
         private void InvalidateParentItems(string[] oldFileNames, string[] newFileNames)
@@ -227,7 +241,53 @@ namespace FSharp.ProjectExtender
             InvalidateParentItems(itemIds);
         }
 
-        private bool show_all = false;
+        /// <summary>
+        /// Refreshes the solution explorer tree
+        /// </summary>
+        /// <param name="nodes">A list of nodes which were originally selected</param>
+        /// <remarks>
+        /// Refreshing the tree cancels the selection the nodes list is used to restore the
+        /// selection. The items on the list could have been changed/ recreated as a side
+        /// effect of the operation, so the list of the nodes is re-mapped
+        /// </remarks>
+        private void refresh_solution_explorer(List<ItemNode> nodes)
+        {
+            // as kludgy as it looks this is the only way I found to force the
+            // refresh of the solution explorer window
+            FSProjectManager.FirstChild.OnInvalidateItems(FSProjectManager);
+
+            bool first = true;
+            foreach (var node in itemList.RemapNodes(nodes))
+                if (first)
+                {
+                    solutionExplorer.ExpandItem(this, node.ItemId, EXPANDFLAGS.EXPF_SelectItem);
+                    first = false;
+                }
+                else
+                    solutionExplorer.ExpandItem(this, node.ItemId, EXPANDFLAGS.EXPF_AddSelectItem);
+        }
+
+        /// <summary>
+        /// Adds an existing file to the project in response to the "Include In Project" command
+        /// </summary>
+        /// <param name="parentID"></param>
+        /// <param name="Path"></param>
+        /// <returns></returns>
+        internal int AddItem(uint parentID, string Path)
+        {
+            Microsoft.VisualStudio.FSharp.ProjectSystem.HierarchyNode parent;
+            if (parentID == VSConstants.VSITEMID_ROOT)
+                parent = FSProjectManager;
+            else
+                parent = FSProjectManager.NodeFromItemId(parentID);
+
+            var node = FSProjectManager.AddNewFileNodeToHierarchy(parent, Path);
+
+            InvalidateParentItems(new uint[] { node.ID });
+
+            return VSConstants.S_OK;
+        }
+
         #region IProjectManager Members
 
         public MSBuildManager BuildManager { get; private set; }
@@ -236,9 +296,16 @@ namespace FSharp.ProjectExtender
         {
             show_all = !show_all;
             itemList.SetShowAll(show_all);
-            // as kludgy as it looks this is the only way I found to force the
-            // refresh of the solution explorer window
-            FSProjectManager.FirstChild.OnInvalidateItems(FSProjectManager);
+            refresh_solution_explorer(itemList.GetSelectedNodes());
+        }
+
+        public void Refresh()
+        {
+            if (show_all)
+            {
+                itemList.SetShowAll(show_all);
+                refresh_solution_explorer(itemList.GetSelectedNodes());
+            }
         }
 
         #endregion
@@ -247,15 +314,17 @@ namespace FSharp.ProjectExtender
 
         int IOleCommandTarget.Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            ItemNode itemNode = null;
+            List<ItemNode> excludedNodes = null;
             if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet2K) && nCmdID == (uint)VSConstants.VSStd2KCmdID.EXCLUDEFROMPROJECT && show_all)
-                itemNode = itemList.CreateNode();
+                excludedNodes = itemList.GetSelectedNodes();
 
             int result = innerTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
 
-            if (itemNode != null)
+            if (excludedNodes != null)
             {
-                itemList.AddChild(itemNode);
+                foreach (var node in excludedNodes)
+                    itemList.Recreate(node);
+                refresh_solution_explorer(excludedNodes);
             }
 
             // In certain situations the F# project manager throws an exception while adding files
@@ -380,20 +449,5 @@ namespace FSharp.ProjectExtender
         }
 
         #endregion
-
-        internal int AddItem(uint parentID, string Path)
-        {
-            Microsoft.VisualStudio.FSharp.ProjectSystem.HierarchyNode parent;
-            if (parentID == VSConstants.VSITEMID_ROOT)
-                parent = FSProjectManager;
-            else
-                parent = FSProjectManager.NodeFromItemId(parentID);
-
-            var node = FSProjectManager.AddNewFileNodeToHierarchy(parent, Path);
-
-            InvalidateParentItems(new uint[] { node.ID });
-
-            return VSConstants.S_OK;
-        }
     }
 }

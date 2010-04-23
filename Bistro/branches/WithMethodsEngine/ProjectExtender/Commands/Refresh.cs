@@ -26,8 +26,7 @@ namespace FSharp.ProjectExtender.Commands
             var project = get_current_project();
             if (project != null)
             {
-                ((IProjectManager)project).FlipShowAll();
-                ((IProjectManager)project).FlipShowAll();
+                ((IProjectManager)project).Refresh();
             }
         }
 

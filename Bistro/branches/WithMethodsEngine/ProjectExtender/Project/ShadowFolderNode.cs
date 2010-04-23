@@ -34,9 +34,10 @@ namespace FSharp.ProjectExtender.Project
                         continue;
                     AddChildNode(new FakeFileNode(Items, this, file));
                 }
+                foreach (var child in new List<ItemNode>(this))
+                    if (child is FakeNode && !File.Exists(child.Path))
+                        child.Delete();
                 MapChildren();
-                foreach (var child in this)
-                    child.SetShowAll(show_all);
             }
             else
             {
@@ -44,6 +45,8 @@ namespace FSharp.ProjectExtender.Project
                     if (child is FakeNode)
                         child.Delete();
             }
+            foreach (var child in this)
+                child.SetShowAll(show_all);
         }
 
         protected virtual bool ToBeHidden(string file)
