@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectExtender_Integration
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D79EB126-A01A-44DC-804B-16D7E844501D}"
 	ProjectSection(SolutionItems) = preProject
-		Bistro.Designer.vsmdi = Bistro.Designer.vsmdi
+		bistro.designer.vsmdi = bistro.designer.vsmdi
 		ProjectExtender\IntegrationTests.testrunconfig = ProjectExtender\IntegrationTests.testrunconfig
 	EndProjectSection
 EndProject

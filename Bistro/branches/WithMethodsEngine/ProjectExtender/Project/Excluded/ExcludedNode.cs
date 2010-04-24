@@ -10,13 +10,13 @@ using System.Runtime.InteropServices;
 namespace FSharp.ProjectExtender.Project.Excluded
 {
     [ComVisible(true)]
-    abstract class FakeNode : ItemNode, IOleCommandTarget
+    abstract class ExcludedNode : ItemNode, IOleCommandTarget
     {
-        protected FakeNode(ItemList items, ItemNode parent, ItemNodeType type, string path)
+        protected ExcludedNode(ItemList items, ItemNode parent, Constants.ItemNodeType type, string path)
             : base(items, parent, items.GetNextItemID(), type, path)
         { }
 
-        internal override int GetProperty(int propId, out object property)
+        internal virtual int GetProperty(int propId, out object property)
         {
             switch ((__VSHPROPID)propId)
             {
@@ -50,7 +50,6 @@ namespace FSharp.ProjectExtender.Project.Excluded
         }
 
         protected abstract int ImageIndex { get; }
-
 
         #region IOleCommandTarget Members
 

@@ -91,15 +91,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ProjectCTXCommand.cs" />
     <Compile Include="Commands\ProjectExtender.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands\Refresh.cs" />
     <Compile Include="Commands\ShowAll.cs" />
+    <Compile Include="GlobalServices.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="Project\Excluded\FakeFileNode.cs" />
-    <Compile Include="Project\Excluded\FakeNode.cs" />
+    <Compile Include="Project\Excluded\ExcludedFileNode.cs" />
+    <Compile Include="Project\Excluded\ExcludedNode.cs" />
     <Compile Include="Project\ShadowFileNode.cs" />
     <Compile Include="Project\RootItemNode.cs" />
     <Compile Include="Project\ShadowFolderNode.cs" />

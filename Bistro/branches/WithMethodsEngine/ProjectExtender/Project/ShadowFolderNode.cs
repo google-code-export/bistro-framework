@@ -10,7 +10,7 @@ namespace FSharp.ProjectExtender.Project
 {
     abstract class ShadowFolderNode : ItemNode
     {
-        protected ShadowFolderNode(ItemList items, ItemNode parent, uint itemId, ItemNodeType type, string path)
+        protected ShadowFolderNode(ItemList items, ItemNode parent, uint itemId, Constants.ItemNodeType type, string path)
             : base(items, parent, itemId, type, path)
         {
             uint child = items.GetNodeFirstChild(itemId);
@@ -32,17 +32,17 @@ namespace FSharp.ProjectExtender.Project
                         continue;
                     if (ToBeHidden(file))
                         continue;
-                    AddChildNode(new FakeFileNode(Items, this, file));
+                    AddChildNode(new ExcludedFileNode(Items, this, file));
                 }
                 foreach (var child in new List<ItemNode>(this))
-                    if (child is FakeNode && !File.Exists(child.Path))
+                    if (child is ExcludedNode && !File.Exists(child.Path))
                         child.Delete();
                 MapChildren();
             }
             else
             {
                 foreach (var child in new List<ItemNode>(this))
-                    if (child is FakeNode)
+                    if (child is ExcludedNode)
                         child.Delete();
             }
             foreach (var child in this)
@@ -59,7 +59,7 @@ namespace FSharp.ProjectExtender.Project
     class PhysicalFolderNode : ShadowFolderNode
     {
         public PhysicalFolderNode(ItemList items, ItemNode parent, uint itemId, string path)
-            : base(items, parent, itemId, ItemNodeType.PhysicalFolder, path)
+            : base(items, parent, itemId, Constants.ItemNodeType.PhysicalFolder, path)
         { }
 
         protected override string SortOrder
@@ -71,7 +71,7 @@ namespace FSharp.ProjectExtender.Project
     class VirtualFolderNode : ShadowFolderNode
     {
         public VirtualFolderNode(ItemList items, ItemNode parent, uint itemId, string path)
-            : base(items, parent, itemId, ItemNodeType.VirtualFolder, path)
+            : base(items, parent, itemId, Constants.ItemNodeType.VirtualFolder, path)
         { }
 
         protected override string SortOrder
@@ -87,7 +87,7 @@ namespace FSharp.ProjectExtender.Project
     class SubprojectNode : ShadowFolderNode
     {
         public SubprojectNode(ItemList items, ItemNode parent, uint itemId, string path)
-            : base(items, parent, itemId, ItemNodeType.SubProject, path)
+            : base(items, parent, itemId, Constants.ItemNodeType.SubProject, path)
         { }
 
         protected override string SortOrder

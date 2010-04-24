@@ -39,6 +39,18 @@ namespace FSharp.ProjectExtender
             ExcludedFile = 11,
         }
 
+        public enum ItemNodeType
+        {
+            Root, // 0
+            Reference, // 1
+            SubProject, // 2
+            VirtualFolder, // 3
+            PhysicalFolder, // 4
+            PhysicalFile, // 5
+            ExcludedFolder, //4
+            ExcludedFile,  // 5
+            Unknown
+        }
     };
 
 }

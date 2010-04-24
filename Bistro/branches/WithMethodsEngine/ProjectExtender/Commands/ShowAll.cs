@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace FSharp.ProjectExtender.Commands
 {
-    public class ShowAll : ProjectCTXCommand
+    public class ShowAll : OleMenuCommand
     {
 
         public ShowAll()
@@ -25,12 +25,12 @@ namespace FSharp.ProjectExtender.Commands
         /// <param name="e"></param>
         void QueryStatus(object sender, EventArgs e)
         {
-            Visible = get_current_project() is IProjectManager;
+            Visible = GlobalServices.get_current_project() is IProjectManager;
         }
 
         private static void Execute(object sender, EventArgs e)
         {
-            var project = get_current_project();
+            var project = GlobalServices.get_current_project();
             if (project != null)
                 ((IProjectManager)project).FlipShowAll();
         }

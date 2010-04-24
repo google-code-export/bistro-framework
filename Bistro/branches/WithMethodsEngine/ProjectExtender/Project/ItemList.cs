@@ -26,49 +26,68 @@ namespace FSharp.ProjectExtender.Project
     /// the IVsHierarchy.GetProperty method. The ProjectExtender redirects the GetProperty method calls to 
     /// provide them in the order defined by ItemList rather than the order of F# Project Manager
     /// </remarks>
-    class ItemList: IVsHierarchyEvents
+    class ItemList : IVsHierarchyEvents
     {
         ProjectManager project;
         IVsHierarchy root_hierarchy;
         Dictionary<uint, ItemNode> itemMap = new Dictionary<uint, ItemNode>();
         ItemNode root;
 
+        /// <summary>
+        /// Initalizes a new instance of the itemlist
+        /// </summary>
+        /// <param name="project"></param>
         public ItemList(ProjectManager project)
         {
             this.project = project;
             root_hierarchy = (IVsHierarchy)project;
-            root = CreateNode(null, VSConstants.VSITEMID_ROOT);
-            //root = new ItemNode(this, VSConstants.VSITEMID_ROOT);
+            root = CreateNode(VSConstants.VSITEMID_ROOT);
         }
 
-        internal void AddChild(ItemNode itemNode)
+        public void AddChild(ItemNode itemNode)
         {
             itemNode.Parent.AddChildNode(itemNode);
         }
 
-        public ItemNode CreateNode(ItemNode parent, uint itemId)
+        /// <summary>
+        /// Creates a new (shadow) ItemNode given its itemID.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        public ItemNode CreateNode(uint itemId)
         {
             object caption;
             string path;
+            object parentID;
+            ItemNode parent;
+            if (itemId == VSConstants.VSITEMID_ROOT)
+                parent = null;
+            else
+            {
+                ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Parent, out parentID));
+                if (!itemMap.TryGetValue((uint)(int)parentID, out parent))
+                    throw new Exception("Unexpected node parent for node " + itemId);
+            }
 
             switch (get_node_type(itemId))
             {
-                case ItemNodeType.Root:
+                case Constants.ItemNodeType.Root:
                     ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new RootItemNode(this, Path.GetDirectoryName(path));
-                case ItemNodeType.PhysicalFolder:
+                case Constants.ItemNodeType.PhysicalFolder:
                     ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new PhysicalFolderNode(this, parent, itemId, path);
-                case ItemNodeType.VirtualFolder:
+                case Constants.ItemNodeType.VirtualFolder:
                     ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Caption, out caption));
                     return new VirtualFolderNode(this, parent, itemId, caption.ToString());
-                case ItemNodeType.SubProject:
+                case Constants.ItemNodeType.SubProject:
                     ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new SubprojectNode(this, parent, itemId, path);
-                case ItemNodeType.Reference:
+                case Constants.ItemNodeType.Reference:
                     ErrorHandler.ThrowOnFailure(root_hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_Caption, out caption));
                     return new ShadowFileNode(this, parent, itemId, caption.ToString());
-                case ItemNodeType.PhysicalFile:
+                case Constants.ItemNodeType.PhysicalFile:
                     ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(itemId, out path));
                     return new ShadowFileNode(this, parent, itemId, path);
                 default:
@@ -77,7 +96,7 @@ namespace FSharp.ProjectExtender.Project
             }
         }
 
-        private ItemNodeType get_node_type(uint itemId)
+        private Constants.ItemNodeType get_node_type(uint itemId)
         {
             Guid type;
             try
@@ -96,18 +115,18 @@ namespace FSharp.ProjectExtender.Project
 
             // set the sort order based on the item type
             if (type == Guid.Empty)
-                return ItemNodeType.Reference;
+                return Constants.ItemNodeType.Reference;
             else if (type == VSConstants.GUID_ItemType_PhysicalFile)
-                return ItemNodeType.PhysicalFile;
+                return Constants.ItemNodeType.PhysicalFile;
             else if (type == VSConstants.GUID_ItemType_PhysicalFolder)
-                return ItemNodeType.PhysicalFolder;
+                return Constants.ItemNodeType.PhysicalFolder;
             else if (type == VSConstants.GUID_ItemType_SubProject)
-                return ItemNodeType.SubProject;
+                return Constants.ItemNodeType.SubProject;
             else if (type == VSConstants.GUID_ItemType_VirtualFolder)
-                return ItemNodeType.VirtualFolder;
+                return Constants.ItemNodeType.VirtualFolder;
             else if (type == Constants.guidFSharpProject)
-                return ItemNodeType.Root;
-            return ItemNodeType.Unknown;
+                return Constants.ItemNodeType.Root;
+            return Constants.ItemNodeType.Unknown;
         }
 
         public int GetNextSibling(uint itemId, out object value)
@@ -144,14 +163,14 @@ namespace FSharp.ProjectExtender.Project
         internal int GetProperty(uint itemId, int propId, out object property)
         {
             ItemNode node;
-            if (itemMap.TryGetValue(itemId, out node))
-                return node.GetProperty(propId, out property);
+            if (itemMap.TryGetValue(itemId, out node) && node is ExcludedNode)
+                return ((ExcludedNode)node).GetProperty(propId, out property);
             property = null;
             return VSConstants.E_INVALIDARG;
         }
 
-        public const int FakeNodeStart = 0x010000;
-        uint nextItemId = FakeNodeStart;
+        public const int ExcludedNodeStart = 0x010000;
+        uint nextItemId = ExcludedNodeStart;
 
         internal uint GetNextItemID()
         {
@@ -226,15 +245,12 @@ namespace FSharp.ProjectExtender.Project
                     return VSConstants.E_INVALIDARG;
 
                 n.Remap();
-                project.InvalidateParentItems(new uint[] {itemid});
+                project.InvalidateParentItems(new uint[] { itemid });
             }
             return VSConstants.S_OK;
         }
 
         #endregion
-
-        static readonly IVsMonitorSelection selectionMonitor = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-        static readonly IVsUIShell shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
 
         public List<ItemNode> GetSelectedNodes()
         {
@@ -247,7 +263,7 @@ namespace FSharp.ProjectExtender.Project
                 // If the selection spans multiple hierachies, hierarchyPtr is Zero
                 uint itemid;
                 IVsMultiItemSelect multiItemSelect = null;
-                ErrorHandler.ThrowOnFailure(selectionMonitor.GetCurrentSelection(out hierarchyPtr, out itemid, out multiItemSelect, out selectionContainer));
+                ErrorHandler.ThrowOnFailure(GlobalServices.selectionMonitor.GetCurrentSelection(out hierarchyPtr, out itemid, out multiItemSelect, out selectionContainer));
                 // We only care if there are one ore more nodes selected in the tree
                 if (itemid != VSConstants.VSITEMID_NIL && hierarchyPtr != IntPtr.Zero)
                 {
@@ -257,7 +273,7 @@ namespace FSharp.ProjectExtender.Project
                     {
                         // This is a single selection. Compare hirarchy with our hierarchy and get node from itemid
                         ItemNode node;
-                        if (IsSameComObject(project, hierarchy) && itemMap.TryGetValue(itemid, out node))
+                        if (GlobalServices.IsSameComObject(project, hierarchy) && itemMap.TryGetValue(itemid, out node))
                         {
                             selected_nodes.Add(node);
                         }
@@ -273,7 +289,7 @@ namespace FSharp.ProjectExtender.Project
                         bool isSingleHierarchy = (isSingleHierarchyInt != 0);
 
                         // Now loop all selected items and add to the list only those that are selected within this hierarchy
-                        if (!isSingleHierarchy || (isSingleHierarchy && IsSameComObject(project, hierarchy)))
+                        if (!isSingleHierarchy || (isSingleHierarchy && GlobalServices.IsSameComObject(project, hierarchy)))
                         {
                             Debug.Assert(numberOfSelectedItems > 0, "Bad number of selected itemd");
                             VSITEMSELECTION[] vsItemSelections = new VSITEMSELECTION[numberOfSelectedItems];
@@ -281,7 +297,7 @@ namespace FSharp.ProjectExtender.Project
                             ErrorHandler.ThrowOnFailure(multiItemSelect.GetSelectedItems(flags, numberOfSelectedItems, vsItemSelections));
                             foreach (VSITEMSELECTION vsItemSelection in vsItemSelections)
                             {
-                                if (isSingleHierarchy || IsSameComObject(project, vsItemSelection.pHier))
+                                if (isSingleHierarchy || GlobalServices.IsSameComObject(project, vsItemSelection.pHier))
                                 {
                                     ItemNode node;
                                     if (itemMap.TryGetValue(vsItemSelection.itemid, out node))
@@ -311,7 +327,7 @@ namespace FSharp.ProjectExtender.Project
         internal bool ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
         {
             result = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
-            if (itemId < ItemList.FakeNodeStart || itemId == VSConstants.VSITEMID_ROOT)
+            if (itemId < ItemList.ExcludedNodeStart || itemId == VSConstants.VSITEMID_ROOT)
                 return false;
 
             var nodes = GetSelectedNodes();
@@ -342,7 +358,7 @@ namespace FSharp.ProjectExtender.Project
                     pnts[0].x = x;
                     pnts[0].y = y;
                     Guid menu = VsMenus.guidSHLMainMenu;// Constants.guidProjectExtenderCmdSet;
-                    result = shell.ShowContextMenu(0, ref menu, VsMenus.IDM_VS_CTXT_ITEMNODE, pnts, 
+                    result = GlobalServices.shell.ShowContextMenu(0, ref menu, VsMenus.IDM_VS_CTXT_ITEMNODE, pnts,
                         (Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget)nodes[0]);
                     return true;
                 default:
@@ -373,93 +389,6 @@ namespace FSharp.ProjectExtender.Project
         {
             return nodes;
         }
-
-        /// <summary>
-        /// Verifies that two objects represent the same instance of a COM object.
-        /// This essentially compares the IUnkown pointers of the 2 objects.
-        /// This is needed in scenario where aggregation is involved.
-        /// </summary>
-        /// <param name="obj1">Can be an object, interface or IntPtr</param>
-        /// <param name="obj2">Can be an object, interface or IntPtr</param>
-        /// <returns>True if the 2 items represent the same thing</returns>
-        public static bool IsSameComObject(object obj1, object obj2)
-        {
-            IntPtr unknown1 = IntPtr.Zero;
-            IntPtr unknown2 = IntPtr.Zero;
-            try
-            {
-                // If we have 2 null, then they are not COM objects and as such "it's not the same COM object"
-                if (obj1 != null && obj2 != null)
-                {
-                    unknown1 = QueryInterfaceIUnknown(obj1);
-                    unknown2 = QueryInterfaceIUnknown(obj2);
-
-                    return IntPtr.Equals(unknown1, unknown2);
-                }
-                return false;
-            }
-            finally
-            {
-                if (unknown1 != IntPtr.Zero)
-                    Marshal.Release(unknown1);
-
-                if (unknown2 != IntPtr.Zero)
-                    Marshal.Release(unknown2);
-
-            }
-        }
-
-        /// <summary>
-        /// Retrieve the IUnknown for the managed or COM object passed in.
-        /// </summary>
-        /// <param name="objToQuery">Managed or COM object.</param>
-        /// <returns>Pointer to the IUnknown interface of the object.</returns>
-        internal static IntPtr QueryInterfaceIUnknown(object objToQuery)
-        {
-            bool releaseIt = false;
-            IntPtr unknown = IntPtr.Zero;
-            IntPtr result;
-            try
-            {
-                if (objToQuery is IntPtr)
-                {
-                    unknown = (IntPtr)objToQuery;
-                }
-                else
-                {
-                    // This is a managed object (or RCW)
-                    unknown = Marshal.GetIUnknownForObject(objToQuery);
-                    releaseIt = true;
-                }
-
-                // We might already have an IUnknown, but if this is an aggregated
-                // object, it may not be THE IUnknown until we QI for it.				
-                Guid IID_IUnknown = VSConstants.IID_IUnknown;
-                ErrorHandler.ThrowOnFailure(Marshal.QueryInterface(unknown, ref IID_IUnknown, out result));
-            }
-            finally
-            {
-                if (releaseIt && unknown != IntPtr.Zero)
-                {
-                    Marshal.Release(unknown);
-                }
-
-            }
-
-            return result;
-        }
     }
 
-    public enum ItemNodeType
-    {
-        Root, // 0
-        Reference, // 1
-        SubProject, // 2
-        VirtualFolder, // 3
-        PhysicalFolder, // 4
-        PhysicalFile, // 5
-        ExcludedFolder, //4
-        ExcludedFile,  // 5
-        Unknown
-    }
 }

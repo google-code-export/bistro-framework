@@ -10,7 +10,7 @@ namespace FSharp.ProjectExtender.Project
     class RootItemNode : ShadowFolderNode
     {
         public RootItemNode(ItemList items, string path)
-            : base(items, null, VSConstants.VSITEMID_ROOT, ItemNodeType.Root, path)
+            : base(items, null, VSConstants.VSITEMID_ROOT, Constants.ItemNodeType.Root, path)
         { }
 
         protected override string SortOrder

@@ -8,7 +8,7 @@ namespace FSharp.ProjectExtender.Project
     class ShadowFileNode : ItemNode
     {
         public ShadowFileNode(ItemList items, ItemNode parent, uint itemId, string path)
-            : base(items, parent, itemId, ItemNodeType.PhysicalFile, path)
+            : base(items, parent, itemId, Constants.ItemNodeType.PhysicalFile, path)
         {
         }
 

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace FSharp.ProjectExtender.Project.Excluded
 {
-    class FakeFileNode : FakeNode
+    class ExcludedFileNode : ExcludedNode
     {
-        public FakeFileNode(ItemList items, ItemNode parent, string path)
-            : base(items, parent, ItemNodeType.ExcludedFile, path)
+        public ExcludedFileNode(ItemList items, ItemNode parent, string path)
+            : base(items, parent, Constants.ItemNodeType.ExcludedFile, path)
         { }
 
         protected override string SortOrder

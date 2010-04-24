@@ -6,15 +6,14 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Flavor;
 using Microsoft.VisualStudio;
-
-using IOLEServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using System.ComponentModel.Design;
 using Microsoft.Build.BuildEngine;
 using System.IO;
 using FSharp.ProjectExtender.Project;
+using IOLEServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 
 namespace FSharp.ProjectExtender
 {
@@ -24,49 +23,6 @@ namespace FSharp.ProjectExtender
     [ComVisible(true)]
     public class ProjectManager : FlavoredProjectBase, IProjectManager, IOleCommandTarget, IVsTrackProjectDocumentsEvents2
     {
-
-        static readonly IVsUIHierarchyWindow solutionExplorer = getSolutionExplorer();
-
-        /// <summary>
-        /// returns a pointer to the solution explorer window. Used to intialize the static pointer
-        /// </summary>
-        /// <returns></returns>
-        private static IVsUIHierarchyWindow getSolutionExplorer()
-        {
-            IVsUIShell shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-
-            object pvar = null;
-            IVsWindowFrame frame = null;
-            Guid persistenceSlot = new Guid(EnvDTE.Constants.vsWindowKindSolutionExplorer);
-
-            ErrorHandler.ThrowOnFailure(shell.FindToolWindow(0, ref persistenceSlot, out frame));
-            ErrorHandler.ThrowOnFailure(frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out pvar));
-
-            return (IVsUIHierarchyWindow)pvar;
-        }
-
-        internal static Microsoft.VisualStudio.FSharp.ProjectSystem.ProjectNode getFSharpProjectNode(IVsProject root)
-        {
-            IOLEServiceProvider sp;
-            ErrorHandler.ThrowOnFailure(root.GetItemContext(VSConstants.VSITEMID_ROOT, out sp));
-
-            IntPtr objPtr = IntPtr.Zero;
-            try
-            {
-                Guid hierGuid = typeof(VSLangProj.VSProject).GUID;
-                Guid UNKguid = NativeMethods.IID_IUnknown;
-                ErrorHandler.ThrowOnFailure(sp.QueryService(ref hierGuid, ref UNKguid, out objPtr));
-
-                var OAVSProject = (VSLangProj.VSProject)Marshal.GetObjectForIUnknown(objPtr);
-                var OAProject = (Microsoft.VisualStudio.FSharp.ProjectSystem.Automation.OAProject)OAVSProject.Project;
-                return OAProject.Project;
-            }
-            finally
-            {
-                if (objPtr != IntPtr.Zero)
-                    Marshal.Release(objPtr);
-            }
-        }
 
         uint hierarchy_event_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
         uint document_tracker_cookie = (uint)ShellConstants.VSCOOKIE_NIL;
@@ -100,13 +56,12 @@ namespace FSharp.ProjectExtender
         {
             base.OnAggregationComplete();
 
-            FSProjectManager = getFSharpProjectNode(innerProject);
+            FSProjectManager = GlobalServices.getFSharpProjectNode(innerProject);
             BuildManager = new MSBuildManager(FSProjectManager.BuildProject);
 
             itemList = new ItemList(this);
             hierarchy_event_cookie = AdviseHierarchyEvents(itemList);
-            IVsTrackProjectDocuments2 documentTracker = (IVsTrackProjectDocuments2)Package.GetGlobalService(typeof(SVsTrackProjectDocuments));
-            ErrorHandler.ThrowOnFailure(documentTracker.AdviseTrackProjectDocumentsEvents(this, out document_tracker_cookie));
+            ErrorHandler.ThrowOnFailure(GlobalServices.documentTracker.AdviseTrackProjectDocumentsEvents(this, out document_tracker_cookie));
         }
 
         /// <summary>
@@ -121,7 +76,7 @@ namespace FSharp.ProjectExtender
         /// <returns></returns>
         protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            // Run commands on fake nodes (if any) first
+            // Run commands on Excluded nodes (if any) first
             int result;
             if (itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result))
                 return result;
@@ -144,10 +99,12 @@ namespace FSharp.ProjectExtender
         /// <returns></returns>
         protected override int GetProperty(uint itemId, int propId, out object property)
         {
-            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
-                // It is a fake node - itemList will take care of it
+            if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.ExcludedNodeStart)
+                // It is a Excluded node - itemList will take care of it
                 return itemList.GetProperty(itemId, propId, out property);
 
+            // we should not interfere with F# project system when renaiming is in progress
+            // we will get back to (our) normal when it is completed
             if (!renaimng_in_progress)
                 switch ((__VSHPROPID)propId)
                 {
@@ -196,6 +153,8 @@ namespace FSharp.ProjectExtender
         protected override void SetInnerProject(IntPtr innerIUnknown)
         {
             base.SetInnerProject(innerIUnknown);
+            // is the innerIUnknown Addref'ed before it is passed here?
+            // should I Release it after I cast it to objects? I am not sure
             innerTarget = (IOleCommandTarget)Marshal.GetObjectForIUnknown(innerIUnknown);
             innerProject = (IVsProject)innerTarget;
         }
@@ -204,6 +163,8 @@ namespace FSharp.ProjectExtender
         {
             if (hierarchy_event_cookie != (uint)ShellConstants.VSCOOKIE_NIL)
                 UnadviseHierarchyEvents(hierarchy_event_cookie);
+            if (document_tracker_cookie != (uint)ShellConstants.VSCOOKIE_NIL)
+                GlobalServices.documentTracker.UnadviseTrackProjectDocumentsEvents(document_tracker_cookie);
             base.Close();
         }
 
@@ -246,9 +207,6 @@ namespace FSharp.ProjectExtender
             return (string)browseObject.GetType().GetMethod("GetMetadata").Invoke(browseObject, new object[] { property });
         }
 
-
-
-
         /// <summary>
         /// Sets the specified metadata element for a given build item
         /// </summary>
@@ -279,7 +237,7 @@ namespace FSharp.ProjectExtender
             }
 
             if (lastItemId != VSConstants.VSITEMID_NIL)
-                solutionExplorer.ExpandItem(this, lastItemId, EXPANDFLAGS.EXPF_SelectItem);
+                GlobalServices.solutionExplorer.ExpandItem(this, lastItemId, EXPANDFLAGS.EXPF_SelectItem);
 
         }
 
@@ -320,11 +278,11 @@ namespace FSharp.ProjectExtender
             foreach (var node in itemList.RemapNodes(nodes))
                 if (first)
                 {
-                    solutionExplorer.ExpandItem(this, node.ItemId, EXPANDFLAGS.EXPF_SelectItem);
+                    GlobalServices.solutionExplorer.ExpandItem(this, node.ItemId, EXPANDFLAGS.EXPF_SelectItem);
                     first = false;
                 }
                 else
-                    solutionExplorer.ExpandItem(this, node.ItemId, EXPANDFLAGS.EXPF_AddSelectItem);
+                    GlobalServices.solutionExplorer.ExpandItem(this, node.ItemId, EXPANDFLAGS.EXPF_AddSelectItem);
         }
 
         /// <summary>

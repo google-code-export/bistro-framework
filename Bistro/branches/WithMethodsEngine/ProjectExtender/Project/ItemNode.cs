@@ -10,7 +10,7 @@ namespace FSharp.ProjectExtender.Project
 {
     abstract class ItemNode: IEnumerable<ItemNode>
     {
-        protected ItemNode(ItemList items, ItemNode parent, uint itemId, ItemNodeType type, string path)
+        protected ItemNode(ItemList items, ItemNode parent, uint itemId, Constants.ItemNodeType type, string path)
         {
             Items = items;
             this.Parent = parent;
@@ -24,13 +24,15 @@ namespace FSharp.ProjectExtender.Project
         public uint ItemId { get; private set; }
 
         protected ItemList Items { get; private set; }
-        ItemNodeType type;
+        Constants.ItemNodeType type;
         public string Path { get; private set; }
         string sort_key { get { return SortOrder + ';' + Path; } }
+        SortedList<string, ItemNode> children = new SortedList<string, ItemNode>();
+        Dictionary<uint, int> childrenMap;
 
         protected void CreateChildNode(uint child)
         {
-            AddChildNode(Items.CreateNode(this, child));
+            AddChildNode(Items.CreateNode(child));
         }
 
         public void AddChildNode(ItemNode child)
@@ -61,9 +63,6 @@ namespace FSharp.ProjectExtender.Project
             foreach (var item in children)
                 childrenMap.Add(item.Value.ItemId, i++);
         }
-
-        SortedList<string, ItemNode> children = new SortedList<string, ItemNode>();
-        Dictionary<uint, int> childrenMap;
 
         public uint NextSibling
         {
@@ -107,14 +106,6 @@ namespace FSharp.ProjectExtender.Project
         internal virtual void SetShowAll(bool show_all)
         {
         }
-
-        internal virtual int GetProperty(int propId, out object property)
-        {
-            // this method should never be called for shadow nodes
-            property = null;
-            return VSConstants.E_INVALIDARG;
-        }
-
 
         #region IEnumerable<ItemNode> Members
 

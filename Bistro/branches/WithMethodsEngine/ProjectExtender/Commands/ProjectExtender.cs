@@ -12,7 +12,7 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 namespace FSharp.ProjectExtender.Commands
 {
-    public class ProjectExtender : ProjectCTXCommand
+    public class ProjectExtender : OleMenuCommand
     {
         public ProjectExtender()
             : base(Execute, new CommandID(Constants.guidProjectExtenderCmdSet, (int)Constants.cmdidProjectExtender))
@@ -26,6 +26,7 @@ namespace FSharp.ProjectExtender.Commands
 
         private const string enable_extender_text = "Enable F# project extender";
         private const string disable_extender_text = "Disable F# project extender";
+        private const string disable_warning = "For projects with subdirectories disabling extender can produce a project file incompatible with the F# project system.\n Press OK to proceed or Cancel to cancel";
 
         /// <summary>
         /// Modifies caption on the project extender command
@@ -34,7 +35,7 @@ namespace FSharp.ProjectExtender.Commands
         /// <param name="e"></param>
         void QueryStatus(object sender, EventArgs e)
         {
-            if (get_current_project() is IProjectManager)
+            if (GlobalServices.get_current_project() is IProjectManager)
                 ((OleMenuCommand)sender).Text = disable_extender_text;
             else
                 ((OleMenuCommand)sender).Text = enable_extender_text;
@@ -42,14 +43,14 @@ namespace FSharp.ProjectExtender.Commands
 
         private static void Execute(object sender, EventArgs e)
         {
-            var project = get_current_project();
+            var project = GlobalServices.get_current_project();
             if (project is IProjectManager)
             {
                 Guid guid = Guid.Empty;
                 int result;
                 ErrorHandler.ThrowOnFailure(shell.ShowMessageBox(0, ref guid,
                     null,
-                    "For projects with subdirectories disabling extender can produce a project file incompatible with the F# project system.\n Press OK to proceed or Cancel to cancel",
+                    disable_warning,
                     null,
                     0,
                     OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL,
@@ -57,7 +58,7 @@ namespace FSharp.ProjectExtender.Commands
                     OLEMSGICON.OLEMSGICON_WARNING,
                     0,
                     out result));
-                if (result == 1 /*IDOK*/)
+                if (result == NativeMethods.IDOK)
                     ModifyProject(project, disable_extender);
             }
             else
@@ -71,7 +72,7 @@ namespace FSharp.ProjectExtender.Commands
         /// <param name="effector"></param>
         private static void ModifyProject(IVsProject vsProject, Action<XmlDocument> effector)
         {
-            var project = ProjectManager.getFSharpProjectNode(vsProject);
+            var project = GlobalServices.getFSharpProjectNode(vsProject);
             var MSBuildProject = project.BuildProject;
 
             // method get_XmlDocument on the MSBuild project is internal
