@@ -9,10 +9,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
-using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using Microsoft.VisualStudio.OLE.Interop;
 using FSharp.ProjectExtender.Project.Excluded;
 using System.Diagnostics;
+using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
+
 
 namespace FSharp.ProjectExtender.Project
 {

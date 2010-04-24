@@ -8,6 +8,7 @@ using Microsoft.VisualStudio;
 using System.ComponentModel.Design;
 using System.Xml;
 using System.Runtime.InteropServices;
+using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 namespace FSharp.ProjectExtender.Commands
 {
@@ -21,6 +22,7 @@ namespace FSharp.ProjectExtender.Commands
 
         private static IVsSolution solution = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
         private static EnvDTE.DTE dte = (EnvDTE.DTE)Package.GetGlobalService(typeof(SDTE));
+        private static IVsUIShell shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
 
         private const string enable_extender_text = "Enable F# project extender";
         private const string disable_extender_text = "Disable F# project extender";
@@ -42,7 +44,22 @@ namespace FSharp.ProjectExtender.Commands
         {
             var project = get_current_project();
             if (project is IProjectManager)
-                ModifyProject(project, disable_extender);
+            {
+                Guid guid = Guid.Empty;
+                int result;
+                ErrorHandler.ThrowOnFailure(shell.ShowMessageBox(0, ref guid,
+                    null,
+                    "For projects with subdirectories disabling extender can produce a project file incompatible with the F# project system.\n Press OK to proceed or Cancel to cancel",
+                    null,
+                    0,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND,
+                    OLEMSGICON.OLEMSGICON_WARNING,
+                    0,
+                    out result));
+                if (result == 1 /*IDOK*/)
+                    ModifyProject(project, disable_extender);
+            }
             else
                 ModifyProject(project, enable_extender);
         }

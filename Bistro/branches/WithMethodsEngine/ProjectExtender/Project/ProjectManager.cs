@@ -18,12 +18,19 @@ using FSharp.ProjectExtender.Project;
 
 namespace FSharp.ProjectExtender
 {
+    /// <summary>
+    /// Represents the root node of the extended project node tree
+    /// </summary>
     [ComVisible(true)]
     public class ProjectManager : FlavoredProjectBase, IProjectManager, IOleCommandTarget, IVsTrackProjectDocumentsEvents2
     {
 
         static readonly IVsUIHierarchyWindow solutionExplorer = getSolutionExplorer();
 
+        /// <summary>
+        /// returns a pointer to the solution explorer window. Used to intialize the static pointer
+        /// </summary>
+        /// <returns></returns>
         private static IVsUIHierarchyWindow getSolutionExplorer()
         {
             IVsUIShell shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
@@ -68,6 +75,7 @@ namespace FSharp.ProjectExtender
         IOleCommandTarget innerTarget;
         IVsProject innerProject;
         bool show_all = false;
+        bool renaimng_in_progress = false;
 
         public ProjectManager()
             : base()
@@ -84,6 +92,10 @@ namespace FSharp.ProjectExtender
             return VSConstants.S_OK;
         }
 
+        #region overridden Flavored Project methods
+        /// <summary>
+        /// Completes the project manager initialization process
+        /// </summary>
         protected override void OnAggregationComplete()
         {
             base.OnAggregationComplete();
@@ -97,23 +109,43 @@ namespace FSharp.ProjectExtender
             ErrorHandler.ThrowOnFailure(documentTracker.AdviseTrackProjectDocumentsEvents(this, out document_tracker_cookie));
         }
 
+        /// <summary>
+        /// Modify the command execution process for the commands routed to the IVsUIHierarchy
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pguidCmdGroup"></param>
+        /// <param name="nCmdID"></param>
+        /// <param name="nCmdexecopt"></param>
+        /// <param name="pvaIn"></param>
+        /// <param name="pvaOut"></param>
+        /// <returns></returns>
         protected override int ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            // Run commands on fake nodes (if any) first
             int result;
             if (itemList.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result))
                 return result;
 
+            // It is not enough to hide the F# project commands in the context menu - the can come from keyboard as well
             // disable the FSharp project commands on the file nodes (moveup movedown, add above, add below)
             if (pguidCmdGroup.Equals(Constants.guidFSharpProjectCmdSet))
                 return VSConstants.S_OK;
 
+            // the rest should be processed by the base project manager
             return base.ExecCommand(itemId, ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
         }
 
-        bool renaimng_in_progress = false;
+        /// <summary>
+        /// Modify how properties are calculated
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="propId"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
         protected override int GetProperty(uint itemId, int propId, out object property)
         {
             if (itemId != VSConstants.VSITEMID_ROOT && itemId >= ItemList.FakeNodeStart)
+                // It is a fake node - itemList will take care of it
                 return itemList.GetProperty(itemId, propId, out property);
 
             if (!renaimng_in_progress)
@@ -133,6 +165,7 @@ namespace FSharp.ProjectExtender
             if (result != VSConstants.S_OK)
                 return result;
 
+            // Adjust the results returned by the base project
             if (itemId == VSConstants.VSITEMID_ROOT)
             {
                 switch ((__VSHPROPID2)propId)
@@ -160,20 +193,6 @@ namespace FSharp.ProjectExtender
             return result;
         }
 
-        internal uint GetNodeChild(uint itemId)
-        {
-            object result;
-            ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_FirstChild, out result));
-            return (uint)(int)result;
-        }
-
-        internal uint GetNodeSibling(uint itemId)
-        {
-            object result;
-            ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_NextSibling, out result));
-            return (uint)(int)result;
-        }
-
         protected override void SetInnerProject(IntPtr innerIUnknown)
         {
             base.SetInnerProject(innerIUnknown);
@@ -188,6 +207,38 @@ namespace FSharp.ProjectExtender
             base.Close();
         }
 
+        #endregion
+
+        /// <summary>
+        /// Returns the first child for the node as provided by base F# project manager
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        internal uint GetNodeChild(uint itemId)
+        {
+            object result;
+            ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_FirstChild, out result));
+            return (uint)(int)result;
+        }
+
+        /// <summary>
+        /// Returns the next sibling for the node as provided by base F# project manager
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        internal uint GetNodeSibling(uint itemId)
+        {
+            object result;
+            ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_NextSibling, out result));
+            return (uint)(int)result;
+        }
+
+        /// <summary>
+        /// Gets the specified metadata element for a given build item
+        /// </summary>
+        /// <param name="itemId">ID for the item</param>
+        /// <param name="property">metadata element name</param>
+        /// <returns>metadata element value</returns>
         internal string GetMetadata(uint itemId, string property)
         {
             object browseObject;
@@ -195,11 +246,20 @@ namespace FSharp.ProjectExtender
             return (string)browseObject.GetType().GetMethod("GetMetadata").Invoke(browseObject, new object[] { property });
         }
 
-        internal string SetMetadata(uint itemId, string property, string value)
+
+
+
+        /// <summary>
+        /// Sets the specified metadata element for a given build item
+        /// </summary>
+        /// <param name="itemId">ID for the item</param>
+        /// <param name="property">metadata element name</param>
+        /// <param name="value">new element value</param>
+        internal void SetMetadata(uint itemId, string property, string value)
         {
             object browseObject;
             ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_BrowseObject, out browseObject));
-            return (string)browseObject.GetType().GetMethod("SetMetadata").Invoke(browseObject, new object[] { property, value });
+            browseObject.GetType().GetMethod("SetMetadata").Invoke(browseObject, new object[] { property, value });
         }
 
         internal void InvalidateParentItems(IEnumerable<uint> itemIds)
