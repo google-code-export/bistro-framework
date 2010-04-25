@@ -32,11 +32,25 @@ namespace FSharp.ProjectExtender.Project
                         continue;
                     if (Items.ToBeHidden(file))
                         continue;
+                    if ((new FileInfo(file).Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                        continue;
                     AddChildNode(new ExcludedFileNode(Items, this, file));
                 }
+                foreach (var directory in Directory.GetDirectories(Path))
+                {
+                    if (ChildExists("d;" + directory + '\\'))
+                        continue;
+                    if ((new DirectoryInfo(directory).Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                        continue;
+                    AddChildNode(new ExcludedFolderNode(Items, this, directory + '\\'));
+                }
                 foreach (var child in new List<ItemNode>(this))
-                    if (child is ExcludedNode && !File.Exists(child.Path))
+                {
+                    if (child is ExcludedFileNode && !File.Exists(child.Path))
                         child.Delete();
+                    if (child is ExcludedFolderNode && !Directory.Exists(child.Path))
+                        child.Delete();
+                }
                 MapChildren();
             }
             else

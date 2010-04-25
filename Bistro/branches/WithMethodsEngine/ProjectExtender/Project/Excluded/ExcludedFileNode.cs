@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace FSharp.ProjectExtender.Project.Excluded
 {
-    class ExcludedFileNode : ExcludedNode
+    [ComVisible(true)]
+    public class ExcludedFileNode : ExcludedNode
     {
         public ExcludedFileNode(ItemList items, ItemNode parent, string path)
             : base(items, parent, Constants.ItemNodeType.ExcludedFile, path)

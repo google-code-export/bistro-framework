@@ -13,97 +13,97 @@ using Microsoft.VisualStudio.FSharp.ProjectSystem;
 
 namespace FSharp.ProjectExtender.Project.Excluded
 {
-    [ComVisible(true)]
-    public class NodeProperties : LocalizableProperties, IVsBrowseObject, ISpecifyPropertyPages, IVsGetCfgProvider, IVsSpecifyProjectDesignerPages, 
-        EnvDTE80.IInternalExtenderProvider
+    //[ComVisible(true)]
+    //public class NodeProperties : LocalizableProperties, IVsBrowseObject, ISpecifyPropertyPages, IVsGetCfgProvider, IVsSpecifyProjectDesignerPages, 
+    //    EnvDTE80.IInternalExtenderProvider
 
-    {
-        ExcludedNode node;
-        public NodeProperties(ExcludedNode node)
-        {
-            this.node = node;
-        }
+    //{
+    //    ExcludedNode node;
+    //    public NodeProperties(ExcludedNode node)
+    //    {
+    //        this.node = node;
+    //    }
 
-        #region properties
-        //[Browsable(false)]
-        //[AutomationBrowsable(false)]
-        //public HierarchyNode Node
-        //{
-        //    get { return this.node; }
-        //}
+    //    #region properties
+    //    //[Browsable(false)]
+    //    //[AutomationBrowsable(false)]
+    //    //public HierarchyNode Node
+    //    //{
+    //    //    get { return this.node; }
+    //    //}
 
-        /// <summary>
-        /// Used by Property Pages Frame to set it's title bar. The Caption of the Hierarchy Node is returned.
-        /// </summary>
-        [Browsable(false)]
-        public virtual string Name
-        {
-            get { return this.node.Path; }
-        }
+    //    /// <summary>
+    //    /// Used by Property Pages Frame to set it's title bar. The Caption of the Hierarchy Node is returned.
+    //    /// </summary>
+    //    [Browsable(false)]
+    //    public virtual string Name
+    //    {
+    //        get { return this.node.Path; }
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region IVsBrowseObject Members
+    //    #region IVsBrowseObject Members
 
-        public int GetProjectItem(out IVsHierarchy pHier, out uint pItemid)
-        {
-            pHier = node;
-            pItemid = node.ItemId;
-            return VSConstants.S_OK;
-        }
+    //    public int GetProjectItem(out IVsHierarchy pHier, out uint pItemid)
+    //    {
+    //        pHier = node;
+    //        pItemid = node.ItemId;
+    //        return VSConstants.S_OK;
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region ISpecifyPropertyPages methods
-        public virtual void GetPages(CAUUID[] pages)
-        {
-            pages[0] = new CAUUID();
-            pages[0].cElems = 0;
-        }
-        #endregion
+    //    #region ISpecifyPropertyPages methods
+    //    public virtual void GetPages(CAUUID[] pages)
+    //    {
+    //        pages[0] = new CAUUID();
+    //        pages[0].cElems = 0;
+    //    }
+    //    #endregion
 
-        #region IVsGetCfgProvider methods
-        public virtual int GetCfgProvider(out IVsCfgProvider p)
-        {
-            p = null;
-            return VSConstants.E_NOTIMPL;
-        }
-        #endregion
+    //    #region IVsGetCfgProvider methods
+    //    public virtual int GetCfgProvider(out IVsCfgProvider p)
+    //    {
+    //        p = null;
+    //        return VSConstants.E_NOTIMPL;
+    //    }
+    //    #endregion
     
-        #region IVsSpecifyProjectDesignerPages
-		/// <summary>
-		/// Implementation of the IVsSpecifyProjectDesignerPages. It will retun the pages that are configuration independent.
-		/// </summary>
-		/// <param name="pages">The pages to return.</param>
-		/// <returns></returns>
-		public virtual int GetProjectDesignerPages(CAUUID[] pages)
-		{
-            pages[0] = new CAUUID();
-            pages[0].cElems = 0;
-			return VSConstants.S_OK;
-		}
-		#endregion
+    //    #region IVsSpecifyProjectDesignerPages
+    //    /// <summary>
+    //    /// Implementation of the IVsSpecifyProjectDesignerPages. It will retun the pages that are configuration independent.
+    //    /// </summary>
+    //    /// <param name="pages">The pages to return.</param>
+    //    /// <returns></returns>
+    //    public virtual int GetProjectDesignerPages(CAUUID[] pages)
+    //    {
+    //        pages[0] = new CAUUID();
+    //        pages[0].cElems = 0;
+    //        return VSConstants.S_OK;
+    //    }
+    //    #endregion
 
 
-        #region IInternalExtenderProvider Members
+    //    #region IInternalExtenderProvider Members
 
-        public bool CanExtend(string ExtenderCATID, string ExtenderName, object ExtendeeObject)
-        {
-            return false;
-        }
+    //    public bool CanExtend(string ExtenderCATID, string ExtenderName, object ExtendeeObject)
+    //    {
+    //        return false;
+    //    }
 
-        public object GetExtender(string ExtenderCATID, string ExtenderName, object ExtendeeObject, EnvDTE.IExtenderSite ExtenderSite, int Cookie)
-        {
-            return null;
-        }
+    //    public object GetExtender(string ExtenderCATID, string ExtenderName, object ExtendeeObject, EnvDTE.IExtenderSite ExtenderSite, int Cookie)
+    //    {
+    //        return null;
+    //    }
 
-        public object GetExtenderNames(string ExtenderCATID, object ExtendeeObject)
-        {
-            return null;
-        }
+    //    public object GetExtenderNames(string ExtenderCATID, object ExtendeeObject)
+    //    {
+    //        return null;
+    //    }
 
-        #endregion
-    }
+    //    #endregion
+    //}
 
     /// <summary>
     /// Enables a managed object to expose properties and attributes for COM objects.
@@ -196,7 +196,7 @@ namespace FSharp.ProjectExtender.Project.Excluded
     }
 
     [ComVisible(true)]
-    public abstract class ExcludedNode : ItemNode, IOleCommandTarget, IVsHierarchy
+    public abstract class ExcludedNode : ItemNode, IOleCommandTarget//, IVsHierarchy
     {
         protected ExcludedNode(ItemList items, ItemNode parent, Constants.ItemNodeType type, string path)
             : base(items, parent, items.GetNextItemID(), type, path)
@@ -230,11 +230,11 @@ namespace FSharp.ProjectExtender.Project.Excluded
                     property = ImageIndex;
                     return VSConstants.S_OK;
 
-                case __VSHPROPID.VSHPROPID_BrowseObject:
-                    if (properties == null)
-                        properties = new NodeProperties(this);
-                    property = new DispatchWrapper(properties);
-                    return VSConstants.S_OK;
+                //case __VSHPROPID.VSHPROPID_BrowseObject:
+                //    if (properties == null)
+                //        properties = new NodeProperties(this);
+                //    property = new DispatchWrapper(properties);
+                //    return VSConstants.S_OK;
 
                 //case __VSHPROPID.VSHPROPID_ItemDocCookie:
                 //    property = 10000;
