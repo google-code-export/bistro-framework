@@ -207,6 +207,23 @@ namespace FSharp.ProjectExtender.Project
             root.SetShowAll(show_all);
         }
 
+        public virtual bool ToBeHidden(string file)
+        {
+            string project_file;
+            ErrorHandler.ThrowOnFailure(root_hierarchy.GetCanonicalName(VSConstants.VSITEMID_ROOT, out project_file));
+            if (file == project_file)
+                return true;
+            string solution_directory;
+            string solution_file;
+            string solution_options_file;
+            GlobalServices.solution.GetSolutionInfo(out solution_directory, out solution_file, out solution_options_file);
+            if (file == solution_file)
+                return true;
+            if (file == solution_options_file)
+                return true;
+            return false;
+        }
+
         #region IVsHierarchyEvents Members
 
         int IVsHierarchyEvents.OnInvalidateIcon(IntPtr hicon)

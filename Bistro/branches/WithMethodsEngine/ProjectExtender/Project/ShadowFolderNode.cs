@@ -30,7 +30,7 @@ namespace FSharp.ProjectExtender.Project
                 {
                     if (ChildExists("e;" + file))
                         continue;
-                    if (ToBeHidden(file))
+                    if (Items.ToBeHidden(file))
                         continue;
                     AddChildNode(new ExcludedFileNode(Items, this, file));
                 }
@@ -47,11 +47,6 @@ namespace FSharp.ProjectExtender.Project
             }
             foreach (var child in this)
                 child.SetShowAll(show_all);
-        }
-
-        protected virtual bool ToBeHidden(string file)
-        {
-            return false;
         }
 
     }

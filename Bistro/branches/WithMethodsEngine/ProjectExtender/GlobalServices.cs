@@ -20,6 +20,10 @@ namespace FSharp.ProjectExtender
 
         public static readonly IVsUIShell shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
 
+        public static readonly IVsSolution solution = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
+
+        public static readonly EnvDTE.DTE dte = (EnvDTE.DTE)Package.GetGlobalService(typeof(SDTE));
+
         /// <summary>
         /// retrieves the IVsProject interface for currentll selected project
         /// </summary>

@@ -20,10 +20,6 @@ namespace FSharp.ProjectExtender.Commands
             BeforeQueryStatus += new EventHandler(QueryStatus);
         }
 
-        private static IVsSolution solution = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
-        private static EnvDTE.DTE dte = (EnvDTE.DTE)Package.GetGlobalService(typeof(SDTE));
-        private static IVsUIShell shell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
-
         private const string enable_extender_text = "Enable F# project extender";
         private const string disable_extender_text = "Disable F# project extender";
         private const string disable_warning = "For projects with subdirectories disabling extender can produce a project file incompatible with the F# project system.\n Press OK to proceed or Cancel to cancel";
@@ -48,7 +44,7 @@ namespace FSharp.ProjectExtender.Commands
             {
                 Guid guid = Guid.Empty;
                 int result;
-                ErrorHandler.ThrowOnFailure(shell.ShowMessageBox(0, ref guid,
+                ErrorHandler.ThrowOnFailure(GlobalServices.shell.ShowMessageBox(0, ref guid,
                     null,
                     disable_warning,
                     null,
@@ -87,10 +83,10 @@ namespace FSharp.ProjectExtender.Commands
             project.SetProjectFileDirty(true);
 
             // Unload the project - also saves the modifications
-            ErrorHandler.ThrowOnFailure(solution.CloseSolutionElement((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_UnloadProject, project, 0));
+            ErrorHandler.ThrowOnFailure(GlobalServices.solution.CloseSolutionElement((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_UnloadProject, project, 0));
 
             // Reload the project
-            dte.ExecuteCommand("Project.ReloadProject", "");
+            GlobalServices.dte.ExecuteCommand("Project.ReloadProject", "");
         }
 
         private const string msBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
