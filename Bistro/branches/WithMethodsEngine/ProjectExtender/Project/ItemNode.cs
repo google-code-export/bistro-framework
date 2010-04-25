@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace FSharp.ProjectExtender.Project
 {
-    abstract class ItemNode: IEnumerable<ItemNode>
+    public abstract class ItemNode: IEnumerable<ItemNode>
     {
         protected ItemNode(ItemList items, ItemNode parent, uint itemId, Constants.ItemNodeType type, string path)
         {

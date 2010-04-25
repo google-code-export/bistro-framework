@@ -26,12 +26,16 @@ namespace FSharp.ProjectExtender.Project
     /// the IVsHierarchy.GetProperty method. The ProjectExtender redirects the GetProperty method calls to 
     /// provide them in the order defined by ItemList rather than the order of F# Project Manager
     /// </remarks>
-    class ItemList : IVsHierarchyEvents
+    public class ItemList : IVsHierarchyEvents
     {
         ProjectManager project;
         IVsHierarchy root_hierarchy;
         Dictionary<uint, ItemNode> itemMap = new Dictionary<uint, ItemNode>();
+        Dictionary<string, ItemNode> itemKeyMap = new Dictionary<string, ItemNode>();
         ItemNode root;
+        public const int ExcludedNodeStart = 0x010000;
+        uint nextItemId = ExcludedNodeStart;
+
 
         /// <summary>
         /// Initalizes a new instance of the itemlist
@@ -166,11 +170,8 @@ namespace FSharp.ProjectExtender.Project
             if (itemMap.TryGetValue(itemId, out node) && node is ExcludedNode)
                 return ((ExcludedNode)node).GetProperty(propId, out property);
             property = null;
-            return VSConstants.E_INVALIDARG;
+            return VSConstants.DISP_E_MEMBERNOTFOUND;
         }
-
-        public const int ExcludedNodeStart = 0x010000;
-        uint nextItemId = ExcludedNodeStart;
 
         internal uint GetNextItemID()
         {
@@ -185,11 +186,20 @@ namespace FSharp.ProjectExtender.Project
         internal void Register(ItemNode itemNode)
         {
             itemMap.Add(itemNode.ItemId, itemNode);
+            // from the standpoint of IVsHierarchy rename is handled by the F# project 
+            // as remove/add, therefore item path is never changed during item lifetime
+            // and can considered to be immutable
+            itemKeyMap.Add(itemNode.Path, itemNode);
         }
 
         internal void Unregister(uint itemId)
         {
-            itemMap.Remove(itemId);
+            ItemNode n;
+            if (itemMap.TryGetValue(itemId, out n))
+            {
+                itemMap.Remove(itemId);
+                itemKeyMap.Remove(n.Path);
+            }
         }
 
         internal void SetShowAll(bool show_all)
@@ -227,6 +237,8 @@ namespace FSharp.ProjectExtender.Project
             ItemNode n;
             if (itemMap.TryGetValue(itemid, out n))
                 n.Delete();
+            if (project.ExcludeInProgress)
+                n.Parent.SetShowAll(true);
             return VSConstants.S_OK;
         }
 
@@ -327,7 +339,7 @@ namespace FSharp.ProjectExtender.Project
         internal bool ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
         {
             result = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
-            if (itemId < ItemList.ExcludedNodeStart || itemId == VSConstants.VSITEMID_ROOT)
+            if (itemId < ItemList.ExcludedNodeStart || itemId == VSConstants.VSITEMID_ROOT || itemId == VSConstants.VSITEMID_SELECTION)
                 return false;
 
             var nodes = GetSelectedNodes();
@@ -378,16 +390,16 @@ namespace FSharp.ProjectExtender.Project
             return project.AddItem(node.Parent.ItemId, Path);
         }
 
-        internal void Recreate(ItemNode node)
-        {
-            ItemNode parent;
-            if (itemMap.TryGetValue(node.Parent.ItemId, out parent))
-                parent.SetShowAll(true);
-        }
-
         internal IEnumerable<ItemNode> RemapNodes(List<ItemNode> nodes)
         {
-            return nodes;
+            List<ItemNode> result = new List<ItemNode>();
+            foreach (var node in nodes)
+            {
+                ItemNode newNode;
+                if (itemKeyMap.TryGetValue(node.Path, out newNode))
+                    result.Add(newNode);
+            }
+            return result;
         }
     }
 

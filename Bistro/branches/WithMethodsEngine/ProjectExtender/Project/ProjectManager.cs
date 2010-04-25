@@ -32,10 +32,13 @@ namespace FSharp.ProjectExtender
         IVsProject innerProject;
         bool show_all = false;
         bool renaimng_in_progress = false;
+        bool exclude_in_progress = false;
 
         public ProjectManager()
             : base()
         { }
+
+        public bool ExcludeInProgress { get { return exclude_in_progress; } }
 
         /// <summary>
         /// Sets the service provider from which to access the services. 
@@ -334,16 +337,17 @@ namespace FSharp.ProjectExtender
         {
             List<ItemNode> excludedNodes = null;
             if (pguidCmdGroup.Equals(Constants.guidStandardCommandSet2K) && nCmdID == (uint)VSConstants.VSStd2KCmdID.EXCLUDEFROMPROJECT && show_all)
+            {
+                exclude_in_progress = true;
                 excludedNodes = itemList.GetSelectedNodes();
+            }
 
             int result = innerTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
 
+            exclude_in_progress = false;
+
             if (excludedNodes != null)
-            {
-                foreach (var node in excludedNodes)
-                    itemList.Recreate(node);
                 refresh_solution_explorer(excludedNodes);
-            }
 
             // In certain situations the F# project manager throws an exception while adding files
             // to subdirectories. We are lucky that this is happening after all the job of adding the file
