@@ -63,8 +63,7 @@ namespace FSharp.ProjectExtender.Project.Excluded
 
         protected override int IncludeItem()
         {
-            return VSConstants.S_OK;
-            //return Items.IncludeItem(this, Path);
+            return Items.IncludeFolderItem(this);
         }
 
         internal override int GetProperty(int propId, out object property)

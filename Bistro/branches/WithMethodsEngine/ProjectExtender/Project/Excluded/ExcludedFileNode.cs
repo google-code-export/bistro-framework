@@ -25,7 +25,7 @@ namespace FSharp.ProjectExtender.Project.Excluded
 
         protected override int IncludeItem()
         {
-            return Items.IncludeItem(this, Path);
+            return Items.IncludeFileItem(this);
         }
 
     }

@@ -13,9 +13,9 @@ namespace FSharp.ProjectExtender.Project
         protected ItemNode(ItemList items, ItemNode parent, uint itemId, Constants.ItemNodeType type, string path)
         {
             Items = items;
-            this.Parent = parent;
+            Parent = parent;
             ItemId = itemId;
-            this.type = type;
+            Type = type;
             Path = path;
             items.Register(this);
         }
@@ -24,7 +24,7 @@ namespace FSharp.ProjectExtender.Project
         public uint ItemId { get; private set; }
 
         protected ItemList Items { get; private set; }
-        Constants.ItemNodeType type;
+        public Constants.ItemNodeType Type { get; private set; }
         public string Path { get; private set; }
         string sort_key { get { return SortOrder + ';' + Path; } }
         SortedList<string, ItemNode> children = new SortedList<string, ItemNode>();

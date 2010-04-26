@@ -271,7 +271,7 @@ namespace FSharp.ProjectExtender
         /// selection. The items on the list could have been changed/ recreated as a side
         /// effect of the operation, so the list of the nodes is re-mapped
         /// </remarks>
-        private void refresh_solution_explorer(List<ItemNode> nodes)
+        public void RefreshSolutionExplorer(IEnumerable<ItemNode> nodes)
         {
             // as kludgy as it looks this is the only way I found to force the
             // refresh of the solution explorer window
@@ -294,7 +294,7 @@ namespace FSharp.ProjectExtender
         /// <param name="parentID"></param>
         /// <param name="Path"></param>
         /// <returns></returns>
-        internal int AddItem(uint parentID, string Path)
+        internal int AddFileItem(uint parentID, string Path)
         {
             Microsoft.VisualStudio.FSharp.ProjectSystem.HierarchyNode parent;
             if (parentID == VSConstants.VSITEMID_ROOT)
@@ -304,9 +304,18 @@ namespace FSharp.ProjectExtender
 
             var node = FSProjectManager.AddNewFileNodeToHierarchy(parent, Path);
 
-            InvalidateParentItems(new uint[] { node.ID });
-
             return VSConstants.S_OK;
+        }
+
+        /// <summary>
+        /// Adds an existing folder to the project in response to the "Include In Project" command
+        /// </summary>
+        /// <param name="parentID"></param>
+        /// <param name="Path"></param>
+        /// <returns></returns>
+        internal uint AddFolderItem(string Path)
+        {
+            return FSProjectManager.CreateFolderNodes(Path).ID;
         }
 
         #region IProjectManager Members
@@ -317,7 +326,7 @@ namespace FSharp.ProjectExtender
         {
             show_all = !show_all;
             itemList.SetShowAll(show_all);
-            refresh_solution_explorer(itemList.GetSelectedNodes());
+            RefreshSolutionExplorer(itemList.GetSelectedNodes());
         }
 
         public void Refresh()
@@ -325,7 +334,7 @@ namespace FSharp.ProjectExtender
             if (show_all)
             {
                 itemList.SetShowAll(show_all);
-                refresh_solution_explorer(itemList.GetSelectedNodes());
+                RefreshSolutionExplorer(itemList.GetSelectedNodes());
             }
         }
 
@@ -347,7 +356,7 @@ namespace FSharp.ProjectExtender
             exclude_in_progress = false;
 
             if (excludedNodes != null)
-                refresh_solution_explorer(excludedNodes);
+                RefreshSolutionExplorer(excludedNodes);
 
             // In certain situations the F# project manager throws an exception while adding files
             // to subdirectories. We are lucky that this is happening after all the job of adding the file

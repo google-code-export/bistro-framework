@@ -403,13 +403,40 @@ namespace FSharp.ProjectExtender.Project
             return VSConstants.S_OK;
         }
 
-        internal int IncludeItem(ItemNode node, string Path)
+        internal int IncludeFileItem(ItemNode node)
         {
             node.Delete();
-            return project.AddItem(node.Parent.ItemId, Path);
+            int result = project.AddFileItem(node.Parent.ItemId, node.Path);
+            project.RefreshSolutionExplorer(new ItemNode[] { node });
+            return result;
         }
 
-        internal IEnumerable<ItemNode> RemapNodes(List<ItemNode> nodes)
+        internal int IncludeFolderItem(ItemNode node)
+        {
+            var files = new List<string>();
+            foreach (var child in node)
+            {
+                switch (child.Type)
+                {
+                    case Constants.ItemNodeType.ExcludedFile:
+                        files.Add(child.Path);
+                        break;
+                    case Constants.ItemNodeType.ExcludedFolder:
+                        IncludeFolderItem(child);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            node.Delete();
+            uint parent = project.AddFolderItem(node.Path);
+            foreach (var file in files)
+                ErrorHandler.ThrowOnFailure(project.AddFileItem(parent, file));
+            project.RefreshSolutionExplorer(new ItemNode[] { node });
+            return VSConstants.S_OK;
+        }
+
+        internal IEnumerable<ItemNode> RemapNodes(IEnumerable<ItemNode> nodes)
         {
             List<ItemNode> result = new List<ItemNode>();
             foreach (var node in nodes)
