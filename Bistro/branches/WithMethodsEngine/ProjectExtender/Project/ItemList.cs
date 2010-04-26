@@ -253,9 +253,11 @@ namespace FSharp.ProjectExtender.Project
         {
             ItemNode n;
             if (itemMap.TryGetValue(itemid, out n))
+            {
                 n.Delete();
-            if (project.ExcludeInProgress)
-                n.Parent.SetShowAll(true);
+                if (project.ExcludeInProgress)
+                    n.Parent.SetShowAll(true);
+            }
             return VSConstants.S_OK;
         }
 

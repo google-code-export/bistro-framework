@@ -26,11 +26,15 @@ namespace FSharp.ProjectExtender.Project.Excluded
                 {
                     if (ChildExists("e;" + file))
                         continue;
+                    if ((new FileInfo(file).Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                        continue;
                     AddChildNode(new ExcludedFileNode(Items, this, file));
                 }
                 foreach (var directory in Directory.GetDirectories(Path))
                 {
                     if (ChildExists("d;" + directory + '\\'))
+                        continue;
+                    if ((new DirectoryInfo(directory).Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                         continue;
                     AddChildNode(new ExcludedFolderNode(Items, this, directory + '\\'));
                 }
@@ -55,6 +59,12 @@ namespace FSharp.ProjectExtender.Project.Excluded
         protected override int ImageIndex
         {
             get { return (int)Constants.ImageName.ExcludedFolder; }
+        }
+
+        protected override int IncludeItem()
+        {
+            return VSConstants.S_OK;
+            //return Items.IncludeItem(this, Path);
         }
 
         internal override int GetProperty(int propId, out object property)

@@ -93,6 +93,8 @@ namespace FSharp.ProjectExtender.Project
             Parent.childrenMap.Remove(ItemId);
             Parent.MapChildren();
             Items.Unregister(ItemId);
+            foreach (var child in new List<ItemNode>(this))
+                child.Delete();
         }
 
         internal void Remap()

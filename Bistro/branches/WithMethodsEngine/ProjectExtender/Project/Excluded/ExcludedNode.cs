@@ -269,11 +269,7 @@ namespace FSharp.ProjectExtender.Project.Excluded
 
         #endregion
 
-        private int IncludeItem()
-        {
-            return Items.IncludeItem(this, Path);
-        }
-
+        protected abstract int IncludeItem();
 
         #region IVsHierarchy Members
 

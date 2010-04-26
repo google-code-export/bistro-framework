@@ -23,5 +23,10 @@ namespace FSharp.ProjectExtender.Project.Excluded
             get { return (int)Constants.ImageName.ExcludedFile; }
         }
 
+        protected override int IncludeItem()
+        {
+            return Items.IncludeItem(this, Path);
+        }
+
     }
 }
