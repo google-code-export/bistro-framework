@@ -322,6 +322,9 @@ namespace FSharp.ProjectExtender
 
         public MSBuildManager BuildManager { get; private set; }
         
+        /// <summary>
+        /// In response to click on the Show All Files button changes the state of the button
+        /// </summary>
         public void FlipShowAll()
         {
             show_all = !show_all;
@@ -329,6 +332,9 @@ namespace FSharp.ProjectExtender
             RefreshSolutionExplorer(itemList.GetSelectedNodes());
         }
 
+        /// <summary>
+        /// Refershes the solution explorer to reflect the up-to-date excluded files
+        /// </summary>
         public void Refresh()
         {
             if (show_all)

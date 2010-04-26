@@ -33,7 +33,7 @@ namespace FSharp.ProjectExtender.Project
         Dictionary<uint, ItemNode> itemMap = new Dictionary<uint, ItemNode>();
         Dictionary<string, ItemNode> itemKeyMap = new Dictionary<string, ItemNode>();
         ItemNode root;
-        public const int ExcludedNodeStart = 0x010000;
+        public const int ExcludedNodeStart = 0x0100000;
         uint nextItemId = ExcludedNodeStart;
 
 
@@ -283,6 +283,10 @@ namespace FSharp.ProjectExtender.Project
 
         #endregion
 
+        /// <summary>
+        /// Builds a list of nodes currently selectde in the solution explorer
+        /// </summary>
+        /// <returns></returns>
         public List<ItemNode> GetSelectedNodes()
         {
             var selected_nodes = new List<ItemNode>();
@@ -355,6 +359,17 @@ namespace FSharp.ProjectExtender.Project
             return selected_nodes;
         }
 
+        /// <summary>
+        /// Shows the context menu on the excluded items
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pguidCmdGroup"></param>
+        /// <param name="nCmdID"></param>
+        /// <param name="nCmdexecopt"></param>
+        /// <param name="pvaIn"></param>
+        /// <param name="pvaOut"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         internal bool ExecCommand(uint itemId, ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
         {
             result = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
@@ -395,12 +410,6 @@ namespace FSharp.ProjectExtender.Project
                 default:
                     return false;
             }
-        }
-
-        internal int QueryStatusCommand(uint itemId, ref Guid pguidCmdGroup, uint cCmds, Microsoft.VisualStudio.OLE.Interop.OLECMD[] prgCmds, IntPtr pCmdText)
-        {
-            prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_SUPPORTED | (uint)OLECMDF.OLECMDF_ENABLED;
-            return VSConstants.S_OK;
         }
 
         internal int IncludeFileItem(ItemNode node)
