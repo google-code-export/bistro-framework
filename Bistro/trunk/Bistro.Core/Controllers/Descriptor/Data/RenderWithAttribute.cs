@@ -33,7 +33,7 @@ namespace Bistro.Controllers.Descriptor.Data
     /// after this class being invoked (including from within the class itself) will
     /// override this attribute
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true)]
     public class RenderWithAttribute: Attribute
     {
         /// <summary>
