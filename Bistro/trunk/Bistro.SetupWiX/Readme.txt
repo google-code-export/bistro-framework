@@ -4,8 +4,10 @@ Visual Studio 2008
 F# CTP v.1.9.9.9 (You can download it from: http://www.microsoft.com/downloads/details.aspx?FamilyID=ba52e650-4e77-4b0b-b987-9f9ecd3bab3b&displaylang=en)
 
 New in 0.9.2.0
-1. Added NDjango.BistroIntegration.dll assembly
-2. Added latest NDjango 0.9.7.2 with NDjango Editor for VS 2010 RC.
+1. Added Bistro Designer with F# and C# installed project templates
+2. Added NDjango.BistroIntegration.dll assembly
+3. Added latest NDjango 0.9.7.2 with NDjango Editor for VS 2010 RTM
+
 
 New in 0.9.1.0:
 

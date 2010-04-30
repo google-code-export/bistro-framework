@@ -4,13 +4,13 @@ Windows Registry Editor Version 5.00
 @="#110"
 "Package"="{40049e67-3a71-47c2-adfa-87b89aa56b50}"
 "ProductDetails"="#112"
-"PID"="1.0"
+"PID"="0.9"
 "LogoID"="#400"
 [$RootKey$\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}]
-@="Bistro.Designer.DesignerPackage, Bistro.Designer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+@="Bistro.Designer.DesignerPackage, Bistro.Designer, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null"
 "InprocServer32"="%windir%\\system32\\mscoree.dll"
 "Class"="Bistro.Designer.DesignerPackage"
-"Assembly"="Bistro.Designer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+"Assembly"="Bistro.Designer, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null"
 "CodeBase"="[BISTRODIR]Bistro.Designer.dll"
 [$RootKey$\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}]
 "ID"=dword:00000001

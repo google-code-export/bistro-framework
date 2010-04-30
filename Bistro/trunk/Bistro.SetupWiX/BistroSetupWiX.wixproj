@@ -39,25 +39,18 @@
       <Project>{2a3cc2fe-ab0e-44f6-b1cb-3290581da442}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Bistro.Core\Bistro.Core.csproj">
-      <Name>Bistro.Core</Name>
-      <Project>{8a5337bb-438f-4ad7-b695-89df28f778df}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Bistro.Extensions\Bistro.Extensions.csproj">
-      <Name>Bistro.Extensions</Name>
-      <Project>{81d48228-73a8-4a92-84b9-ecd57f86db72}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExtenderReg.wxi" />
     <Content Include="lib\Bistro.Core.dll" />
     <Content Include="lib\Bistro.Designer.dll" />
     <Content Include="lib\Bistro.Designer.pkgdef" />
+    <Content Include="lib\Bistro.Extensions.dll" />
+    <Content Include="lib\Bistro.FSharpExtensions.dll" />
     <Content Include="lib\extension.vsixmanifest" />
     <Content Include="lib\NDjangoSetupExtended.msi" />
     <Content Include="BistroDesigner2008Reg.wxi" />
+    <Content Include="lib\ProjectExtender.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
