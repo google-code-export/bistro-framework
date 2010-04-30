@@ -1,0 +1,44 @@
+Windows Registry Editor Version 5.00
+
+[$RootKey$\InstalledProducts\DesignerPackage]
+@="#110"
+"Package"="{40049e67-3a71-47c2-adfa-87b89aa56b50}"
+"ProductDetails"="#112"
+"PID"="0.9"
+"LogoID"="#400"
+[$RootKey$\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}]
+@="Bistro.Designer.DesignerPackage, Bistro.Designer, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null"
+"InprocServer32"="%windir%\\system32\\mscoree.dll"
+"Class"="Bistro.Designer.DesignerPackage"
+"Assembly"="Bistro.Designer, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null"
+"CodeBase"="[BISTRODIR]Bistro.Designer.dll"
+[$RootKey$\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}]
+"ID"=dword:00000001
+"MinEdition"="Standard"
+"ProductVersion"="0.9"
+"ProductName"="Bistro Designer"
+"CompanyName"="Hill30 Inc"
+[$RootKey$\Projects\{94887830-9110-3f61-84ae-beea7891c7e6}]
+@="Factory"
+"Package"="{40049e67-3a71-47c2-adfa-87b89aa56b50}"
+"ProjectTemplatesDir"="[BISTRODIR].\\NullPath"
+"Language(VsTemplate)"="Bistro"
+[$RootKey$\NewProjectTemplates\TemplateDirs\{40049e67-3a71-47c2-adfa-87b89aa56b50}\/1]
+"SortPriority"=dword:00000064
+"TemplatesDir"="[BISTRODIR].\\NullPath"
+[$RootKey$\Projects\{5b89fcc2-c9f6-49a8-8f8d-eddcc3fdc9e9}]
+@="Factory"
+"Package"="{40049e67-3a71-47c2-adfa-87b89aa56b50}"
+"ProjectTemplatesDir"="[BISTRODIR].\\NullPath"
+[$RootKey$\NewProjectTemplates\TemplateDirs\{40049e67-3a71-47c2-adfa-87b89aa56b50}\/1]
+"SortPriority"=dword:00000064
+"TemplatesDir"="[BISTRODIR].\\NullPath"
+[$RootKey$\Projects\{c39a00f4-b2a4-478e-a0b2-c3e69b3bd899}]
+@="Web Bistro Factory"
+"Package"="{40049e67-3a71-47c2-adfa-87b89aa56b50}"
+"Language(VsTemplate)"="Bistro"
+"ShowOnlySpecifiedTemplates(VsTemplate)"=dword:00000000
+"TemplateGroupIDs(VsTemplate)"="Web"
+[$RootKey$\Projects\{349c5851-65df-11da-9384-00065b846f21}\LanguageTemplates]
+"{f2a71f9b-5d33-465a-a702-920d77279786}"="{c39a00f4-b2a4-478e-a0b2-c3e69b3bd899}"
+
