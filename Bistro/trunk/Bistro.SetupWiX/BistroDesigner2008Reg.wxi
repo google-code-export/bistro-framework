@@ -49,8 +49,8 @@
 
   <!--Non generated part-->
   <!--Writning installation path into registry. Later EditTemplates utility can use this info to update references-->
-  <RegistryKey Root="HKLM" Key="Software\Hill30\Bistro" >
+  <!--<RegistryKey Root="HKLM" Key="Software\Hill30\Bistro" >
     <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />
-  </RegistryKey>
+  </RegistryKey>-->
 
 </Include>
