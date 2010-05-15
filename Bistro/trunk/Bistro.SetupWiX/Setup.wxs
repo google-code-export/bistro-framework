@@ -15,10 +15,9 @@
         <Upgrade Id="01918121-E286-4A36-AB78-6D7EBCE2C638">-->
         <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
         <Upgrade Id="$(var.UpgradeCode)">
-          <UpgradeVersion OnlyDetect="no" Property="PREVIOUSFOUND"
-            Minimum="0.9.0" IncludeMinimum="yes"
-            Maximum="0.9.2" IncludeMaximum="no" />
+            <UpgradeVersion Minimum="0.9.0" IncludeMinimum="yes" Maximum="$(var.ProductVersion)" IncludeMaximum="yes" Language="1033" Property="UPGRADEFOUND" />
         </Upgrade>
+
         <PropertyRef Id="NETFRAMEWORK35_SP_LEVEL" />
         <Property Id="ALLUSERS" Value="1" />
         <Property Id="ENVDIR_2008">
@@ -64,6 +63,21 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="HILL30FILES" Name="Hill30">
+                    <Directory Id="NDJANGODIR" Name="NDjango">
+                        <Component Id="NDjangoMSI2008" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
+                            <Condition><![CDATA[VS2010FOUND = NULL]]></Condition>
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net40" Name="InstallDir" Type="string" Value="[NDJANGODIR]\.NET40"  />
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net35" Name="InstallDir" Type="string" Value="[NDJANGODIR]\.NET35" KeyPath="yes"  />
+                            <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2008.msi" />
+                        </Component>
+                        <Component Id="NDjangoMSI2010" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
+                            <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net35" Name="InstallDir" Type="string" Value="[NDJANGODIR]\.NET35"  />
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net40" Name="InstallDir" Type="string" Value="[NDJANGODIR]\.NET40" KeyPath="no" />
+                            <File Id="NDJANGO10" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2010.msi" />
+                        </Component>
+
+                    </Directory>
                     <Directory Id="INSTALLDIR" Name="Bistro">
                         <Component Id="BistroAssemblies" Guid="EA80C8A8-63BE-4D5E-BACB-9FA941CD0C7C">
                             <RemoveFolder Id="RemoveMain" Directory="INSTALLDIR" On="uninstall" />
@@ -83,14 +97,7 @@
                             <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
                             <File Id="NDjango.BistroIntegration2010.dll" Name="NDjango.BistroIntegration2010.dll" Source="lib\NDjango.BistroIntegration2010.dll"/>
                         </Component>
-                        <Component Id="NDjangoMSI2008" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
-                            <Condition><![CDATA[VS2010FOUND = NULL]]></Condition>
-                            <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2008.msi" />
-                        </Component>
-                        <Component Id="NDjangoMSI2010" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
-                            <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
-                            <File Id="NDJANGO10" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2010.msi" />
-                        </Component>
+                        
 
                         <Component Id="ReadmeBistro" Guid="2F2DC3B8-A256-4AF2-B1D9-20C89AF5645A">
                             <File Id="ReadmeBistro" Name="Readme.txt" ShortName="README.TXT" Source="Readme.txt" />
@@ -226,7 +233,7 @@
         </Feature>
         
         <Binary Id="EditTemplates" SourceFile="versionWriterFull.exe" />
-        <Property Id="WixShellExecTarget" Value="[INSTALLDIR]\NDjangoSetup.msi"/>
+        <Property Id="WixShellExecTarget" Value="[NDJANGODIR]\NDjangoSetup.msi"/>
         <Property Id="NDJANGONEEDED" Value="1" />
         <CustomAction Id="InstallNDjango" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes"/>
         <CustomAction Id="DevenvSetup2008" Property="DEVENV_EXE_PATH2008" ExeCommand="/setup" Impersonate="no" Execute="commit" />

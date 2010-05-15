@@ -11,7 +11,8 @@ namespace Hill30.Tools
 {
     class Program
     {
-        private const string NDJANGODIR = "[NDJANGODIR]";
+        private const string NDJANGODIR35 = "[NDJANGODIR35]";
+        private const string NDJANGODIR40 = "[NDJANGODIR40]";
         private const string BISTRODIR = "[BISTRODIR]";
         private const string EXTENDERDIR = "[EXTENDERDIR]";
         private const string NDJANGOVER = "0.9.7";
@@ -30,7 +31,8 @@ namespace Hill30.Tools
                 String FILE_PATH = args[0];
 
                 String bistroPath = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\Bistro").GetValue("InstallDir");
-                String ndjangoPath = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango").GetValue("InstallDir");
+                String ndjangoPath35 = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango\Net35").GetValue("InstallDir");
+                String ndjangoPath40 = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango\Net40").GetValue("InstallDir");
                 String extenderPath = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\ProjectExtender").GetValue("InstallDir");
 
                 FILE_PATH = FILE_PATH.Replace("\"", "");
@@ -42,11 +44,17 @@ namespace Hill30.Tools
                     bistroPath = bistroPath.Replace("\"", "");
                 }
 
-                if (ndjangoPath != null)
+                if (ndjangoPath35 != null)
                 {
-                    if (!ndjangoPath.EndsWith("\\"))
-                        ndjangoPath += "\\";
-                    ndjangoPath = ndjangoPath.Replace("\"", "");
+                    if (!ndjangoPath35.EndsWith("\\"))
+                        ndjangoPath35 += "\\";
+                    ndjangoPath35 = ndjangoPath35.Replace("\"", "");
+                }
+                if (ndjangoPath40 != null)
+                {
+                    if (!ndjangoPath40.EndsWith("\\"))
+                        ndjangoPath40 += "\\";
+                    ndjangoPath40 = ndjangoPath40.Replace("\"", "");
                 }
 
                 if (extenderPath != null)
@@ -57,8 +65,8 @@ namespace Hill30.Tools
                 }
 
                 if (FILE_PATH.EndsWith(".zip"))
-                    replaceDirZip(FILE_PATH, bistroPath, ndjangoPath, extenderPath);
-                else replaceDirFile(FILE_PATH, bistroPath, ndjangoPath, extenderPath);
+                    replaceDirZip(FILE_PATH, bistroPath, ndjangoPath35,ndjangoPath40, extenderPath);
+                else replaceDirFile(FILE_PATH, bistroPath, ndjangoPath35,ndjangoPath40, extenderPath);
             }
             catch (Exception ex)
             {
@@ -74,7 +82,7 @@ namespace Hill30.Tools
         /// <param name="bistroPath"></param>
         /// <param name="ndjangoPath"></param>
         /// <param name="extenderPath"></param>
-        private static void replaceDirZip(string zipfile_PATH, string bistroPath, string ndjangoPath, string extenderPath)
+        private static void replaceDirZip(string zipfile_PATH, string bistroPath, string ndjangoPath35, string ndjangoPath40, string extenderPath)
         {
             
                 ZipFile zipf = ZipFile.Read(Path.GetFullPath(zipfile_PATH));
@@ -93,7 +101,8 @@ namespace Hill30.Tools
                     reader.Close();
 
                     content = content.Replace(BISTRODIR, (bistroPath == null) ? BISTRODIR : Path.GetFullPath(bistroPath)).
-                        Replace(NDJANGODIR, (ndjangoPath == null) ? NDJANGODIR : Path.GetFullPath(ndjangoPath)).
+                        Replace(NDJANGODIR35, (ndjangoPath35 == null) ? NDJANGODIR35 : Path.GetFullPath(ndjangoPath35)).
+                        Replace(NDJANGODIR40, (ndjangoPath40 == null) ? NDJANGODIR40 : Path.GetFullPath(ndjangoPath40)).
                         Replace(EXTENDERDIR, (extenderPath == null) ? EXTENDERDIR : Path.GetFullPath(extenderPath));
 
                     zipf.RemoveEntry(entry);
@@ -111,7 +120,7 @@ namespace Hill30.Tools
         /// <param name="bistroPath"></param>
         /// <param name="ndjangoPath"></param>
         /// <param name="extenderPath"></param>
-        private static void replaceDirFile(string FILE_PATH, string bistroPath, string ndjangoPath, string extenderPath)
+        private static void replaceDirFile(string FILE_PATH, string bistroPath, string ndjangoPath35,string ndjangoPath40, string extenderPath)
         {
             StreamReader reader = new StreamReader(FILE_PATH);
             string content = reader.ReadToEnd();
@@ -119,7 +128,7 @@ namespace Hill30.Tools
 
             //bistroPath = Path.GetFullPath(bistroPath).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             //ndjangoPath = Path.GetFullPath(ndjangoPath).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            content = content.Replace(BISTRODIR, bistroPath).Replace(NDJANGODIR, ndjangoPath).Replace(EXTENDERDIR, extenderPath);
+            content = content.Replace(BISTRODIR, bistroPath).Replace(NDJANGODIR35, ndjangoPath35).Replace(NDJANGODIR40, ndjangoPath40).Replace(EXTENDERDIR, extenderPath);
             File.WriteAllText(FILE_PATH, content);
         }
 
