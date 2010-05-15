@@ -11,11 +11,11 @@
 
   <!--Some of this registry information reflects the data indicated inside ProvideLoadKey attribute
   CodeBase added manually-->
-  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}" Value="Bistro.Designer.DesignerPackage, Bistro.Designer, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null" Type="string">
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}" Value="Bistro.Designer.DesignerPackage, Bistro.Designer2008, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null" Type="string">
     <Registry Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
     <Registry Name="Class" Value="Bistro.Designer.DesignerPackage" Type="string" />
-    <Registry Name="Assembly" Value="Bistro.Designer, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null" Type="string" />
-    <Registry Name="CodeBase" Value="[INSTALLDIR]Bistro.Designer.dll" Type="string" />
+    <Registry Name="Assembly" Value="Bistro.Designer2008, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null" Type="string" />
+    <Registry Name="CodeBase" Value="[INSTALLDIR]Bistro.Designer2008.dll" Type="string" />
     <Registry Name="ID" Value="100" Type="integer" />
     <Registry Name="MinEdition" Value="Standard" Type="string" />
     <Registry Name="ProductVersion" Value="0.9" Type="string" />

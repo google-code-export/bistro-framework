@@ -66,8 +66,8 @@
                     <Directory Id="NDJANGODIR" Name="NDjango">
                         <Component Id="NDjangoMSI2008" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
                             <Condition><![CDATA[VS2010FOUND = NULL]]></Condition>
-                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net40" Name="InstallDir" Type="string" Value="[NDJANGODIR]\.NET40"  />
-                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net35" Name="InstallDir" Type="string" Value="[NDJANGODIR]\.NET35" KeyPath="yes"  />
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net40" Name="InstallDir" Type="string" Value="[NDJANGODIR].NET40"  />
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\NDjango\Net35" Name="InstallDir" Type="string" Value="[NDJANGODIR].NET35" KeyPath="yes"  />
                             <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2008.msi" />
                         </Component>
                         <Component Id="NDjangoMSI2010" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
@@ -87,7 +87,7 @@
                             <File Id="Bistro.FSharpExtensions.dll" Name="Bistro.FSharpExtensions.dll" Source="lib\Bistro.FSharpExtensions.dll" />
                             <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="..\lib\Newtonsoft.Json.dll" />
                             <!--<File Id="NDjango.BistroIntegration.dll" Name="$(var.BistroIntegration.TargetFileName)" Source="$(var.BistroIntegration.TargetPath)" />-->
-                            <File Id="BistroDesigner" Name="Bistro.Designer.dll" Source="lib\Bistro.Designer.dll" DiskId="1" />
+                            <File Id="BistroDesigner" Name="Bistro.Designer2008.dll" Source="lib\Bistro.Designer2008.dll" DiskId="1" />
                         </Component>
                         <Component Id="Integration08" Guid="107F0C00-5F85-4F65-BB23-E11B6878E5C6">
                             <Condition><![CDATA[VS2008FOUND <> NULL]]></Condition>
