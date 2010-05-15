@@ -6,6 +6,8 @@ using Bistro.Controllers;
 using Bistro.UnitTests.Support.Reflection;
 using Bistro.Controllers.Descriptor;
 using Bistro.Controllers.Descriptor.Data;
+using Bistro.Interfaces;
+using System.Diagnostics;
 
 namespace Bistro.UnitTests.Support.CustomManager
 {
@@ -37,7 +39,8 @@ namespace Bistro.UnitTests.Support.CustomManager
                 };
             #endregion
 
-
+			int i = 0;
+			int j = controllersList.Count();
             foreach (ITypeInfo typeInfo in controllersList)
             {
 
@@ -52,8 +55,6 @@ namespace Bistro.UnitTests.Support.CustomManager
 
                 foreach (IMemberInfo memberInfo in allMembers)
                 {
-
-
                     if (!HasAttribute(memberInfo, typeof(RequiresAttribute).FullName) &&
                         !HasAttribute(memberInfo, typeof(DependsOnAttribute).FullName) &&
                         (HasAttribute(memberInfo, typeof(SessionAttribute).FullName) ||
@@ -89,7 +90,7 @@ namespace Bistro.UnitTests.Support.CustomManager
 
 
 
-                ControllerDescriptor testDescriptor = ControllerDescriptor.CreateDescriptorRaw(
+                IControllerDescriptor testDescriptor = ControllerDescriptor.CreateDescriptorRaw(
                     new TestMemberInfo(typeInfo.FullName),
                     dependsOnTemp,
                     requiresTemp,
@@ -101,22 +102,27 @@ namespace Bistro.UnitTests.Support.CustomManager
                     bindsTemp,
                     logger);
                 RegisterController(testDescriptor);
+				i++;
             }
+
+			(dispatcherFactory.GetDispatcherInstance()).ForceUpdateBindPoints();
+
         }
 
 
 
 
-        protected override void LoadAssembly(System.Reflection.Assembly assm)
+        protected override bool LoadAssembly(System.Reflection.Assembly assm)
         {
             // do nothing
+			return true;
         }
         protected override void LoadType(Type t)
         {
             // also do nothing here - we'll handle all the test load in the Load()
         }
 
-        public override void RegisterController(Bistro.Controllers.Descriptor.ControllerDescriptor descriptor)
+        public override void RegisterController(IControllerDescriptor descriptor)
         {
             dispatcherFactory.GetDispatcherInstance().RegisterController(descriptor);
         }

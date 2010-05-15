@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bistro.Designer", "Bistro.Designer\Bistro.Designer.csproj", "{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09} = {C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectExtender", "ProjectExtender\ProjectExtender.csproj", "{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectExtender_IntegrationTestProject", "ProjectExtender\ProjectExtender_IntegrationTestProject\ProjectExtender_IntegrationTestProject.csproj", "{256F4845-187A-461A-BF15-79E05A466472}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D79EB126-A01A-44DC-804B-16D7E844501D}"
+	ProjectSection(SolutionItems) = preProject
+		bistro.designer.vsmdi = bistro.designer.vsmdi
+		ProjectExtender\IntegrationTests.testrunconfig = ProjectExtender\IntegrationTests.testrunconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items (2)", "Solution Items (2)", "{0E3B92CB-B00F-47B7-B0BD-A91B7F338024}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Bistro.Designer.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{256F4845-187A-461A-BF15-79E05A466472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{256F4845-187A-461A-BF15-79E05A466472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{256F4845-187A-461A-BF15-79E05A466472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{256F4845-187A-461A-BF15-79E05A466472}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

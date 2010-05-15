@@ -26,6 +26,7 @@ using System.Text;
 using Bistro.Controllers.Descriptor;
 using Bistro.Controllers.OutputHandling;
 using Bistro.Configuration;
+using Bistro.Interfaces;
 
 namespace Bistro.Controllers
 {
@@ -60,7 +61,7 @@ namespace Bistro.Controllers
         /// </summary>
         /// <param name="descriptor">The descriptor.</param>
         /// <returns></returns>
-        public virtual IControllerHandler CreateControllerHandler(ControllerDescriptor descriptor)
+        public virtual IControllerHandler CreateControllerHandler(IControllerDescriptor descriptor)
         {
             return new ControllerHandler(application, descriptor, application.LoggerFactory.GetLogger(typeof(ControllerHandler)));
         }

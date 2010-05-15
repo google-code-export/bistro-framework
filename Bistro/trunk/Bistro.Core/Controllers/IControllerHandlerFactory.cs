@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Bistro.Controllers.Descriptor;
+using Bistro.Interfaces;
 
 namespace Bistro.Controllers
 {
@@ -38,6 +39,6 @@ namespace Bistro.Controllers
         /// </summary>
         /// <param name="descriptor">The descriptor.</param>
         /// <returns></returns>
-        IControllerHandler CreateControllerHandler(ControllerDescriptor descriptor);
+        IControllerHandler CreateControllerHandler(IControllerDescriptor descriptor);
     }
 }

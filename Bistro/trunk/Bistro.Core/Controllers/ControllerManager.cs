@@ -28,6 +28,8 @@ using Bistro.Controllers.Descriptor;
 using System.Xml;
 using Bistro.Configuration.Logging;
 using Bistro.Controllers.Dispatch;
+using Bistro.Interfaces;
+using System.Diagnostics;
 
 namespace Bistro.Controllers
 {
@@ -43,7 +45,9 @@ namespace Bistro.Controllers
             [DefaultMessage(@"Skipping assembly '{0}' due to load exceptions. 
 If this assembly contains controllers, the exception may be caused by assembly version mismatches. Exception follows.
 {1}")]
-            ExceptionLoadingAssembly
+            ExceptionLoadingAssembly,
+			[DefaultMessage("Assembly loaded in {0} ms.")]
+			AssemblyLoaded
         }
 
         /// <summary>
@@ -81,7 +85,7 @@ If this assembly contains controllers, the exception may be caused by assembly v
         /// <summary>
         /// The full listing of all controller descriptors known to the sysetm
         /// </summary>
-        private List<ControllerDescriptor> controllers = new List<ControllerDescriptor>();
+        private List<IControllerDescriptor> controllers = new List<IControllerDescriptor>();
 
         /// <summary>
         /// Indicates whether loading has finished
@@ -106,7 +110,11 @@ If this assembly contains controllers, the exception may be caused by assembly v
             foreach (Assembly assm in AppDomain.CurrentDomain.GetAssemblies())
                 LoadAssembly(assm);
 
+			dispatcherFactory.GetDispatcherInstance().ForceUpdateBindPoints();
+
+
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
+
             loaded = true;
         }
 
@@ -116,21 +124,34 @@ If this assembly contains controllers, the exception may be caused by assembly v
         /// <param name="sender">The source of the event.</param>
         /// <param name="args">The <see cref="System.AssemblyLoadEventArgs"/> instance containing the event data.</param>
         void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            LoadAssembly(args.LoadedAssembly);
+		{
+			if (LoadAssembly(args.LoadedAssembly))
+			{
+				dispatcherFactory.GetDispatcherInstance().ForceUpdateBindPoints();
+			}
         }
 
         /// <summary>
         /// Loads the assembly.
         /// </summary>
         /// <param name="assm">The assm.</param>
-        protected virtual void LoadAssembly(Assembly assm)
+        protected virtual bool LoadAssembly(Assembly assm)
         {
+			bool controllerFound = false;
             try
             {
-                foreach (Type t in assm.GetTypes())
-                    if (t.GetInterface(typeof(IController).Name) != null)
-                        LoadType(t);
+				var aaa = assm.GetTypes();
+				int i = 0;
+				int j = aaa.Length;
+				foreach (Type t in aaa)
+				{
+					if (t.GetInterface(typeof(IController).Name) != null)
+					{
+						controllerFound = true;
+						LoadType(t);
+					}
+					i++;
+				}
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -146,6 +167,7 @@ If this assembly contains controllers, the exception may be caused by assembly v
 
                 logger.Report(Messages.ExceptionLoadingAssembly, assm.FullName, sb.ToString());
             }
+			return controllerFound;
         }
 
         /// <summary>
@@ -157,7 +179,7 @@ If this assembly contains controllers, the exception may be caused by assembly v
             if (t.IsAbstract)
                 return;
 
-            ControllerDescriptor descriptor = ControllerDescriptor.CreateDescriptor(t, logger);
+            IControllerDescriptor descriptor = ControllerDescriptor.CreateDescriptor(t, logger);
             RegisterController(descriptor);
         }
 
@@ -165,7 +187,7 @@ If this assembly contains controllers, the exception may be caused by assembly v
         /// Registers the controller.
         /// </summary>
         /// <param name="descriptor">The descriptor.</param>
-        public virtual void RegisterController(ControllerDescriptor descriptor)
+        public virtual void RegisterController(IControllerDescriptor descriptor)
         {
             handlers.Add(descriptor.ControllerType, handlerFactory.CreateControllerHandler(descriptor));
             dispatcherFactory.GetDispatcherInstance().RegisterController(descriptor);
@@ -177,9 +199,9 @@ If this assembly contains controllers, the exception may be caused by assembly v
         /// <param name="t">The t.</param>
         /// <param name="requestPoint">The request point.</param>
         /// <returns></returns>
-        public IController GetController(ControllerInvocationInfo invocation, HttpContextBase context, IContext requestContext)
+		public IController GetController(ControllerInvocationInfo invocationInfo, HttpContextBase context, IContext requestContext)
         {
-            return handlers[invocation.BindPoint.Controller.ControllerType].GetControllerInstance(invocation, context, requestContext);
+			return handlers[invocationInfo.BindPoint.Controller.ControllerType].GetControllerInstance(invocationInfo, context, requestContext);
         }
 
         /// <summary>

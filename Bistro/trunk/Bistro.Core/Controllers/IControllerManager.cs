@@ -20,6 +20,9 @@
  ***************************************************************************/
 
 using System;
+using Bistro.Controllers.Descriptor;
+using System.Collections.Generic;
+using System.Web;
 
 namespace Bistro.Controllers
 {
@@ -35,7 +38,7 @@ namespace Bistro.Controllers
         /// <param name="context">The context.</param>
         /// <param name="requestContext">The request context.</param>
         /// <returns></returns>
-        IController GetController(ControllerInvocationInfo invocation, System.Web.HttpContextBase context, IContext requestContext);
+		IController GetController(ControllerInvocationInfo invocationInfo, HttpContextBase context, IContext requestContext);
 
         /// <summary>
         /// Returns the controller.

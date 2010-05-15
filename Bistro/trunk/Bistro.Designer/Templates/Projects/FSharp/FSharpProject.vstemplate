@@ -1,0 +1,27 @@
+﻿<VSTemplate Version="2.0.0" Type="Project"
+    xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+	<TemplateData>
+		<Name>Bistro Web Application (F#)</Name>
+		<Description>A project for a Bistro Web application written in F#</Description>
+		<Icon>WebProject.ico</Icon>
+		<TemplateID>Hill30.Bistro.WebFSharp</TemplateID>
+		<ProjectType>Bistro</ProjectType>
+		<DefaultName>BistroApp</DefaultName>
+		<ProvideDefaultName>true</ProvideDefaultName>
+	</TemplateData>
+	<TemplateContent>
+		<Project File="FSharpProject.fsproj" ReplaceParameters="true">
+			<Folder Name="Controllers" TargetFolderName="Controllers">
+				<ProjectItem ReplaceParameters="true" OpenInEditor="true">
+					Controllers.fs
+				</ProjectItem>
+			</Folder>
+			<Folder Name="Views">
+				<ProjectItem ReplaceParameters="true">base.django</ProjectItem>
+				<ProjectItem ReplaceParameters="true">home.django</ProjectItem>
+			</Folder>
+			<ProjectItem ReplaceParameters="true">Web.config</ProjectItem>
+			<ProjectItem ReplaceParameters="true" TargetFileName="Default.htm">default.htm</ProjectItem>
+		</Project>
+	</TemplateContent>
+</VSTemplate>

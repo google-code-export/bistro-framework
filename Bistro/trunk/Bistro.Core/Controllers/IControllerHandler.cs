@@ -21,6 +21,8 @@
 
 using System;
 using System.Web;
+using Bistro.Controllers.Descriptor;
+using System.Collections.Generic;
 namespace Bistro.Controllers
 {
     /// <summary>
@@ -28,13 +30,14 @@ namespace Bistro.Controllers
     /// </summary>
     public interface IControllerHandler
     {
-        /// <summary>
-        /// Gets an instance of a controller prepared to execute the associated invocation info.
-        /// </summary>
-        /// <param name="info">The invocation info for the controller.</param>
-        /// <param name="context">The http context for the current request.</param>
-        /// <returns>an IController instance</returns>
-        IController GetControllerInstance(ControllerInvocationInfo info, HttpContextBase context, IContext requestContext);
+		/// <summary>
+		/// Gets an instance of a controller prepared to execute the associated invocation info.
+		/// </summary>
+		/// <param name="invocationInfo">The invocation info. (bindpoint and parameter values).</param>
+		/// <param name="context">The context.</param>
+		/// <param name="requestContext">The request context.</param>
+		/// <returns>an IController instance</returns>
+		IController GetControllerInstance(ControllerInvocationInfo invocationInfo, HttpContextBase context, IContext requestContext);
 
         /// <summary>
         /// Returns the controller back to a ready state.

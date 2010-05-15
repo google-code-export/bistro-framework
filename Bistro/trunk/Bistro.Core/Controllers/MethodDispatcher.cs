@@ -1,4 +1,24 @@
-﻿using System;
+﻿/****************************************************************************
+ * 
+ *  Bistro Framework Copyright © 2003-2009 Hill30 Inc
+ *
+ *  This file is part of Bistro Framework.
+ *
+ *  Bistro Framework is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Bistro Framework is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with Bistro Framework.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ ***************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +28,7 @@ using System.Web;
 using Bistro.Controllers.Descriptor;
 using Bistro.Configuration.Logging;
 using Bistro.Controllers.Dispatch;
+using System.Diagnostics;
 
 namespace Bistro.Controllers
 {
@@ -25,6 +46,8 @@ namespace Bistro.Controllers
             ExceptionNoSession,
             [DefaultMessage("Exception processing URL ({0}) {1}\r\n\tSession: ID={2} Activity: {3} ({4}). For additional information, reference {5}.")]
             Exception,
+			[DefaultMessage("Unhandled exception: {0}\r\n\t Stack trace: {1}")]
+			UnhandledException,
             [DefaultMessage("Headers are \r\n{0}")]
             Headers,
             [DefaultMessage("Extended information for trace {0}. Review attached parameters.")]
@@ -42,7 +65,11 @@ namespace Bistro.Controllers
             [DefaultMessage("Processing request {0}")]
             ProcessingRequest,
             [DefaultMessage("{0} is not a valid extension, and will be skipped")]
-            InvalidExtension
+            InvalidExtension,
+			[DefaultMessage("Controller '{2}' has been invoked. Time elapsed: {0} ms. Processing time: {1}")]
+			ControllerInvoked,
+			[DefaultMessage("Execution path for {0} is \r\n{1}")]
+            ExecutionPath
         }
 
         /// <summary>
@@ -87,7 +114,7 @@ namespace Bistro.Controllers
         /// </returns>
         public bool IsMethodDefined(string method)
         {
-            return dispatcher.GetControllers(method).Length > 0;
+            return dispatcher.IsDefined(method);
         }
 
         /// <summary>
@@ -119,23 +146,39 @@ namespace Bistro.Controllers
         {
             logger.Report(Messages.ProcessingRequest, requestPoint);
 
-			try
-			{
-				ControllerInvocationInfo[] controllers = dispatcher.GetControllers(requestPoint);
+            try
+            {
+				List<ControllerInvocationInfo> invocationInfos = dispatcher.GetControllers(requestPoint);
 
-				if (controllers.Length == 0)
-				{
-					logger.Report(Messages.ControllerNotFound, requestPoint);
-					throw new WebException(StatusCode.NotFound, String.Format("'{0} could not be found", requestPoint));
-				}
+				// TODO: this code should be replaced with call to the check method 
+				// when it will be implemented on the dispatcher correctly
+                if (invocationInfos.Count() == 0)
+                {
+                    logger.Report(Messages.ControllerNotFound, requestPoint);
+                    throw new WebException(StatusCode.NotFound, String.Format("'{0} could not be found", requestPoint));
+                }
+
+				StringBuilder path = new StringBuilder();
+				foreach (ControllerInvocationInfo info in invocationInfos)
+					path.Append(info.BindPoint.Controller.ControllerTypeName).Append(" based on ").Append(info.BindPoint.Target).Append("\r\n");
+
+				logger.Report(Messages.ExecutionPath, requestPoint, path.ToString());
+
 
 				bool securityCheckComplete = false;
 				bool securityCheckFailed = false;
 				var failedPermissions = new Dictionary<string, KeyValuePair<FailAction, string>>();
 
-				foreach (ControllerInvocationInfo info in controllers)
-				{
-					IController controller = manager.GetController(info, context, requestContext);
+				Stopwatch sw = new Stopwatch();
+				Stopwatch sw1 = new Stopwatch();
+
+				foreach (ControllerInvocationInfo invocationInfo in invocationInfos)
+                {
+					sw.Reset();
+					sw.Start(); 
+					
+					
+					IController controller = manager.GetController(invocationInfo, context, requestContext);
 
 					try
 					{
@@ -188,26 +231,33 @@ namespace Bistro.Controllers
 										break;
 									}
 
-								if (!requestContext.TransferRequested)
-									throw new WebException(StatusCode.Unauthorized, "Access denied");
-								else
-									// break out of the controller loop. we shouldn't be processing any more
-									// controllers for this request, and need to get into whatever the security
-									// guys requested
-									break;
-							}
-							else
-							{
-								if (info.BindPoint.Controller.DefaultTemplates.Count > 0)
-									requestContext.Response.RenderWith(info.BindPoint.Controller.DefaultTemplates);
+                                if (!requestContext.TransferRequested)
+                                    throw new WebException(StatusCode.Unauthorized, "Access denied");
+                                else
+                                    // break out of the controller loop. we shouldn't be processing any more
+                                    // controllers for this request, and need to get into whatever the security
+                                    // guys requested
+                                    break;
+                            }
+                            else
+                            {
+								if (invocationInfo.BindPoint.Controller.DefaultTemplates.Count > 0)
+									requestContext.Response.RenderWith(invocationInfo.BindPoint.Controller.DefaultTemplates);
 
+								sw1.Reset();
+								sw1.Start();
 								controller.ProcessRequest(context, requestContext);
+								sw1.Stop();
+
 							}
 						}
 					}
 					finally
 					{
 						manager.ReturnController(controller, context, requestContext);
+						sw.Stop();
+						logger.Report(Messages.ControllerInvoked, sw.ElapsedMilliseconds.ToString(),sw1.ElapsedMilliseconds.ToString(), invocationInfo.BindPoint.Controller.ControllerTypeName);
+
 					}
 				}
 
@@ -216,11 +266,18 @@ namespace Bistro.Controllers
 					string transferRequestPoint = BindPointUtilities.VerbQualify(requestContext.TransferTarget, "get");
 					requestContext.ClearTransferRequest();
 
-					InvokeMethod(context, transferRequestPoint, requestContext);
+                    InvokeMethod(context, transferRequestPoint, requestContext);
+                }
+            }
+            catch (Exception ex)
+            {
+				try
+				{
+					logger.Report(Messages.UnhandledException,ex.Message,ex.StackTrace);
 				}
-			}
-			catch (Exception ex)
-			{
+				catch
+				{}
+
                 //Assume that there are some other ctrls which match UnhandledException url and cause an exception.
                 //In this case, removing this check may cause an infinite recursion of InvokeMethod and StackOverflow at the end.
                 if (handleException)
@@ -228,15 +285,11 @@ namespace Bistro.Controllers
 
 				if (!IsMethodDefinedExplicitly(Application.UnhandledException))
 				{
-					//Special branch for web exception
-					if (ex is WebException)
-						throw ex;
-					else 
-						throw new ApplicationException("Unhandled exception, and no binding to " + Application.UnhandledException + " found.", ex);
+					throw new ApplicationException("Unhandled exception, and no binding to " + Application.UnhandledException + " found.", ex);
 				}
 
-				requestContext.Clear();
-				requestContext.Add("unhandledException", ex);
+                requestContext.Clear();
+                requestContext.Add("unhandledException", ex);
 
 				InvokeMethod(context, Application.UnhandledException, requestContext, true);
                 

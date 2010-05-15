@@ -21,6 +21,8 @@
 
 using System;
 using Bistro.Controllers.Descriptor;
+using Bistro.Interfaces;
+using System.Collections.Generic;
 namespace Bistro.Controllers.Dispatch
 {
     /// <summary>
@@ -33,8 +35,8 @@ namespace Bistro.Controllers.Dispatch
         /// Gets a sorted list of controllers that will process the given url
         /// </summary>
         /// <param name="requestUrl">The request URL.</param>
-        /// <returns>A sorted list of controllers</returns>
-        ControllerInvocationInfo[] GetControllers(string requestUrl);
+        /// <returns>A sorted list of controllers (list is </returns>
+		List<ControllerInvocationInfo> GetControllers(string requestUrl);
 
         /// <summary>
         /// Determines whether the specified url has a controller explicitly bound to it
@@ -45,10 +47,28 @@ namespace Bistro.Controllers.Dispatch
         /// </returns>
         bool HasExactBind(string requestUrl);
 
+
+		/// <summary>
+		/// Determines whether the specified method url returns at least one controller.
+		/// TODO: Analyze how often we call this method and implement some caching dictionary.
+		/// </summary>
+		/// <param name="requestUrl">The method URL.</param>
+		/// <returns>
+		/// 	<c>true</c> if specified method url returns at least one controller; otherwise, <c>false</c>.
+		/// </returns>
+		bool IsDefined(string requestUrl);
+
         /// <summary>
         /// Registers the controller with the dispatcher.
         /// </summary>
         /// <param name="info">The info.</param>
-        void RegisterController(ControllerDescriptor info);
+        void RegisterController(IControllerDescriptor info);
+
+		/// <summary>
+		/// Forces the update of bind points.
+		/// </summary>
+		void ForceUpdateBindPoints();
+
+
     }
 }

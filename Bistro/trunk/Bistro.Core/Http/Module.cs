@@ -49,8 +49,8 @@ namespace Bistro.Http
         enum Messages
         {
             [DefaultMessage("{0} is not a valid extension, and will be skipped")]
-            InvalidExtension,
-			[DefaultMessage("Method invocation completed in {0} ms. Request url: {1}")]
+			InvalidExtension,
+			[DefaultMessage("Method invocation completed. Total time: {0} ms. Request url: {1}")]
 			InvocationCompleted
         }
 
@@ -71,14 +71,9 @@ namespace Bistro.Http
         private MethodDispatcher methodDispatcher;
 
         /// <summary>
-        /// The application object
-        /// </summary>
-        private Application application;
-
-        /// <summary>
         /// mutex handle
         /// </summary>
-        static object moduleLock = new object();
+        protected static object moduleLock = new object();
 
         /// <summary>
         /// List of directories that will be ignored
@@ -102,12 +97,10 @@ namespace Bistro.Http
 		public virtual void Init(HttpApplication context) {
 
             context.PostResolveRequestCache += new EventHandler(context_PostResolveRequestCache);
-			lock (moduleLock) {
-                SectionHandler section = (ConfigurationManager.GetSection("bistro") as SectionHandler) ?? new SectionHandler();
+            SectionHandler section = (ConfigurationManager.GetSection("bistro") as SectionHandler) ?? new SectionHandler();
 
-                LoadFactories(section);
-                LoadUrlRules(section);
-			}
+            LoadFactories(section);
+            LoadUrlRules(section);
 		}
 
         /// <summary>
@@ -156,49 +149,51 @@ namespace Bistro.Http
         /// Enables processing of HTTP Web requests by a custom HttpHandler that implements the <see cref="T:System.Web.IHttpHandler"/> interface.
         /// </summary>
         /// <param name="context">An <see cref="T:System.Web.HttpContext"/> object that provides references to the intrinsic server objects (for example, Request, Response, Session, and Server) used to service HTTP requests.</param>
-        public void ProcessRequest(HttpContext context)
-        {
-            string requestPoint =
-                BindPointUtilities.Combine(context.Request.HttpMethod, context.Request.RawUrl.Substring(context.Request.ApplicationPath.Length));
-            try
-            {
+		public void ProcessRequest(HttpContext context)
+		{
+			string requestPoint =
+				BindPointUtilities.Combine(context.Request.HttpMethod, context.Request.RawUrl.Substring(context.Request.ApplicationPath.Length));
+			try
+			{
 				Stopwatch sw = new Stopwatch();
 				sw.Start();
 
+				var contextWrapper = new HttpContextWrapper(context);
+				IContext requestContext = CreateRequestContext(contextWrapper);
+				context.User = requestContext.CurrentUser;
 
-                var contextWrapper = new HttpContextWrapper(context);
-                IContext requestContext = CreateRequestContext(contextWrapper);
-                context.User = requestContext.CurrentUser;
-
-                methodDispatcher.InvokeMethod(contextWrapper, requestPoint, requestContext);
+				methodDispatcher.InvokeMethod(contextWrapper, requestPoint, requestContext);
 				sw.Stop();
 				logger.Report(Messages.InvocationCompleted, sw.ElapsedMilliseconds.ToString(), context.Request.RawUrl);
-				
+
 
 			}
-            catch (WebException webEx)
-            {
-                context.Response.Clear();
-                context.Response.StatusCode = Convert.ToInt16(webEx.Code);
-                if (!String.IsNullOrEmpty(webEx.Message))
-                    context.Response.Write(webEx.Message);
+			catch (WebException webEx)
+			{
+				context.Response.Clear();
+				context.Response.StatusCode = Convert.ToInt16(webEx.Code);
+				if (!String.IsNullOrEmpty(webEx.Message))
+					context.Response.Write(webEx.Message);
 
-                if (webEx.InnerException != null && webEx.Code == StatusCode.InternalServerError)
-                    context.Response.Write("\r\n\r\n" + webEx.ToString());
-            }
-        }
+				if (webEx.InnerException != null && webEx.Code == StatusCode.InternalServerError)
+					context.Response.Write("\r\n\r\n" + webEx.ToString());
+			}
+		}
 
         /// <summary>
         /// Loads the factories.
         /// </summary>
         protected virtual void LoadFactories(SectionHandler section)
         {
-            if (Application.Instance == null || !Application.Instance.Initialized)
-                Application.Initialize(section);
+			lock (moduleLock)
+			{
+				if (Application.Instance == null)
+					Application.Initialize(section);
+			}
 
-            application = Application.Instance;
-            logger = application.LoggerFactory.GetLogger(GetType());
-            methodDispatcher = new MethodDispatcher(application);
+            var _application = Application.Instance;
+            logger = _application.LoggerFactory.GetLogger(GetType());
+            methodDispatcher = new MethodDispatcher(_application);
         }
 
         /// <summary>
