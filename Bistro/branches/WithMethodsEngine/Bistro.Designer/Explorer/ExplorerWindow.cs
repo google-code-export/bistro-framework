@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Flavor;
-using Microsoft.Build.BuildEngine;
+//using Microsoft.Build.BuildEngine;
 
 using Bistro;
 using Bistro.Configuration;
@@ -59,8 +59,7 @@ namespace Bistro.Designer.Explorer
         {
             if (e.NewNode.oldtext != null)
             {
-                bool search = e.NewNode.parent != null;
-                TreeNode[] nodesToUpdate = control.BindingTree.Nodes.Find(e.NewNode.oldtext, search);
+                TreeNode[] nodesToUpdate = control.BindingTree.Nodes.Find(e.NewNode.oldtext, e.NewNode.parent != null);
                 nodesToUpdate[0].Tag = e.NewNode.tag;
                 nodesToUpdate[0].Text = e.NewNode.newtext;
                 nodesToUpdate[0].Name = e.NewNode.newtext;

@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Shell.Flavor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Build.BuildEngine;
+//using Microsoft.Build.BuildEngine;
 
 using Bistro.Configuration;
 

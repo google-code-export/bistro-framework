@@ -86,6 +86,8 @@ namespace Bistro.Designer.Explorer
     public class ControllerMetadata : IMethodsControllerDesc
     {
         string name;
+        public string FileName{get;set;}
+        public int Line{get;set;}
         internal bool isSecurity;
         internal List<BindPointInfo> Binds;
         internal List<string> RenderWith;

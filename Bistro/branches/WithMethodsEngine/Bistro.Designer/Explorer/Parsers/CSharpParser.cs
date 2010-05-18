@@ -34,9 +34,12 @@ namespace Bistro.Designer.Explorer
                     curCtrl = curCtrl.Substring(0, curCtrl.Length - tail.Length);
                     controllerInfo.Add(new ControllerMetadata(curCtrl));
                     curbpi.controller = controllerInfo[controllerInfo.Count - 1];
+                    curbpi.controller.Line = token.Location.Line;
+                    curbpi.controller.FileName = this.FileName;
                     curFieldOrProp = String.Empty;
+
                 }
-                if (isClassField)
+                else if (isClassField)
                 {
                     //[0]<member_header>[1]<type_ref>[2]<variable_declarators>
                     ParseTreeNode varDeclarator = nodeInfo.ChildNodes[2];
@@ -45,7 +48,7 @@ namespace Bistro.Designer.Explorer
                     curFieldOrProp = varDeclarator.ToString();
                     curFieldOrProp = curFieldOrProp.Substring(0, curFieldOrProp.Length - tail.Length);
                 }
-                if (isClassProperty)
+                else if (isClassProperty)
                 {
                     //[0]<member_header>[1]<type_ref>[2]<qual_name_with_targs>[3]<accessor_declaration>
                     ParseTreeNode qual_name = nodeInfo.ChildNodes[2];
