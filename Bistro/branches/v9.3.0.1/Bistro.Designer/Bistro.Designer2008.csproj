@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bistro.Designer</RootNamespace>
-    <AssemblyName>Bistro.Designer</AssemblyName>
+    <AssemblyName>Bistro.Designer2008</AssemblyName>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;VS2008</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="Bistro.DesignerPackage.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="Explorer\Parsers\FSharpParser.cs" />
     <Compile Include="Projects\FSharp\Factory.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -140,6 +141,18 @@
     <Compile Include="$(CommonRegAttributes)\ProvideMSBuildTargetAttribute.cs">
       <Link>RegistrationAttributes\ProvideMSBuildTargetAttribute.cs</Link>
     </Compile>
+    <Compile Include="Explorer\ChangesTracker.cs" />
+    <Compile Include="Explorer\DesignerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Explorer\DesignerControl.Designer.cs">
+      <DependentUpon>DesignerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Explorer\ExplorerWindow.cs" />
+    <Compile Include="Explorer\FileManager.cs" />
+    <Compile Include="Explorer\Notifier.cs" />
+    <Compile Include="Explorer\Parsers\CSharpParser.cs" />
+    <Compile Include="Explorer\Parsers\MetadataParserBase.cs" />
     <Compile Include="ProjectBase\AssemblyReferenceNode.cs" />
     <Compile Include="ProjectBase\Attributes.cs" />
     <Compile Include="ProjectBase\Automation\AutomationScope.cs" />
@@ -273,6 +286,9 @@
     <None Include="ProjectBase\Diagrams\HierarchyClasses.cd" />
     <None Include="ProjectBase\Diagrams\PropertiesClasses.cd" />
     <None Include="ProjectBase\Diagrams\ReferenceClasses.cd" />
+    <EmbeddedResource Include="Explorer\DesignerControl.resx">
+      <DependentUpon>DesignerControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProjectBase\DontShowAgainDialog.resx">
       <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
     </EmbeddedResource>
