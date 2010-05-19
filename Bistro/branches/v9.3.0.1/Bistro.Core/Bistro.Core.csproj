@@ -1,0 +1,156 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8A5337BB-438F-4AD7-B695-89DF28F778DF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bistro</RootNamespace>
+    <AssemblyName>Bistro.Core</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="Configuration\Logging\DefaultLogger.cs" />
+    <Compile Include="Configuration\Logging\DefaultLoggerFactory.cs" />
+    <Compile Include="Configuration\Logging\DefaultMessageAttribute.cs" />
+    <Compile Include="Configuration\Logging\ILogger.cs" />
+    <Compile Include="Configuration\Logging\ILoggerFactory.cs" />
+    <Compile Include="Configuration\Logging\SeverityLevelAttribute.cs" />
+    <Compile Include="Configuration\SectionHandler.cs" />
+    <Compile Include="Controllers\AbstractController.cs" />
+    <Compile Include="Controllers\ControllerInvocationInfo.cs" />
+    <Compile Include="Controllers\ControllerManagerFactory.cs" />
+    <Compile Include="Controllers\Descriptor\BindPointUtilities.cs" />
+    <Compile Include="Controllers\Descriptor\BindVerb.cs" />
+    <Compile Include="Controllers\Descriptor\ControllerDescriptor.cs" />
+    <Compile Include="Controllers\Descriptor\Data\FormatAsAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\RenderWithAttribute.cs" />
+    <Compile Include="Interfaces\IBindPointDescriptor.cs" />
+    <Compile Include="Interfaces\IControllerDescriptor.cs" />
+    <Compile Include="Controllers\Descriptor\Wrappers\MemberWrapper.cs" />
+    <Compile Include="Controllers\ControllerHandler.cs" />
+    <Compile Include="Controllers\ControllerManager.cs" />
+    <Compile Include="Controllers\Descriptor\BindAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\BindType.cs" />
+    <Compile Include="Controllers\Descriptor\Data\IFieldScopeAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\SessionAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\RequestAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\DependsOnAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\ProvidesAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\RequiresAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\CookieFieldAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\FormFieldAttribute.cs" />
+    <Compile Include="Controllers\Descriptor\Data\IDataFieldMarker.cs" />
+    <Compile Include="Controllers\DefaultContext.cs" />
+    <Compile Include="Controllers\Dispatch\DispatcherFactory.cs" />
+    <Compile Include="Controllers\EventContext.cs" />
+    <Compile Include="Controllers\HandlerFactory.cs" />
+    <Compile Include="Controllers\IContext.cs" />
+    <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Controllers\Dispatch\IControllerDispatcher.cs" />
+    <Compile Include="Controllers\IControllerHandler.cs" />
+    <Compile Include="Controllers\IControllerHandlerFactory.cs" />
+    <Compile Include="Controllers\IControllerManager.cs" />
+    <Compile Include="Controllers\Dispatch\IDispatcherFactory.cs" />
+    <Compile Include="Controllers\IControllerManagerFactory.cs" />
+    <Compile Include="Controllers\IExecutionContext.cs" />
+    <Compile Include="Controllers\IResponse.cs" />
+    <Compile Include="Controllers\MethodDispatcher.cs" />
+    <Compile Include="Controllers\OutputHandling\DefaultFormatManagerFactory.cs" />
+    <Compile Include="Controllers\OutputHandling\IFormatManagerFactory.cs" />
+    <Compile Include="Controllers\OutputHandling\DefaultFormatManager.cs" />
+    <Compile Include="Controllers\OutputHandling\IFormatManager.cs" />
+    <Compile Include="Controllers\OutputHandling\IWebFormatter.cs" />
+    <Compile Include="Controllers\OutputHandling\ReturnTypesController.cs" />
+    <Compile Include="Controllers\OutputHandling\RenderingController.cs" />
+    <Compile Include="Controllers\OutputHandling\TemplateEngine.cs" />
+    <Compile Include="Controllers\OutputHandling\TemplateMappingAttribute.cs" />
+    <Compile Include="Controllers\OutputHandling\RenderType.cs" />
+    <Compile Include="Controllers\Security\AnonymousUser.cs" />
+    <Compile Include="Controllers\Security\SecurityAttribute.cs" />
+    <Compile Include="Controllers\Security\AllowAttribute.cs" />
+    <Compile Include="Controllers\Security\DenyAttribute.cs" />
+    <Compile Include="Controllers\Security\ISecurityController.cs" />
+    <Compile Include="Controllers\Security\SecurityController.cs" />
+    <Compile Include="Entity\EntityMapperBase.cs" />
+    <Compile Include="Entity\IMappable.cs" />
+    <Compile Include="Entity\InferMappingForAttribute.cs" />
+    <Compile Include="Entity\MapperRepository.cs" />
+    <Compile Include="Entity\MemberAccessor.cs" />
+    <Compile Include="Entity\EntityMapper.cs" />
+    <Compile Include="Entity\MapWithAttribute.cs" />
+    <Compile Include="Http\Module.cs" />
+    <Compile Include="Http\StatusCodes.cs" />
+    <Compile Include="Http\WebException.cs" />
+    <Compile Include="MethodsEngine\DependencyGraph.cs" />
+    <Compile Include="MethodsEngine\EngineControllerDispatcher.cs" />
+    <Compile Include="MethodsEngine\Reflection\IMemberInfo.cs" />
+    <Compile Include="MethodsEngine\Reflection\IMethodsBindPointDesc.cs" />
+    <Compile Include="MethodsEngine\Reflection\IMethodsControllerDesc.cs" />
+    <Compile Include="MethodsEngine\Resource.cs" />
+    <Compile Include="MethodsEngine\Subsets\MethodBinding.cs" />
+    <Compile Include="MethodsEngine\Subsets\BistroMethod.cs" />
+    <Compile Include="MethodsEngine\Subsets\MethodsProcessor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\ApplicationValidationResult.cs" />
+    <Compile Include="Validation\InferValidationFromAttribute.cs" />
+    <Compile Include="Validation\IValidatable.cs" />
+    <Compile Include="Validation\IValidationResult.cs" />
+    <Compile Include="Validation\IValidationSite.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\ValidateWithAttribute.cs" />
+    <Compile Include="Validation\ValidatingControllerHandler.cs" />
+    <Compile Include="Validation\ValidatingHandlerFactory.cs" />
+    <Compile Include="Validation\ValidationRepository.cs" />
+    <Compile Include="Validation\ValidationSite.cs" />
+    <Compile Include="Validation\Validator.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

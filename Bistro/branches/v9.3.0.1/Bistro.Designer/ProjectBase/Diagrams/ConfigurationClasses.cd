@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Bistro.Designer.ProjectBase.Output" Collapsed="true">
+    <Position X="1.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQQAAAAAAAAAAAAAgAAACAgAQBAAAAAAAACAABA=</HashCode>
+      <FileName>Output.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Bistro.Designer.ProjectBase.OutputGroup" Collapsed="true">
+    <Position X="1.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIgABgwTAAAAAAAAAiAAAAIgEQAAggAAAEASAABA=</HashCode>
+      <FileName>OutputGroup.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Bistro.Designer.ProjectBase.ProjectConfig" Collapsed="true">
+    <Position X="4.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgCEEJABBAAkaSFCGCkAAEAAEiBYEEKACAAGRDJUEA=</HashCode>
+      <FileName>ProjectConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Bistro.Designer.ProjectBase.BuildableProjectConfig" Collapsed="true">
+    <Position X="1.75" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABCAAAACgAACAAAAABABAEIAAQAgAAAIABAEABQAAA=</HashCode>
+      <FileName>ProjectConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Bistro.Designer.ProjectBase.ConfigProvider" Collapsed="true">
+    <Position X="4.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAWAgFQBAAJIAhACAAgCABAEAQ5MAAAABCAEEAAAEQQ=</HashCode>
+      <FileName>ConfigProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Bistro.Designer.ProjectBase.ProjectElement" Collapsed="true">
+    <Position X="4.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAEAEACAAAAAAQApAQAAgAUABAAA4AAQAIAAAAAgiA=</HashCode>
+      <FileName>ProjectElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bistro.Designer.ProjectBase.ProjectNode" Collapsed="true">
+    <Position X="8.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>PcP89b7sGr3/n1KfHv7+dr/f9h//71+3/xPdS+fRan4=</HashCode>
+      <FileName>ProjectNode.CopyPaste.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>
