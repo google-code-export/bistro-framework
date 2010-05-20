@@ -70,6 +70,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy /y $(Projectdir)$(OutDir)Bistro.msi "C:\Documents and Settings\avlasova\My Documents\Share"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
