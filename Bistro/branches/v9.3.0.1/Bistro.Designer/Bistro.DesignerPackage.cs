@@ -37,10 +37,10 @@ namespace Bistro.Designer
     // This attribute is used to register the informations needed to show the this package
     // in the Help/About dialog of Visual Studio.
 #if VS2008  
-    [InstalledProductRegistration(false, "#110", "#112", "1.0", IconResourceID = 400)]
+    [InstalledProductRegistration(false, "#110", "#112", "0.9", IconResourceID = 400)]
 #endif
 #if VS2010  
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.9", IconResourceID = 400)]
 #endif
     // In order be loaded inside Visual Studio in a machine that has not the VS SDK installed, 
     // package needs to have a valid load key (it can be requested at 

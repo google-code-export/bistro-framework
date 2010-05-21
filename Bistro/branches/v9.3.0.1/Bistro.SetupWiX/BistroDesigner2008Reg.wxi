@@ -15,7 +15,7 @@
     <Registry Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
     <Registry Name="Class" Value="Bistro.Designer.DesignerPackage" Type="string" />
     <Registry Name="Assembly" Value="Bistro.Designer2008, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null" Type="string" />
-    <Registry Name="CodeBase" Value="[INSTALLDIR]Bistro.Designer2008.dll" Type="string" />
+    <Registry Name="CodeBase" Value="[INSTALLDIR]Bistro\Bistro.Designer2008.dll" Type="string" />
     <Registry Name="ID" Value="100" Type="integer" />
     <Registry Name="MinEdition" Value="Standard" Type="string" />
     <Registry Name="ProductVersion" Value="0.9" Type="string" />
@@ -25,7 +25,7 @@
 
   <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Projects\{94887830-9110-3f61-84ae-beea7891c7e6}" Value="Factory" Type="string">
     <Registry Name="Package" Value="{40049e67-3a71-47c2-adfa-87b89aa56b50}" Type="string" />
-    <Registry Name="ProjectTemplatesDir" Value="[INSTALLDIR].\NullPath" Type="string" />
+    <Registry Name="ProjectTemplatesDir" Value="[INSTALLDIR]Bistro.\NullPath" Type="string" />
     <Registry Name="Language(VsTemplate)" Value="Bistro" Type="string" />
   </Registry>
 
@@ -44,7 +44,7 @@
 
   <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\NewProjectTemplates\TemplateDirs\{40049e67-3a71-47c2-adfa-87b89aa56b50}\/1">
     <RegistryValue Name="SortPriority" Value="100" Type="integer" />
-    <RegistryValue Name="TemplatesDir" Value="[INSTALLDIR].\NullPath" Type="string" />
+    <RegistryValue Name="TemplatesDir" Value="[INSTALLDIR]Bistro.\NullPath" Type="string" />
   </RegistryKey>
 
   <!--Non generated part-->

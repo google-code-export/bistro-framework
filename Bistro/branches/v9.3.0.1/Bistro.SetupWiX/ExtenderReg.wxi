@@ -12,7 +12,7 @@
     <Registry Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
     <Registry Name="Class" Value="FSharp.ProjectExtender.ProjectExtenderPackage" Type="string" />
     <Registry Name="Assembly" Value="ProjectExtender2008, Version=0.9.1.0, Culture=neutral, PublicKeyToken=null" Type="string" />
-    <Registry Name="CodeBase" Value="[INSTALLDIR]ProjectExtender2008.dll" Type="string" />
+    <Registry Name="CodeBase" Value="[INSTALLDIR]Bistro\ProjectExtender2008.dll" Type="string" />
     <Registry Name="ID" Value="100" Type="integer" />
     <Registry Name="MinEdition" Value="Standard" Type="string" />
     <Registry Name="ProductVersion" Value="1.0" Type="string" />
@@ -27,7 +27,7 @@
   <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\CLSID\{a5fc3bbd-8795-42d0-aa55-e65fe992378e}" Value="FSharp.ProjectExtender.Page" Type="string">
     <Registry Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
     <Registry Name="Class" Value="FSharp.ProjectExtender.Page" Type="string" />
-    <Registry Name="CodeBase" Value="[INSTALLDIR]ProjectExtender2008.dll" Type="string" />
+    <Registry Name="CodeBase" Value="[INSTALLDIR]Bistro\ProjectExtender2008.dll" Type="string" />
     <Registry Name="ThreadingModel" Value="Both" Type="string" />
   </Registry>
 
@@ -43,7 +43,7 @@
 </Registry>
 
   <RegistryKey Root="HKLM" Key="Software\Hill30\ProjectExtender" >
-    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />
+    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]Bistro" />
   </RegistryKey>
 
 </Include>

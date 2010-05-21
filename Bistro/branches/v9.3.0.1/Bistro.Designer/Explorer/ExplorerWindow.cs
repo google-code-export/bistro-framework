@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Flavor;
-using Microsoft.Build.BuildEngine;
 
 using Bistro;
 using Bistro.Configuration;
