@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?define ProductVersion="0.9.3.1" ?>
+    <?define ProductVersionTitle="0.9.3.1" ?>
+    <?define VisualStudioRegistryRoot2008 = "Software\Microsoft\VisualStudio\9.0" ?>
+    <?define VisualStudioRegistryRoot2010 = "Software\Microsoft\VisualStudio\10.0" ?>
+    <?define UpgradeCode="{E63B2D78-54C6-4d2a-B3EF-219EF3AE8FBC}"?>
+    <Product Id="025811B6-BD51-4BAC-90F1-8E42D11D9B90" Name="Bistro $(var.ProductVersionTitle)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Hill30" UpgradeCode="$(var.UpgradeCode)">
+        <Package InstallerVersion="200" Compressed="yes" />
+      <!--BE70CEDF718001B458C0D3CD50AA5D04-->
+      <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+        <!--<Upgrade Id="$(var.UpgradeCode)">
+            <UpgradeVersion Minimum="0.9.0" IncludeMinimum="yes" Maximum="$(var.ProductVersion)" IncludeMaximum="yes" Language="1033" Property="UPGRADEFOUND" />
+        </Upgrade>
+        <Upgrade Id="01918121-E286-4A36-AB78-6D7EBCE2C638">-->
+        <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+        <Upgrade Id="$(var.UpgradeCode)">
+            <UpgradeVersion Minimum="0.9.0" IncludeMinimum="yes" Maximum="$(var.ProductVersion)" IncludeMaximum="yes" Language="1033" Property="UPGRADEFOUND" />
+        </Upgrade>
+
+        <PropertyRef Id="NETFRAMEWORK35_SP_LEVEL" />
+        <Property Id="ALLUSERS" Value="1" />
+        <Property Id="ENVDIR_2008">
+            <RegistrySearch Id="RL_EnvironmentDir_2008" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\Setup\VS" Name="EnvironmentDirectory" Type="directory" />
+        </Property>
+        <Property Id="ENVDIR_2010">
+            <RegistrySearch Id="RL_EnvironmentDir_2010" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\Setup\VS" Name="EnvironmentDirectory" Type="directory" />
+        </Property>
+        <Property Id="EXTENSIONSHILL30FILES">
+            <!--<DirectorySearch Id="hill30filessearch" Path="[LocalAppDataFolder]\Microsoft\VisualStudio\10.0\Extensions\Hill 30\" />-->
+        </Property>
+        <Property Id="VS2008FOUND">
+            <RegistrySearch Id="VS2008found" Type="raw" Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0" Name="InstallDir" />
+        </Property>
+        <Property Id="VS2008ITEMTEMPLATESLOCATION">
+            <RegistrySearch Id="UserItemTemplatesLocation2008" Type="raw" Root="HKCU" Key="Software\Microsoft\VisualStudio\9.0" Name="UserItemTemplatesLocation" />
+        </Property>
+        <Property Id="VS2008PROJECTTEMPLATESLOCATION">
+            <RegistrySearch Id="UserProjectTemplatesLocation2008" Type="raw" Root="HKCU" Key="Software\Microsoft\VisualStudio\9.0" Name="UserProjectTemplatesLocation" />
+        </Property>
+        <Property Id="VS2010FOUND">
+            <RegistrySearch Id="VS2010found" Type="raw" Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0" Name="InstallDir" />
+        </Property>
+        <Property Id="VS2010ITEMTEMPLATESLOCATION">
+            <RegistrySearch Id="UserItemTemplatesLocation2010" Type="raw" Root="HKCU" Key="Software\Microsoft\VisualStudio\10.0" Name="UserItemTemplatesLocation" />
+        </Property>
+        <Property Id="VS2010PROJECTTEMPLATESLOCATION">
+            <RegistrySearch Id="UserProjectTemplatesLocation2010" Type="raw" Root="HKCU" Key="Software\Microsoft\VisualStudio\10.0" Name="UserProjectTemplatesLocation" />
+        </Property>
+        <Property Id="DEVENV_EXE_PATH2008">
+            <RegistrySearch Id="RegSearch_DevenvExe_Path2008" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2008)\Setup\VS" Name="EnvironmentPath" Type="raw" />
+        </Property>
+        <Property Id="DEVENV_EXE_PATH2010">
+            <RegistrySearch Id="RegSearch_DevenvExe_Path2010" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2010)\Setup\VS" Name="EnvironmentPath" Type="raw" />
+        </Property>
+        <Property Id="VSIX_PATH"/>
+        <Property Id="MVCFOUND">
+            <RegistrySearch Id="MVCfound" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\ASP.NET MVC 2\Runtime" Name="InstallPath" />
+        </Property>
+
+        <Condition Message="This application requires Visual Studio 2008/2010. Please install the Visual Studio IDE then run this installer again.">Installed OR VS2008FOUND OR VS2010FOUND</Condition>
+        <Condition Message="This application requires .NET Framework 3.5SP1. Please install the .NET Framework 3.5SP1 then run this installer again."><![CDATA[Installed OR (NETFRAMEWORK35_SP_LEVEL and NOT NETFRAMEWORK35_SP_LEVEL = "#0")]]></Condition>
+        <WixVariable Id="WixUILicenseRtf" Value="License.rtf" Overridable="yes" />
+        <WixVariable Id="WixUIBannerBmp" Value="bitmaps\bannrbmp.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="bitmaps\dlgbmp.bmp" />
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder" Name="PFiles">
+                <Directory Id="Hill30" Name="Hill30">
+
+                    <Directory Id="INSTALLDIR" Name="Bistro">
+                        <!--<Component Id="NDjangoMSI2008" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
+                            <Condition><![CDATA[VS2010FOUND = NULL]]></Condition>
+                            <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2008.msi" />
+                        </Component>-->
+                        <Component Id="NDjangoMSI2010" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
+                            <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
+                            <File Id="NDJANGO10" Name="NDjangoSetup.msi" Source="lib\NDjangoExtended.msi" />
+                        </Component>
+                        <Component Id="BistroAssemblies" Guid="EA80C8A8-63BE-4D5E-BACB-9FA941CD0C7C">
+                            <RemoveFolder Id="RemoveMain" Directory="INSTALLDIR" On="uninstall" />
+                            <!--<RegistryValue Root="HKLM" Key="Software\Hill30\Bistro" Name="InstallDir" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />-->
+                            <File Id="Bistro.Core.dll" Name="Bistro.Core.dll" Source="lib\Bistro.Core.dll" DiskId="1" />
+                            <File Id="Bistro.Extensions.dll" Name="Bistro.Extensions.dll" Source="lib\Bistro.Extensions.dll" DiskId="1" />
+                            <File Id="Bistro.FSharpExtensions.dll" Name="Bistro.FSharpExtensions.dll" Source="lib\Bistro.FSharpExtensions.dll" />
+                            <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="..\lib\Newtonsoft.Json.dll" />
+                            <!--<File Id="NDjango.BistroIntegration.dll" Name="$(var.BistroIntegration.TargetFileName)" Source="$(var.BistroIntegration.TargetPath)" />-->
+                            <File Id="BistroDesigner" Name="Bistro.Designer2008.dll" Source="lib\Bistro.Designer2008.dll" DiskId="1" />
+                        </Component>
+                        <Component Id="Integration08" Guid="107F0C00-5F85-4F65-BB23-E11B6878E5C6">
+                            <Condition><![CDATA[VS2008FOUND <> NULL]]></Condition>
+                            <File Id="NDjango.BistroIntegration2008.dll" Name="NDjango.BistroIntegration2008.dll" Source="lib\NDjango.BistroIntegration2008.dll"/>
+                        </Component>
+                        <Component Id="Integration10" Guid="CF62EA41-2566-4ECE-90EB-BD6594836B39">
+                            <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
+                            <File Id="NDjango.BistroIntegration2010.dll" Name="NDjango.BistroIntegration2010.dll" Source="lib\NDjango.BistroIntegration2010.dll"/>
+                        </Component>
+                        
+
+                        <Component Id="ReadmeBistro" Guid="2F2DC3B8-A256-4AF2-B1D9-20C89AF5645A">
+                            <File Id="ReadmeBistro" Name="Readme.txt" ShortName="README.TXT" Source="Readme.txt" />
+                        </Component>
+                        <Component Id="ProjectExtender" Guid="AA80C8A8-63BE-4D5E-BACB-9FA941CD0C7C">
+                            <File Id="ProjectExtender.dll" Name="ProjectExtender2008.dll" Source="lib\ProjectExtender2008.dll" DiskId="1" />
+                        </Component>
+                        <Component Id="Extender2010" Guid="D613ED0B-D741-47E1-9F2A-8547009EEA25">
+                            <File Id="ProjectExtender.vsix" Name="ProjectExtender2010.vsix" Source="lib\ProjectExtender2010.vsix" DiskId="1"/>
+                        </Component>
+                        <Component Id="BistroDesigner2010" Guid="61D1E34E-57BA-4559-AC69-957A399903E3">
+                            <File Id="BistroDesigner2010.vsix" Name="BistroDesigner2010.vsix" Source="lib\BistroDesigner2010.vsix" DiskId="1"/>
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="ENVDIR_2008" Name="EnvDir08">
+                <Directory Id="ProjectTemplates2008" Name="ProjectTemplates">
+                    <Directory Id="ProjectTemplatesBistro2008" Name="Bistro">
+                        <Component Id="ProjectTemplates2008" Guid="7F1095EE-D392-4596-B931-21CB35374251">
+                            <RemoveFolder Id="ProjectTemplatesBistro2008" Directory="ProjectTemplatesBistro2008" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro Designer\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="FSharp2008.zip" Name="FSharp2008.zip" Source="Templates\VS2008\FSharp.zip" />
+                            <File Id="CSharp2008.zip" Name="CSharp2008.zip" Source="Templates\VS2008\CSharp.zip" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="ItemTemplates2008" Name="ItemTemplates">
+
+                    <Directory Id="ItemTemplatesBistro2008" Name="Bistro">
+                        <Component Id="InstalledItemTemplates2008" Guid="B67DD6E5-F6A5-49E8-853D-BE4D05CA8005">
+                            <RemoveFolder Id="ItemTemplatesBistro2008" Directory="ItemTemplatesBistro2008" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro Designer\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="BrowserFile2008.zip" Name="BrowserFile2008.zip" Source="Templates\ItemTemplates\Bistro\BrowserFile.zip" />
+                            <File Id="FSharpControllers2008.zip" Name="FSharpControllers2008.zip" Source="Templates\ItemTemplates\Bistro\FSharpControllers.zip" />
+                            <File Id="JScript2008.zip" Name="JScript2008.zip" Source="Templates\ItemTemplates\Bistro\JScript.zip" />
+                            <File Id="NDjango2008.zip" Name="NDjango2008.zip" Source="Templates\ItemTemplates\Bistro\NDjango.zip" />
+                            <File Id="StyleSheet2008.zip" Name="StyleSheet2008.zip" Source="Templates\ItemTemplates\Bistro\StyleSheet.zip" />
+                            <File Id="Text2008.zip" Name="Text2008.zip" Source="Templates\ItemTemplates\Bistro\Text.zip" />
+                            <File Id="WebConfig2008.zip" Name="WebConfig2008.zip" Source="Templates\ItemTemplates\Bistro\WebConfig.zip" />
+                            <File Id="WebHTMLPage2008.zip" Name="WebHTMLPage2008.zip" Source="Templates\ItemTemplates\Bistro\WebHTMLPage.zip" />
+
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="VS2008ITEMTEMPLATESLOCATION">
+                <Directory Id="vs2008Web1" Name="Web">
+                    <Component Id="CustomItemTemplates2008" Guid="8EDB5431-75F6-4BF9-A183-BC6ACCBC90BD">
+                        <RemoveFolder Id="vs2008Web1" Directory="vs2008Web1" On="uninstall" />
+                        <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                        <File Id="CSharpController2008" Name="CSharpController2008.zip" Source="Templates\ItemTemplates\Bistro\CSharpControllers.zip" />
+                    </Component>
+                </Directory>
+            </Directory>
+
+            <Directory Id="ENVDIR_2010" Name="EnvDir10">
+                <Directory Id="ProjectTemplates2010" Name="ProjectTemplates">
+                    <Directory Id="ProjectTemplatesBistro2010" Name="Bistro">
+                        <Component Id="ProjectTemplates2010" Guid="F56B6B59-1881-48ED-B84F-F2CB181C6162">
+                            <RemoveFolder Id="ProjectTemplatesBistro2010" Directory="ProjectTemplatesBistro2010" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro Designer\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="FSharp2010.zip" Name="FSharp2010.zip" Source="Templates\VS2010\FSharp.zip" />
+                            <File Id="CSharp2010.zip" Name="CSharp2010.zip" Source="Templates\VS2010\CSharp.zip" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="ItemTemplates2010" Name="ItemTemplates">
+                   
+                    <Directory Id="ItemTemplatesBistro2010" Name="Bistro">
+                        <Component Id="InstalledItemTemplates2010" Guid="05DDE197-2323-4DE0-B0BB-450A008624CE">
+                            <RemoveFolder Id="ItemTemplatesBistro2010" Directory="ItemTemplatesBistro2010" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro Designer\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="BrowserFile2010.zip" Name="BrowserFile2010.zip" Source="Templates\ItemTemplates\Bistro\BrowserFile.zip" />
+                            <File Id="FSharpControllers2010.zip" Name="FSharpControllers2010.zip" Source="Templates\ItemTemplates\Bistro\FSharpControllers.zip" />
+                            <File Id="JScript2010.zip" Name="JScript2010.zip" Source="Templates\ItemTemplates\Bistro\JScript.zip" />
+                            <File Id="NDjango2010.zip" Name="NDjango2010.zip" Source="Templates\ItemTemplates\Bistro\NDjango.zip" />
+                            <File Id="StyleSheet2010.zip" Name="StyleSheet2010.zip" Source="Templates\ItemTemplates\Bistro\StyleSheet.zip" />
+                            <File Id="Text2010.zip" Name="Text2010.zip" Source="Templates\ItemTemplates\Bistro\Text.zip" />
+                            <File Id="WebConfig2010.zip" Name="WebConfig2010.zip" Source="Templates\ItemTemplates\Bistro\WebConfig.zip" />
+                            <File Id="WebHTMLPage2010.zip" Name="WebHTMLPage2010.zip" Source="Templates\ItemTemplates\Bistro\WebHTMLPage.zip" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="VS2010ITEMTEMPLATESLOCATION">
+                    <Directory Id="vs2010Web1" Name="Web">
+                        <Component Id="CustomItemTemplates2010" Guid="B3F465CF-D137-49FD-B0AD-12A48E461482">
+                            <RemoveFolder Id="vs2010Web1" Directory="vs2010Web1" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="CSharpController2010" Name="CSharpController2010.zip" Source="Templates\ItemTemplates\Bistro\CSharpControllers.zip" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            
+
+
+            <Component Id="RegistryDesignerVSX2008" DiskId="1" Guid="5F720FC6-EC7C-44E2-BEE4-8130CE1B3F09">
+                <?include BistroDesigner2008Reg.wxi?>
+            </Component>
+            <Component Id="RegistryProjectExtender" DiskId="1" Guid="6F720FC6-EC7C-44E2-BEE4-8130CE1B3F09">
+                <?include ExtenderReg.wxi?>
+            </Component>
+        </Directory>
+        
+        <Feature Id="ProductFeature" Level="1">
+            <ComponentRef Id="BistroAssemblies" />
+            <ComponentRef Id="ReadmeBistro" />
+        </Feature>
+        <Feature Id="Registry2008" Title="Visual Studio 2008 integration" Level="1">
+            <Condition Level="0"><![CDATA[VS2008FOUND = NULL]]></Condition>
+            <ComponentRef Id="ProjectExtender" />
+            <ComponentRef Id="ProjectTemplates2008" />
+            <ComponentRef Id="InstalledItemTemplates2008" />
+            <ComponentRef Id="CustomItemTemplates2008" />
+            <ComponentRef Id="RegistryDesignerVSX2008" />
+            <ComponentRef Id="RegistryProjectExtender" />
+            <ComponentRef Id="Integration08"/>
+        </Feature>
+        <Feature Id="VS10Extensions" Title="Visual Studio 2010 integration" Level="1">
+            <Condition Level="0"><![CDATA[VS2010FOUND = NULL]]></Condition>
+            <ComponentRef Id="Extender2010"/>
+            <ComponentRef Id="BistroDesigner2010"/>
+            <ComponentRef Id="ProjectTemplates2010" />
+            <ComponentRef Id="InstalledItemTemplates2010" />
+            <ComponentRef Id="CustomItemTemplates2010" />
+            <ComponentRef Id="Integration10"/>
+
+        </Feature>
+        <Feature Id="NDjango" Level="1">
+            <!--<ComponentRef Id="NDjangoMSI2008"/>-->
+            <ComponentRef Id="NDjangoMSI2010"/>
+        </Feature>
+        
+        <Property Id="NDJANGONEEDED" Value="1" />
+        <Binary Id="EditTemplates" SourceFile="versionWriterFull.exe" />
+        <Property Id="WixShellExecTarget" Value="[INSTALLDIR]NDjangoSetup.msi"/>
+        <CustomAction Id="InstallNDjango" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes"/>
+        <!--<CustomAction Id="RunMSI08" Directory="INSTALLDIR" ExeCommand="&quot;msiexec.exe&quot; /passive /i &quot;[INSTALLDIR]Bistro\NDjangoSetup.msi&quot; AGREETOLICENSE=&quot;1&quot; INSTALLDIR=&quot;[INSTALLDIR]NDjango\NET35&quot; TEMPLATESNEEDED=&quot;0&quot; DESIGNERNEEDED=&quot;1&quot;" Return="ignore" />
+        <CustomAction Id="RunMSI10" Directory="INSTALLDIR" ExeCommand="&quot;msiexec.exe&quot;  /i &quot;[INSTALLDIR]Bistro\NDjangoSetup.msi&quot; AGREETOLICENSE=&quot;1&quot; INSTALLDIR=&quot;[INSTALLDIR]NDjango\NET40&quot;"  Return="ignore"/>-->
+        <CustomAction Id="DevenvSetup2008" Property="DEVENV_EXE_PATH2008" ExeCommand="/setup" Impersonate="no" Execute="commit" />
+        <CustomAction Id="DevenvSetup2010" Property="DEVENV_EXE_PATH2010" ExeCommand="/setup" Impersonate="no" Execute="commit" />
+        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]CSharp2008.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditBistroProject2008CustomAction" Return="ignore" Execute="commit" />
+        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]FSharp2008.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditFSharp2008CustomAction" Return="ignore" Execute="commit" />
+        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2010]CSharp2010.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditBistroProject2010CustomAction" Return="ignore" Execute="commit" />
+        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2010]FSharp2010.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditFSharp2010CustomAction" Return="ignore" Execute="commit" />
+
+
+        <CustomAction Id="InstallExtender2010"   Property = "VSIX_PATH"  ExeCommand="&quot;[INSTALLDIR]ProjectExtender2010.vsix&quot; /q" Return="ignore" Execute="deferred" />
+        <CustomAction Id="InstallBistroDesigner2010"   Property = "VSIX_PATH"  ExeCommand="&quot;[INSTALLDIR]BistroDesigner2010.vsix&quot; /q" Return="ignore" Execute="deferred"/>
+        <CustomAction Id="SetExtensionDir" Property="EXTENSIONHILL30FILES" Value="[LocalAppDataFolder]\Microsoft\VisualStudio\10.0\Extensions\Hill30"/>
+        <CustomAction Id="DeleteExtender2010" Directory = "INSTALLDIR" ExeCommand="&quot;cmd.exe&quot; /c rmdir /s /q &quot;[EXTENSIONHILL30FILES]\F# Project System Extender&quot;" Return="ignore"/>
+        <CustomAction Id="DeleteDesigner2010" Directory = "INSTALLDIR" ExeCommand="&quot;cmd.exe&quot; /c rmdir /s /q &quot;[EXTENSIONHILL30FILES]\Bistro Designer&quot;" Return="ignore"/>
+        <CustomAction  Id="SetVSIXPath"  Property="VSIX_PATH" Value="[ENVDIR_2010]\vsixinstaller.exe"/>
+
+        <InstallExecuteSequence>
+            <RemoveExistingProducts Before ="InstallInitialize" />
+            <!--It is important to update templates before calling devenv /setup-->
+            <Custom Action="EditBistroProject2008CustomAction" After="WriteRegistryValues"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <Custom Action="EditFSharp2008CustomAction" After="EditBistroProject2008CustomAction"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <Custom Action="EditBistroProject2010CustomAction" After="WriteRegistryValues"><![CDATA[(Not Installed AND VS2010FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <Custom Action="EditFSharp2010CustomAction" After="EditBistroProject2010CustomAction"><![CDATA[(Not Installed AND VS2010FOUND <> NULL)OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <Custom Action="DevenvSetup2008" Before="InstallFinalize"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL") ]]></Custom>
+            <Custom Action="DevenvSetup2010" Before="InstallFinalize"><![CDATA[(Not Installed AND VS2010FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <!--Run vsixinstaller.exe to install VS2010 extensions correctly-->
+            <Custom Action="SetVSIXPath" Before="InstallFinalize"><![CDATA[Not Installed AND VS2010FOUND <> NULL]]></Custom>
+            <Custom Action="InstallExtender2010"  After="SetVSIXPath"><![CDATA[Not Installed AND VS2010FOUND <> NULL]]></Custom>
+            <Custom Action="InstallBistroDesigner2010"  After="InstallExtender2010"><![CDATA[Not Installed AND VS2010FOUND <> NULL]]></Custom>
+            <Custom Action="SetExtensionDir" After="InstallInitialize"><![CDATA[REMOVE]]></Custom>
+            <Custom Action="DeleteExtender2010" After="SetExtensionDir"><![CDATA[REMOVE]]></Custom>
+            <Custom Action="DeleteDesigner2010" After="DeleteExtender2010"><![CDATA[REMOVE]]></Custom>
+            <!--Run NdjangoSetup.msi if the option is chosen-->
+            <Custom Action="InstallNDjango" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED]]></Custom>
+            <!--<Custom Action="RunMSI08" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED AND VS2010FOUND = NULL ]]></Custom>
+            <Custom Action="RunMSI10" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED AND VS2010FOUND <> NULL ]]></Custom>-->
+        </InstallExecuteSequence>
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+        <!--********UI********-->
+        <UI>
+            <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+            <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+            <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+            <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+            <Property Id="WixUI_Mode" Value="InstallDir" />
+            <DialogRef Id="BrowseDlg" />
+            <DialogRef Id="DiskCostDlg" />
+            <DialogRef Id="ErrorDlg" />
+            <DialogRef Id="FatalError" />
+            <DialogRef Id="FilesInUse" />
+            <DialogRef Id="MsiRMFilesInUse" />
+            <DialogRef Id="PrepareDlg" />
+            <DialogRef Id="ProgressDlg" />
+            <DialogRef Id="ResumeDlg" />
+            <DialogRef Id="UserExit" />
+            <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+            <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+            <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+            <Publish Dialog="WelcomeDlgCustom" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlgCustom">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="InstallDirDlgCustom">LicenseAccepted = "1"</Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">1</Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID="1"]]></Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+            <Publish Dialog="InstallDirDlgCustom" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlgCustom" Order="1">NOT Installed</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+            <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+            <Property Id="ARPNOMODIFY" Value="1" />
+            <Dialog Id="WelcomeDlgCustom" Width="370" Height="270" Title="!(loc.WelcomeDlg_Title)">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+                </Control>
+                <Control Id="Bitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="234" TabSkip="no" Text="!(loc.WelcomeDlgBitmap)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="135" Y="80" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="!(loc.WelcomeDlgDescription)" />
+                <Control Id="Title" Type="Text" X="135" Y="20" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="!(loc.WelcomeDlgTitle)" />
+            </Dialog>
+            <Dialog Id="InstallDirDlgCustom" Width="370" Height="270" Title="!(loc.InstallDirDlg_Title)">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+                </Control>
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.InstallDirDlgDescription)" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.InstallDirDlgTitle)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="FolderLabel" Type="Text" X="20" Y="60" Width="290" Height="30" NoPrefix="yes" Text="!(loc.InstallDirDlgFolderLabel)" />
+                <Control Id="Folder" Type="PathEdit" X="20" Y="100" Width="320" Height="18" Property="WIXUI_INSTALLDIR" Indirect="yes">
+                </Control>
+                <Control Id="ChangeFolder" Type="PushButton" X="20" Y="120" Width="56" Height="17" Text="!(loc.InstallDirDlgChange)">
+                </Control>
+                <Control Type="CheckBox" Id="NDjangoCheckBox" Width="230" Height="17" X="22" Y="169" Property="NDJANGONEEDED" CheckBoxValue="Yes" Text="Install NDjango">
+                </Control>
+                <Control Type="Text" Id="NDjangoNote" Width="350" Height="17" X="20" Y="190" Text="NOTE: You will not be able to use Bistro applications with .django views without NDjango" />
+            </Dialog>
+            <InstallUISequence>
+                <Show Dialog="WelcomeDlgCustom" Before="ProgressDlg">NOT Installed</Show>
+            </InstallUISequence>
+        </UI>
+        <UIRef Id="WixUI_Common" />
+    </Product>
+</Wix>

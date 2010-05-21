@@ -1,0 +1,59 @@
+<Include>
+
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\InstalledProducts\DesignerPackage" Value="#110" Type="string">
+    <Registry Name="Package" Value="{40049e67-3a71-47c2-adfa-87b89aa56b50}" Type="string" />
+    <Registry Name="ProductDetails" Value="#112" Type="string" />
+    <Registry Name="PID" Value="1.0" Type="string" />
+    <Registry Name="LogoID" Value="#400" Type="string" />
+  </Registry>
+
+  
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Packages\{40049e67-3a71-47c2-adfa-87b89aa56b50}" Value="Bistro.Designer.DesignerPackage, Bistro.Designer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string">
+    <Registry Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
+    <Registry Name="Class" Value="Bistro.Designer.DesignerPackage" Type="string" />
+    <Registry Name="CodeBase" Value="[CURRENTVERSIONDIR]bin\Bistro.Designer.dll" Type="string" />
+    <Registry Name="ID" Value="1" Type="integer" />
+    <Registry Name="MinEdition" Value="Standard" Type="string" />
+    <Registry Name="ProductVersion" Value="0.9" Type="string" />
+    <Registry Name="ProductName" Value="Bistro Designer" Type="string" />
+    <Registry Name="CompanyName" Value="Hill30 Inc" Type="string" />
+  </Registry>
+
+  <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Menus">
+    <RegistryValue Name="{40049e67-3a71-47c2-adfa-87b89aa56b50}" Value=", 1000, 1" Type="string" />
+  </RegistryKey>
+
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\CLSID\{d43926cd-8001-42fd-999e-f5b4ba050107}" Value="Bistro.Designer.Projects.FSharp.Properties.CompileOrderPage" Type="string">
+    <Registry Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
+    <Registry Name="Class" Value="Bistro.Designer.Projects.FSharp.Properties.CompileOrderPage" Type="string" />
+    <Registry Name="CodeBase" Value="[CURRENTVERSIONDIR]bin\Bistro.Designer.dll" Type="string" />
+    <Registry Name="ThreadingModel" Value="Both" Type="string" />
+  </Registry>
+
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Projects\{94887830-9110-3f61-84ae-beea7891c7e6}" Value="Factory" Type="string">
+    <Registry Name="Package" Value="{40049e67-3a71-47c2-adfa-87b89aa56b50}" Type="string" />
+    <Registry Name="ProjectTemplatesDir" Value="[CURRENTVERSIONDIR]bin\.\NullPath" Type="string" />
+    <Registry Name="Language(VsTemplate)" Value="Bistro" Type="string" />
+  </Registry>
+
+  
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Projects\{c39a00f4-b2a4-478e-a0b2-c3e69b3bd899}" Value="Web Bistro Factory" Type="string">
+    <Registry Name="Package" Value="{40049e67-3a71-47c2-adfa-87b89aa56b50}" Type="string" />
+    <Registry Name="Language(VsTemplate)" Value="Bistro" Type="string" />
+    <Registry Name="ShowOnlySpecifiedTemplates(VsTemplate)" Value="0" Type="integer" />
+    <Registry Name="TemplateGroupIDs(VsTemplate)" Value="Web" Type="string" />
+  </Registry>
+
+  <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\Projects\{349c5851-65df-11da-9384-00065b846f21}\LanguageTemplates">
+    <RegistryValue Name="{f2a71f9b-5d33-465a-a702-920d77279786}" Value="{c39a00f4-b2a4-478e-a0b2-c3e69b3bd899}" Type="string" />
+  </RegistryKey>
+
+  <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\NewProjectTemplates\TemplateDirs\{40049e67-3a71-47c2-adfa-87b89aa56b50}\/1">
+    <RegistryValue Name="SortPriority" Value="100" Type="integer" />
+    <RegistryValue Name="TemplatesDir" Value="[CURRENTVERSIONDIR]bin\.\NullPath" Type="string" />
+  </RegistryKey>
+
+  <Registry Root="HKLM" Key="Software\Microsoft\VisualStudio\9.0\ToolWindows\{f9395d80-5ace-41c2-8c02-4be3582a6750}" Value="{40049e67-3a71-47c2-adfa-87b89aa56b50}" Type="string">
+    <Registry Name="Name" Value="Bistro.Designer.Explorer.ExplorerWindow" Type="string" />
+  </Registry>
+</Include>

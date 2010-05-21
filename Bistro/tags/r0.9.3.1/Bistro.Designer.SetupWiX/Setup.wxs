@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?define ProductVersion="1.0.0" ?>
+    <?define ProductVersionTitle="1.0.0.0" ?>
+    <?define VisualStudioRegistryRoot = "Software\Microsoft\VisualStudio\9.0" ?>
+    <?define IntegrationBinPath=..\Bistro.Designer\Bin\Debug?>
+
+
+  <Product Id="71c3dc26-9ed0-445a-ae5f-0ffa830061db" Name="Bistro.Designer.SetupWiX" Language="1033" Version="1.0.0.0" Manufacturer="Bistro.Designer.SetupWiX" UpgradeCode="dc4e8d88-528b-4a74-9637-64c2dae0ca13">
+        <Package InstallerVersion="200" Compressed="yes" />
+        <Media Id="1" EmbedCab="yes" Cabinet="setup.cab" />
+        <Property Id="ALLUSERS" Value="1" />
+        <Property Id="ENVDIR_2008">
+            <RegistrySearch Id="RL_EnvironmentDir_2008" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\Setup\VS" Name="EnvironmentDirectory" Type="directory" />
+        </Property>
+        <Property Id="DEVENV_EXE_PATH">
+          <RegistrySearch Id="RegSearch_DevenvExe_Path" Root="HKLM" Key="$(var.VisualStudioRegistryRoot)\Setup\VS" Name="EnvironmentPath" Type="raw" />
+        </Property>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder" Name="PFiles">
+                <Directory Id="Hill30" Name="Hill30">
+                    <Directory Id="INSTALLDIR" Name="Bistro Designer">
+                        <Directory Id="CURRENTVERSIONDIR" Name="$(var.ProductVersion)">
+                            <Directory Id="bin" Name="bin">
+                                <Component Id="BistroDesigner_assemblies" Guid="CBBC721D-C0AA-450F-8F9C-D9B1880B42CB" DiskId="1">
+                                    <!--*.dll-->
+                                    <File Id="Bistro.Designer.dll" Name="$(var.Bistro.Designer.TargetFileName)" Source="$(var.Bistro.Designer.TargetPath)" DiskId="1" />
+                                </Component>
+                            </Directory>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="ENVDIR_2008" Name="EnvDir">
+                <Directory Id="ProjectTemplates" Name="ProjectTemplates">
+                    <Directory Id="ProjectTemplatesBistro" Name="Bistro">
+                        <Component Id="ProjectTemplates2008" Guid="7F1095EE-D392-4596-B931-21CB35374251">
+                            <RemoveFolder Id="ProjectTemplatesBistro" Directory="ProjectTemplatesBistro" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro Designer\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="FSharp.zip" Name="FSharp.zip" Source="Templates\ProjectTemplates\Bistro\FSharp.zip" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="ItemTemplates" Name="ItemTemplates">
+                    <Directory Id="ItemTemplatesBistro" Name="Bistro">
+                        <Component Id="ItemTemplates2008" Guid="B67DD6E5-F6A5-49E8-853D-BE4D05CA8005">
+                            <RemoveFolder Id="ItemTemplatesBistro" Directory="ItemTemplatesBistro" On="uninstall" />
+                            <RegistryValue Root="HKCU" Key="Software\Hill30\Bistro Designer\[ProductVersion]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                            <File Id="BrowserFile.zip" Name="BrowserFile.zip" Source="Templates\ItemTemplates\Bistro\BrowserFile.zip" />
+                            <File Id="FSharpControllers.zip" Name="FSharpControllers.zip" Source="Templates\ItemTemplates\Bistro\FSharpControllers.zip" />
+                            <File Id="JScript.zip" Name="JScript.zip" Source="Templates\ItemTemplates\Bistro\JScript.zip" />
+                            <File Id="NDjango.zip" Name="NDjango.zip" Source="Templates\ItemTemplates\Bistro\NDjango.zip" />
+                            <File Id="StyleSheet.zip" Name="StyleSheet.zip" Source="Templates\ItemTemplates\Bistro\StyleSheet.zip" />
+                            <File Id="Text.zip" Name="Text.zip" Source="Templates\ItemTemplates\Bistro\Text.zip" />
+                            <File Id="WebConfig.zip" Name="WebConfig.zip" Source="Templates\ItemTemplates\Bistro\WebConfig.zip" />
+                            <File Id="WebHTMLPage.zip" Name="WebHTMLPage.zip" Source="Templates\ItemTemplates\Bistro\WebHTMLPage.zip" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Component Id="RegistryDesignerVSX" DiskId="1" Guid="5F720FC6-EC7C-44E2-BEE4-8130CE1B3F09">
+                <File Id="File_Bistro.Designer.dll" LongName="Bistro.Designer.dll" Source="$(var.IntegrationBinPath)\" />
+                <?include RegpkgWIX.wxi?>
+            </Component>
+        </Directory>
+        <Feature Id="InstallAll" Title="Bistro.Designer.SetupWiX" Level="1">
+            <!-- TODO: Remove the comments around this ComponentRef element and the Component above in order to add resources to this installer. -->
+            <!-- <ComponentRef Id="ProductComponent" /> -->
+            <ComponentRef Id="BistroDesigner_assemblies" />
+            <ComponentRef Id="ProjectTemplates2008" />
+            <ComponentRef Id="ItemTemplates2008" />
+            <ComponentRef Id="RegistryDesignerVSX" />
+        </Feature>
+
+
+    
+      <CustomAction ExeCommand="&quot;C:\Program Files\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Tools\bin\RegPkg.exe&quot; /root:Software\Microsoft\VisualStudio\9.0 /codebase &quot;[CURRENTVERSIONDIR]bin\Bistro.Designer.dll&quot;" Directory="TARGETDIR" Id="RegPkg" Return="ignore" />
+      <CustomAction ExeCommand="&quot;C:\Program Files\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Tools\bin\RegPkg.exe&quot; /root:Software\Microsoft\VisualStudio\9.0 /codebase &quot;C:\Hill30\Bistro\WithMethodsEngine\Bistro.Designer\bin\Debug\Bistro.Designer.dll&quot; /unregister" Directory="TARGETDIR" Id="UnRegPkg" Return="ignore" />
+
+    <CustomAction Id="CA_DevenvSetup" Property="DEVENV_EXE_PATH" ExeCommand="/setup"  Impersonate="no" Execute="deferred" />
+      
+      <InstallExecuteSequence>
+        <!--<Custom Action="RegPkg" After="InstallFinalize"><![CDATA[(NOT Installed)]]></Custom>
+        <Custom Action="UnRegPkg" After="RegPkg"><![CDATA[((&InstallAll=2) AND (!InstallAll=3))]]></Custom>-->
+        <Custom Action="CA_DevenvSetup" Before="InstallFinalize" />
+
+      </InstallExecuteSequence>
+
+    </Product>
+</Wix>
