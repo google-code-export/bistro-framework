@@ -20,7 +20,6 @@ using Bistro.Interfaces;
 namespace Bistro.Designer.Explorer
 {
     using ControllersTable = Dictionary<string, Dictionary<string, List<string>>>;
-    using Microsoft.Build.BuildEngine;
     public delegate void UpdateTreeDelegate(object sender, UpdateEventArgs e);
     public struct Node
     {
@@ -44,10 +43,10 @@ namespace Bistro.Designer.Explorer
         internal ChangesTracker(string parserType)
         {
 
-            SectionHandler sh = new SectionHandler();
-            sh.Application = "Bistro.Application";
-            sh.LoggerFactory = "Bistro.Logging.DefaultLoggerFactory";
-            Bistro.Application.Initialize(sh);
+            //SectionHandler sh = new SectionHandler();
+            //sh.Application = "Bistro.Application";
+            //sh.LoggerFactory = "Bistro.Logging.DefaultLoggerFactory";
+            //Bistro.Application.Initialize(sh);
             this.engine = new Bistro.MethodsEngine.EngineControllerDispatcher(Bistro.Application.Instance);
             this.projExt = parserType;
             if (parserType == "csproj")

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bistro.Designer", "Bistro.Designer.csproj", "{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bistro.Designer2008", "Bistro.Designer2008.csproj", "{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectExtender", "..\ProjectExtender\ProjectExtender.csproj", "{C085BF9A-0393-4D2C-8EAE-7BA0ED1EEB09}"
 EndProject

@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,20 +21,28 @@ namespace Hill30.Tools
 
 
         /// <summary>
-        /// The program search through the registry for specified value to get the corresponding installation path
+        /// If defined regkeys The program search through the registry for specified value to get the corresponding installation path
         /// Once found, it replaces the special values like [BISTRODIR] in project files with retrieved paths.
         /// </summary>
-        /// <param name="args">only one argument - template path</param>
+        /// <param name="args">0 - template path,1-BISTRO,2-NDJANGO 2008,3-NDJANGO 2010,4 - F# Project Extender</param>
         static void Main(string[] args)
         {
             try
             {
-                String FILE_PATH = args[0];
-
-                String bistroPath = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\Bistro").GetValue("InstallDir");
-                String ndjangoPath35 = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango\Net35").GetValue("InstallDir");
-                String ndjangoPath40 = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango\Net40").GetValue("InstallDir");
-                String extenderPath = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\ProjectExtender").GetValue("InstallDir");
+                String FILE_PATH; //= args[0];
+                String bistroPath ;//= (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\Bistro").GetValue("InstallDir");
+                String ndjangoPath35;// = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango\Net35").GetValue("InstallDir");
+                String ndjangoPath40;// = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\NDjango\Net40").GetValue("InstallDir");
+                String extenderPath;// = (String)Registry.LocalMachine.CreateSubKey(@"Software\Hill30\ProjectExtender").GetValue("InstallDir");
+                if (args.Length == 5)
+                {
+                    FILE_PATH = args[0];
+                    bistroPath = args[1];
+                    ndjangoPath35 = args[2];
+                    ndjangoPath40 = args[3];
+                    extenderPath = args[4];
+                }
+                else return; 
 
                 FILE_PATH = FILE_PATH.Replace("\"", "");
 

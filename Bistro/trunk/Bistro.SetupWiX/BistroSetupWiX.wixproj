@@ -46,14 +46,9 @@
   <ItemGroup>
     <Content Include="ExtenderReg.wxi" />
     <Content Include="lib\Bistro.Core.dll" />
-    <Content Include="lib\Bistro.Designer.dll" />
-    <Content Include="lib\Bistro.Designer.pkgdef" />
     <Content Include="lib\Bistro.Extensions.dll" />
     <Content Include="lib\Bistro.FSharpExtensions.dll" />
-    <Content Include="lib\extension.vsixmanifest" />
-    <Content Include="lib\NDjangoSetupExtended.msi" />
     <Content Include="BistroDesigner2008Reg.wxi" />
-    <Content Include="lib\ProjectExtender.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
