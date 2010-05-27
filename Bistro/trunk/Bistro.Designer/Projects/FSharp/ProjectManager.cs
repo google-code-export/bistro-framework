@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using Bistro.Configuration;
+//using Bistro.Configuration;
 
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using Microsoft.VisualStudio.OLE.Interop;

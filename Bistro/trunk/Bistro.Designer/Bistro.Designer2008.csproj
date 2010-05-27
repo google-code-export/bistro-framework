@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bistro.Designer</RootNamespace>
     <AssemblyName>Bistro.Designer2008</AssemblyName>
-    <SignAssembly>False</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ProjectGuid>{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}</ProjectGuid>
@@ -79,6 +79,7 @@
     <Reference Include="Microsoft.VisualStudio.ManagedInterfaces" />
     <Reference Include="Microsoft.VisualStudio.ProjectAggregator, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Shell.Design, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TemplateWizardInterface, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.VSHelp, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Designer.Interfaces" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
@@ -261,6 +262,7 @@
     <Compile Include="ProjectBase\VsCommands.cs" />
     <Compile Include="ProjectBase\VSShellUtilities.cs" />
     <Compile Include="Projects\FSharp\ProjectManager.cs" />
+    <Compile Include="Templates\ReferenceWizard.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
