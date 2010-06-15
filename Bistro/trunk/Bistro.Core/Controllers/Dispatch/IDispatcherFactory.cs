@@ -32,6 +32,5 @@ namespace Bistro.Controllers.Dispatch
         /// </summary>
         /// <returns></returns>
         IControllerDispatcher GetDispatcherInstance();
-
     }
 }

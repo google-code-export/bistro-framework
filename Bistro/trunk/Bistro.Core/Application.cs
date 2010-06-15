@@ -64,7 +64,7 @@ namespace Bistro
         /// Gets or sets the application instance.
         /// </summary>
         /// <value>The instance.</value>
-		public static Application Instance { get; private set; }
+        public static Application Instance { get; protected set; }
 
         /// <summary>
         /// The application root directory
@@ -95,15 +95,20 @@ namespace Bistro
             AssemblySkipped
         }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Application"/> class.
-		/// </summary>
-		/// <param name="loggerFactory">The logger factory.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Application"/> class.
+        /// </summary>
         public Application(ILoggerFactory loggerFactory)
         {
             LoggerFactory = loggerFactory;
             logger = loggerFactory.GetLogger(GetType());
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Application"/> is initialized.
+        /// </summary>
+        /// <value><c>true</c> if initialized; otherwise, <c>false</c>.</value>
+        public bool Initialized { get; protected set; }
 
         /// <summary>
         /// Initializes the application from the configuration section provided.
@@ -112,39 +117,29 @@ namespace Bistro
         public static void Initialize(SectionHandler configuration)
         {
             ILoggerFactory loggerFactory = LoadComponent<ILoggerFactory>(null, configuration.LoggerFactory, typeof(DefaultLoggerFactory), new object[] { });
-            ILogger _logger = loggerFactory.GetLogger(typeof(Application));
+            ILogger logger = loggerFactory.GetLogger(typeof(Application));
 
-            Application application = LoadComponent<Application>(_logger, configuration.Application, typeof(Application), new object[] { loggerFactory });
+            Application application = LoadComponent<Application>(logger, configuration.Application, typeof(Application), new object[] { loggerFactory });
             Instance = application;
+            logger = application.LoggerFactory.GetLogger(application.GetType());
 
             // preload the assemblies prior to any other initialization, because they
             // may rely on that stuff being there.
             application.PreLoadAssemblies();
-			application.InitializeAfter(configuration);
 
+            application.FormatManagerFactory = LoadComponent<IFormatManagerFactory>(logger, configuration.FormatManager, typeof(DefaultFormatManagerFactory), new object[] { application, configuration });
+            application.HandlerFactory = LoadComponent<IControllerHandlerFactory>(logger, configuration.ControllerHandlerFactory, typeof(ValidatingHandlerFactory), new object[] { application, configuration });
+            application.DispatcherFactory = LoadComponent<IDispatcherFactory>(logger, configuration.DispatcherFactory, typeof(DispatcherFactory), new object[] { application, configuration });
+
+            // manager factory requires handler and dispatcher factories to be in place
+            application.ManagerFactory = LoadComponent<IControllerManagerFactory>(logger, configuration.ControllerManagerFactory, typeof(ControllerManagerFactory), new object[] { application, configuration });
+
+            application.Initialized = true;
+
+            var methodDispatcher = new MethodDispatcher(application);
+            if (methodDispatcher.IsMethodDefined(ApplicationStartup))
+                methodDispatcher.InvokeMethod(null, ApplicationStartup, new EventContext(null, false));
         }
-
-		/// <summary>
-		/// Initialization process after assemblies preloading.
-		/// This method can be called to reconfigure application, 
-		/// but in that case loggerFactory and application will be the same.
-		/// </summary>
-		protected virtual void InitializeAfter(SectionHandler configuration)
-		{
-			FormatManagerFactory = LoadComponent<IFormatManagerFactory>(logger, configuration.FormatManager, typeof(DefaultFormatManagerFactory), new object[] { this, configuration });
-			HandlerFactory = LoadComponent<IControllerHandlerFactory>(logger, configuration.ControllerHandlerFactory, typeof(ValidatingHandlerFactory), new object[] { this, configuration });
-			DispatcherFactory = LoadComponent<IDispatcherFactory>(logger, configuration.DispatcherFactory, typeof(DispatcherFactory), new object[] { this, configuration });
-
-			// manager factory requires handler and dispatcher factories to be in place
-			ManagerFactory = LoadComponent<IControllerManagerFactory>(logger, configuration.ControllerManagerFactory, typeof(ControllerManagerFactory), new object[] { this, configuration });
-
-			// Invoke application startup event
-			var methodDispatcher = new MethodDispatcher(this);
-			// Application startup method should be defined explicitly.
-			if (methodDispatcher.IsMethodDefinedExplicitly(ApplicationStartup))
-				methodDispatcher.InvokeMethod(null, ApplicationStartup, new EventContext(null, false));
-		}
-
 
         /// <summary>
         /// Preloads assemblies that are likely to be used by the bistro runtime

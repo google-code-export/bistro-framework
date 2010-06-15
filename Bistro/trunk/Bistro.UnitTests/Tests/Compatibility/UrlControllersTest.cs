@@ -43,7 +43,7 @@ namespace Bistro.UnitTests.Tests.Compatibility
 			groupsList = controllers.ToList();
 			if (groupsList.Count ==0)
 				throw new Exception("UrlControllersTest has invalid definition");
-            
+
 			processedGroups = new List<object>();
 		}
 
@@ -87,38 +87,18 @@ namespace Bistro.UnitTests.Tests.Compatibility
 
 	internal class CtrGroupOrdered : CtrGroupCommon
 	{
-		internal CtrGroupOrdered(bool hasDuplicate, params object[] controllers)
+		internal CtrGroupOrdered(params object[] controllers)
 		{
-            this.hasDuplicate = hasDuplicate;
 			nextItem = 0;
-            this.hasDuplicate = hasDuplicate;
 			groupsList = controllers.ToList();
 			if (groupsList == null)
 				throw new Exception("UrlControllersTest has invalid definition");
 		}
 
-        internal CtrGroupOrdered( params object[] controllers)
-            : this(false, controllers) {}
-      
 		private int nextItem;
-        private string previousCtrName;
-
-        private bool hasDuplicate;
-        public bool HasDuplicate { get { return hasDuplicate; } }
 
 		internal override bool ValidateNext(string controllerName)
 		{
-            if (previousCtrName == controllerName)
-            {
-                nextItem++;
-                return true;
-            }
-            else
-            {
-                previousCtrName = controllerName;
-            }
-            
-
 			bool retVal = true;
 			object obj = groupsList[nextItem];
 			if (obj is CtrGroupUnordered)
@@ -160,37 +140,32 @@ namespace Bistro.UnitTests.Tests.Compatibility
 
     internal class UrlControllersTest
     {
-        internal UrlControllersTest(string name, string url, bool hasDuplicate, params object[] controllers)
+        internal UrlControllersTest(string name, string url, params object[] controllers)
         {
             testUrl = url;
 
-            rootGroup = new CtrGroupOrdered(hasDuplicate, controllers);
+			rootGroup = new CtrGroupOrdered(controllers);
         }
 
-        internal UrlControllersTest(string name, string url, params object[] controllers)
-            : this(name, url, false, controllers) { }
-        
         string testUrl;
 		CtrGroupOrdered rootGroup;
 
-        public void Validate(IControllerDispatcher dispatcher, int urlNumber)
+        public void Validate(IControllerDispatcher dispatcher)
         {
 			Func<String, ControllerInvocationInfo, String> sumStr = (oldStr, invInfo) => oldStr += "+" + invInfo.BindPoint.Controller.ControllerTypeName;
 
             var ctrlrs = dispatcher.GetControllers(testUrl);
-
-            if (!rootGroup.HasDuplicate)
-                Assert.AreEqual(rootGroup.GetCount(), ctrlrs.Count, "Controller queues lengths are different. URL:{0}; Return Controllers:{1}, URL Number: {2} ", testUrl, ctrlrs.Aggregate(String.Empty, sumStr), urlNumber);
+			Assert.AreEqual(rootGroup.GetCount(), ctrlrs.Length, "Controller queues lengths are different. URL:{0}; Return Controllers:{1} ", testUrl, ctrlrs.Aggregate(String.Empty, sumStr));
 
 			int i = 0;
 			foreach (var controllerInfo in ctrlrs)
 			{
-				Assert.IsTrue(rootGroup.ValidateNext(controllerInfo.BindPoint.Controller.ControllerTypeName), "Controller names are different at position: {0}; Controllers:{1}; URL Number: {2}", i,ctrlrs.Aggregate(String.Empty,sumStr), urlNumber);
+				Assert.IsTrue(rootGroup.ValidateNext(controllerInfo.BindPoint.Controller.ControllerTypeName), "Controller names are different at position: {0}; Controllers:{1}", i,ctrlrs.Aggregate(String.Empty,sumStr));
 				i++;
 			}
 
-
-		}
-	}
+            
+        }
+    }
 
 }

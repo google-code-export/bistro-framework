@@ -64,7 +64,6 @@ namespace Bistro.Controllers
             var mgr = new ControllerManager(application);
             mgr.Load();
 
-            
             return mgr;
         }
     }

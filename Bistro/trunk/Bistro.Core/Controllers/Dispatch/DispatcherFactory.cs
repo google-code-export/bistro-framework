@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Bistro.Configuration;
-using Bistro.MethodsEngine;
 
 namespace Bistro.Controllers.Dispatch
 {
@@ -70,7 +69,7 @@ namespace Bistro.Controllers.Dispatch
         /// <returns></returns>
         public virtual IControllerDispatcher GetDispatcherImpl(Application application)
         {
-            return new EngineControllerDispatcher(application);
+            return new ControllerDispatcher(application);
         }
     }
 }

@@ -203,7 +203,7 @@ namespace Bistro.Validation
         public virtual Validator<T> ByMapping()
         {
             IList<EntityMapperBase> mappers = MapperRepository.Instance.FindMapperBySource(typeof (T));
-            if (mappers.Count < 1)
+            if (mappers.Count != 1)
                 throw new InvalidOperationException(String.Format("{0} is not mappable, and cannot be used in this context", typeof(T).Name));
 
             // the entity type is the second type parameter to EntityMapper<T,K>

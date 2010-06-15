@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Bistro.Controllers;
 using Bistro.Configuration;
-using Bistro.Interfaces;
 
 namespace Bistro.Validation
 {
@@ -24,7 +23,7 @@ namespace Bistro.Validation
         /// </summary>
         /// <param name="descriptor">The descriptor.</param>
         /// <returns></returns>
-        public override IControllerHandler CreateControllerHandler(IControllerDescriptor descriptor)
+        public override IControllerHandler CreateControllerHandler(Bistro.Controllers.Descriptor.ControllerDescriptor descriptor)
         {
             var type = descriptor.ControllerType as Type;
             if (type != null && typeof(IValidatable).IsAssignableFrom(type))

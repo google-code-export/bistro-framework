@@ -18,7 +18,7 @@ namespace Bistro.UnitTests.Tests
 {
     public static class TypeExtention
     {
-        public static bool IsBefore(this Type before, Type after, List<ControllerInvocationInfo> controllers) {
+        public static bool IsBefore(this Type before, Type after, ControllerInvocationInfo[] controllers) {
             bool ret = false;
             int count = 0;
 
@@ -44,9 +44,9 @@ namespace Bistro.UnitTests.Tests
             return ret && count >= 2;
         }
 
-        public static bool IsPresentIn(this Type t, List<ControllerInvocationInfo> bindPoints)
+        public static bool IsPresentIn(this Type t, ControllerInvocationInfo[] controllers)
         {
-            foreach (var info in bindPoints)
+            foreach (var info in controllers)
                 if (info.BindPoint.Controller.ControllerType == t)
                     return true;
 
@@ -62,8 +62,8 @@ namespace Bistro.UnitTests.Tests
         [Test]
         public void HomeURL()
         {
-            var controllers = dispatcher.GetControllers("GET/");
-            Assert.AreEqual(2 + controllerCountOffset, controllers.Count);
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/");
+            Assert.AreEqual(2 + controllerCountOffset, controllers.Length);
 
             Assert.That(typeof(HomeUrlController1).IsPresentIn(controllers), "HomeUrlController1 is missing");
             Assert.That(typeof(HomeUrlController2).IsPresentIn(controllers), "HomeUrlController2 is missing");
@@ -72,23 +72,23 @@ namespace Bistro.UnitTests.Tests
         [Test]
         public void HelloYou1()
         {
-            var controllers = dispatcher.GetControllers("GET/hello/world");
-            Assert.AreEqual(0 + controllerCountOffset, controllers.Count);
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/hello/world");
+            Assert.AreEqual(0 + controllerCountOffset, controllers.Length);
         }
 
         [Test]
         public void HelloYou2()
         {
-            var controllers = dispatcher.GetControllers("GET/hello/how/are/you");
-            Assert.AreEqual(1 + controllerCountOffset, controllers.Count);
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/hello/how/are/you");
+            Assert.AreEqual(1 + controllerCountOffset, controllers.Length);
             Assert.That(typeof(HelloYouController1).IsPresentIn(controllers), "Controller HelloYouController1 is missing");
         }
 
         [Test]
         public void HelloYou3()
         {
-            var controllers = dispatcher.GetControllers("GET/hello/howAre/you");
-            Assert.AreEqual(2 + controllerCountOffset, controllers.Count);
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/hello/howAre/you");
+            Assert.AreEqual(2 + controllerCountOffset, controllers.Length);
             Assert.That(typeof(HelloYouController1).IsBefore(typeof(HelloYouController2), controllers), "HelloYouController1 should be before HelloYouController2");
         }
 
@@ -96,8 +96,8 @@ namespace Bistro.UnitTests.Tests
         [Test]
         public void URLs2()
         {
-            var controllers = dispatcher.GetControllers("GET/one_little_url");
-            Assert.That(controllers.Count == 2 + controllerCountOffset, "We have " + (controllers.Count - controllerCountOffset) + "controllers bound to the URL \"/one_little_url\" instead of 2");
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/one_little_url");
+            Assert.That(controllers.Length == 2 + controllerCountOffset, "We have " + (controllers.Length - controllerCountOffset) + "controllers bound to the URL \"/one_little_url\" instead of 2");
             Assert.That(typeof(littleController2).IsBefore(typeof(littleController1), controllers), "Wrong order, problems with littleController1");
             Assert.That(typeof(littleController1).IsBefore(typeof(ReturnTypesController), controllers), "Wrong order, problems with ReturnTypesController");
         }
@@ -106,8 +106,8 @@ namespace Bistro.UnitTests.Tests
         [Test]
         public void URLs3()
         {
-            var controllers = dispatcher.GetControllers("GET/little_url/more");
-            Assert.That(controllers.Count == 3 + controllerCountOffset, "We have " + (controllers.Count - controllerCountOffset) + "controllers bound to the URL \"/little_url/more\" instead of 3");
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/little_url/more");
+            Assert.That(controllers.Length == 3 + controllerCountOffset, "We have " + (controllers.Length - controllerCountOffset) + "controllers bound to the URL \"/little_url/more\" instead of 3");
             Assert.That(typeof(littleController3).IsBefore(typeof(littleController5), controllers), "Wrong order, problems with littleController5");
             Assert.That(typeof(littleController5).IsBefore(typeof(littleController4), controllers), "Wrong order, problems with littleController4");
             Assert.That(typeof(littleController4).IsBefore(typeof(ReturnTypesController), controllers), "Wrong order, problems with ReturnTypesController");
@@ -120,8 +120,8 @@ namespace Bistro.UnitTests.Tests
         [Test]
         public void Order()
         {
-            var controllers = dispatcher.GetControllers("GET/order/world/new");
-            Assert.That(controllers.Count == 7 + controllerCountOffset, "We have " + controllers.Count + " controllers bound to the URL \"/order/world/new\" instead of 8");
+            ControllerInvocationInfo[] controllers = dispatcher.GetControllers("GET/order/world/new");
+            Assert.That(controllers.Length == 7 + controllerCountOffset, "We have " + controllers.Length + " controllers bound to the URL \"/order/world/new\" instead of 8");
             List<string> ctrs = new List<string>();
             foreach (ControllerInvocationInfo ctr in controllers)
             {

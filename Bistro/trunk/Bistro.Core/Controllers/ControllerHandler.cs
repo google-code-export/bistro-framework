@@ -31,7 +31,6 @@ using Bistro.Configuration.Logging;
 using Bistro.Controllers.OutputHandling;
 using Bistro.Controllers.Descriptor.Data;
 using Bistro.Entity;
-using Bistro.Interfaces;
 using System.Globalization;
 
 namespace Bistro.Controllers
@@ -54,7 +53,7 @@ namespace Bistro.Controllers
 		/// <summary>
 		/// The controller managed by this handler. The specific bind-point is determined at the point of invocation.
 		/// </summary>
-		IControllerDescriptor descriptor;
+		ControllerDescriptor descriptor;
 
 		/// <summary>
 		/// A list of all fields modified by the system
@@ -95,7 +94,7 @@ namespace Bistro.Controllers
 		/// Initializes a new instance of the <see cref="ControllerHandler"/> class.
 		/// </summary>
 		/// <param name="controllerType">Type of the controller.</param>
-        protected internal ControllerHandler(Application application, IControllerDescriptor descriptor, ILogger logger)
+        protected internal ControllerHandler(Application application, ControllerDescriptor descriptor, ILogger logger)
         {
             this.descriptor = descriptor;
             this.logger = logger;
@@ -130,7 +129,7 @@ namespace Bistro.Controllers
         /// Builds the mapper. MapsWith attribute takes priority over InferMappingFor. Also, multiple mapping attributes are currently unsupported.
         /// </summary>
         /// <param name="descriptor">The descriptor.</param>
-        protected virtual void BuildMapper(IControllerDescriptor descriptor)
+        protected virtual void BuildMapper(ControllerDescriptor descriptor)
         {
             var mapperAttribute = descriptor.ControllerType.GetCustomAttributes(typeof (MapsWithAttribute), false) as MapsWithAttribute[];
             if (mapperAttribute != null && mapperAttribute.Length == 1)
@@ -186,14 +185,12 @@ namespace Bistro.Controllers
 			// it won't get overriden with a null.
 
 			foreach (string field in info.Parameters.Keys)
-			    // not all path parameters may be present on the controller
-			    if (info.BindPoint.ParameterFields.ContainsKey(field))
-			        SetValue(
-			            instance, 
-			            info.BindPoint.ParameterFields[field], 
-			            info.Parameters[field]);
-
-
+				// not all path parameters may be present on the controller
+				if (info.BindPoint.ParameterFields.ContainsKey(field))
+					SetValue(
+						instance, 
+						info.BindPoint.ParameterFields[field], 
+						info.Parameters[field]);
 
             if (context != null)
             {
@@ -236,7 +233,6 @@ namespace Bistro.Controllers
 
 			return instance;
 		}
-
 
 		/// <summary>
 		/// Prepares the controller for a new lifecycle.

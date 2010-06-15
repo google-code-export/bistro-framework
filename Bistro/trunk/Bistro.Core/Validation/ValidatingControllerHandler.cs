@@ -5,7 +5,6 @@ using System.Text;
 using Bistro.Controllers;
 using Bistro.Controllers.Descriptor;
 using Bistro.Configuration.Logging;
-using Bistro.Interfaces;
 
 namespace Bistro.Validation
 {
@@ -29,7 +28,7 @@ namespace Bistro.Validation
         /// </summary>
         /// <param name="descriptor"></param>
         /// <param name="logger"></param>
-        protected internal ValidatingControllerHandler(Application application, IControllerDescriptor descriptor, ILogger logger)
+        protected internal ValidatingControllerHandler(Application application, ControllerDescriptor descriptor, ILogger logger)
             : base(application, descriptor, logger)
         {
             try
@@ -53,9 +52,9 @@ namespace Bistro.Validation
         /// <param name="context">The context.</param>
         /// <param name="requestContext">The request context.</param>
         /// <returns></returns>
-		public override IController GetControllerInstance(ControllerInvocationInfo invocationInfo, System.Web.HttpContextBase context, IContext requestContext)
+        public override IController GetControllerInstance(ControllerInvocationInfo info, System.Web.HttpContextBase context, IContext requestContext)
         {
-			var instance = base.GetControllerInstance(invocationInfo, context, requestContext);
+            var instance = base.GetControllerInstance(info, context, requestContext);
             var validatable = (IValidatable)instance;
 
             validatable.Messages = new List<IValidationResult>();
@@ -66,6 +65,9 @@ namespace Bistro.Validation
                 var messages = new List<IValidationResult>();
                 validatable.IsValid = validator.IsValid(instance, out messages) && validatable.IsValid;
                 validatable.Messages.InsertRange(0, messages);
+
+                //validatable.IsValid = validator.IsValid(instance, out messages) && validatable.IsValid;
+                //validatable.Messages.InsertRange(0, messages);
 
             }
 
