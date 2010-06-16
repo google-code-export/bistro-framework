@@ -31,6 +31,7 @@ using Bistro.Controllers.Dispatch;
 using System.Reflection;
 using Bistro.Configuration.Logging;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Bistro.Controllers.Dispatch
 {
@@ -152,7 +153,8 @@ namespace Bistro.Controllers.Dispatch
 
             int i = 0;
             while (i < controllers.Count)
-                if (typeof(ISecurityController).IsAssignableFrom(controllers[i].BindPoint.Controller.ControllerType as Type))
+                if (typeof(ISecurityController).IsAssignableFrom(controllers[i].BindPoint.Controller.ControllerType as Type) ||
+                    controllers[i].BindPoint.Controller.ControllerType.GetCustomAttributes(typeof(SecurityAttribute), false).FirstOrDefault() != null)
                 {
                     securityControllers.Add(controllers[i]);
                     controllers.RemoveAt(i);
