@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?define ProductVersion="0.9.3.1" ?>
-    <?define ProductVersionTitle="0.9.3.1" ?>
+    <?define ProductVersion="0.9.3.2" ?>
+    <?define ProductVersionTitle="0.9.3.2" ?>
     <?define VisualStudioRegistryRoot2008 = "Software\Microsoft\VisualStudio\9.0" ?>
     <?define VisualStudioRegistryRoot2010 = "Software\Microsoft\VisualStudio\10.0" ?>
     <?define UpgradeCode="{E63B2D78-54C6-4d2a-B3EF-219EF3AE8FBC}"?>
-    <Product Id="025811B6-BD51-4BAC-90F1-8E42D11D9B90" Name="Bistro $(var.ProductVersionTitle)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Hill30" UpgradeCode="$(var.UpgradeCode)">
+    <Product Id="276C4B07-61C1-4CF8-8638-30AD04ED9828" Name="Bistro $(var.ProductVersionTitle)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Hill30" UpgradeCode="$(var.UpgradeCode)">
         <Package InstallerVersion="200" Compressed="yes" />
       <!--BE70CEDF718001B458C0D3CD50AA5D04-->
       <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
@@ -68,12 +68,12 @@
                 <Directory Id="Hill30" Name="Hill30">
 
                     <Directory Id="INSTALLDIR" Name="Bistro">
-                        <!--<Component Id="NDjangoMSI2008" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
-                            <Condition><![CDATA[VS2010FOUND = NULL]]></Condition>
-                            <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2008.msi" />
-                        </Component>-->
-                        <Component Id="NDjangoMSI2010" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
-                            <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
+                        <Component Id="NDjangoMSI2010" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
+                            <Condition><![CDATA[VS2008FOUND = NULL]]></Condition>
+                            <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2010.msi" />
+                        </Component>
+                        <Component Id="NDjangoMSIExtended" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
+                            <Condition><![CDATA[VS2008FOUND <> NULL]]></Condition>
                             <File Id="NDJANGO10" Name="NDjangoSetup.msi" Source="lib\NDjangoExtended.msi" />
                         </Component>
                         <Component Id="BistroAssemblies" Guid="EA80C8A8-63BE-4D5E-BACB-9FA941CD0C7C">
@@ -225,7 +225,7 @@
 
         </Feature>
         <Feature Id="NDjango" Level="1">
-            <!--<ComponentRef Id="NDjangoMSI2008"/>-->
+            <ComponentRef Id="NDjangoMSIExtended"/>
             <ComponentRef Id="NDjangoMSI2010"/>
         </Feature>
         
@@ -272,7 +272,8 @@
             <Custom Action="RunMSI10" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED AND VS2010FOUND <> NULL ]]></Custom>-->
         </InstallExecuteSequence>
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-        <!--********UI********-->
+        <WixVariable Id="WixUICostingPopupOptOut" Value="1" Overridable="yes" />
+      <!--********UI********-->
         <UI>
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />

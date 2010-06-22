@@ -1,9 +1,12 @@
+
 Bistro Framework Requirements:
 NET Framework 3.5 SP1
 Visual Studio 2008
 F# CTP v.1.9.9.9 (You can download it from: http://www.microsoft.com/downloads/details.aspx?FamilyID=ba52e650-4e77-4b0b-b987-9f9ecd3bab3b&displaylang=en)
+NOTE: If your OS is Windows Vista (Windows 7) and you use default UAC settings,you must run setup "As Administrator".
 
-
+New in 0.9.3.2
+F# Project Extender bug fixes
 New in 0.9.3.0
 1. Now supports both VS2008 and VS2010.
 
