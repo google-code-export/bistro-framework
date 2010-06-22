@@ -1,0 +1,479 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bistro.Designer</RootNamespace>
+    <AssemblyName>Bistro.Designer2008</AssemblyName>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ProjectGuid>{7C11A46D-27A6-41F9-A754-0D9F1DA4369D}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;VS2008</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Bistro.Core, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Bistro.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EnvDTE" />
+    <Reference Include="EnvDTE80" />
+    <Reference Include="FSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\FSharp-1.9.9.9\\bin\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.ProjectSystem.Base, Version=2.0.50727.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809, processorArchitecture=MSIL" />
+    <Reference Include="Irony, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ca48ace7223ead47, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Irony.dll</HintPath>
+    </Reference>
+    <Reference Include="Irony.Samples, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Irony.Samples.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Engine, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>Microsoft.Build.Engine.dll</HintPath>
+      <Name>Microsoft.Build.Engine</Name>
+      <SpecificVersion>Yes</SpecificVersion>
+      <Aliases>global</Aliases>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>Microsoft.Build.Framework.dll</HintPath>
+      <Name>Microsoft.Build.Framework</Name>
+      <SpecificVersion>Yes</SpecificVersion>
+      <Aliases>global</Aliases>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v3.5, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>Microsoft.Build.Utilities.v3.5.dll</HintPath>
+      <Name>Microsoft.Build.Utilities.v3.5</Name>
+      <SpecificVersion>Yes</SpecificVersion>
+      <Aliases>global</Aliases>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CommonIDE, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Editors" />
+    <Reference Include="Microsoft.VisualStudio.ManagedInterfaces" />
+    <Reference Include="Microsoft.VisualStudio.ProjectAggregator, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Design, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TemplateWizardInterface, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.VSHelp, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Designer.Interfaces" />
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.9.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VSLangProj" />
+    <Reference Include="VSLangProj80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies\VSLangProj80.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bistro.DesignerPackage.cs" />
+    <Compile Include="Guids.cs" />
+    <Compile Include="Explorer\Parsers\FSharpParser.cs" />
+    <Compile Include="Projects\FSharp\Factory.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PkgCmdID.cs" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VSSDKCSharpIncPath>$(VSSDK90Install)VisualStudioIntegration\Common\Source\CSharp</VSSDKCSharpIncPath>
+    <CommonRegAttributes>$(VSSDKCSharpIncPath)\RegistrationAttributes</CommonRegAttributes>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(CommonRegAttributes)\WebSiteProjectAttribute.cs">
+      <Link>RegistrationAttributes\WebSiteProjectAttribute.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonRegAttributes)\WebSiteProjectRelatedFilesAttribute.cs">
+      <Link>RegistrationAttributes\WebSiteProjectRelatedFilesAttribute.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonRegAttributes)\WAProvideLanguagePropertyAttribute.cs">
+      <Link>RegistrationAttributes\WAProvideLanguagePropertyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonRegAttributes)\WAProvideProjectFactoryAttribute.cs">
+      <Link>RegistrationAttributes\WAProvideProjectFactoryAttribute.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonRegAttributes)\WAProvideProjectFactoryTemplateMappingAttribute.cs">
+      <Link>RegistrationAttributes\WAProvideProjectFactoryTemplateMappingAttribute.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonRegAttributes)\ProvideMSBuildTargetAttribute.cs">
+      <Link>RegistrationAttributes\ProvideMSBuildTargetAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Explorer\ChangesTracker.cs" />
+    <Compile Include="Explorer\DesignerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Explorer\DesignerControl.Designer.cs">
+      <DependentUpon>DesignerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Explorer\ExplorerWindow.cs" />
+    <Compile Include="Explorer\FileManager.cs" />
+    <Compile Include="Explorer\Notifier.cs" />
+    <Compile Include="Explorer\Parsers\CSharpParser.cs" />
+    <Compile Include="Explorer\Parsers\MetadataParserBase.cs" />
+    <Compile Include="ProjectBase\AssemblyReferenceNode.cs" />
+    <Compile Include="ProjectBase\Attributes.cs" />
+    <Compile Include="ProjectBase\Automation\AutomationScope.cs" />
+    <Compile Include="ProjectBase\Automation\OAFileItem.cs" />
+    <Compile Include="ProjectBase\Automation\OAFolderItem.cs" />
+    <Compile Include="ProjectBase\Automation\OANavigableProjectItems.cs" />
+    <Compile Include="ProjectBase\Automation\OANestedProjectItem.cs" />
+    <Compile Include="ProjectBase\Automation\OANullProperty.cs" />
+    <Compile Include="ProjectBase\Automation\OAProject.cs" />
+    <Compile Include="ProjectBase\Automation\OAProjectItem.cs" />
+    <Compile Include="ProjectBase\Automation\OAProjectItems.cs" />
+    <Compile Include="ProjectBase\Automation\OAProperties.cs" />
+    <Compile Include="ProjectBase\Automation\OAProperty.cs" />
+    <Compile Include="ProjectBase\Automation\OAReferenceFolderItem.cs" />
+    <Compile Include="ProjectBase\Automation\OAReferenceItem.cs" />
+    <Compile Include="ProjectBase\Automation\OASolutionFolder.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAAssemblyReference.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OABuildManager.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAComReference.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAProjectReference.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAReferenceBase.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAReferences.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAVSProject.cs" />
+    <Compile Include="ProjectBase\Automation\VSProject\OAVSProjectItem.cs" />
+    <Compile Include="ProjectBase\BuildDependency.cs" />
+    <Compile Include="ProjectBase\BuildPropertyPage.cs" />
+    <Compile Include="ProjectBase\ComReferenceNode.cs" />
+    <Compile Include="ProjectBase\ConfigProvider.cs" />
+    <Compile Include="ProjectBase\ConfigurationProperties.cs" />
+    <Compile Include="ProjectBase\DataObject.cs" />
+    <Compile Include="ProjectBase\DependentFileNode.cs" />
+    <Compile Include="ProjectBase\DesignPropertyDescriptor.cs" />
+    <Compile Include="ProjectBase\DocumentManager.cs" />
+    <Compile Include="ProjectBase\DontShowAgainDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectBase\DontShowAgainDialog.Designer.cs">
+      <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectBase\EnumDependencies.cs" />
+    <Compile Include="ProjectBase\FileChangeManager.cs" />
+    <Compile Include="ProjectBase\FileDocumentManager.cs" />
+    <Compile Include="ProjectBase\FileNode.cs" />
+    <Compile Include="ProjectBase\FolderNode.cs" />
+    <Compile Include="ProjectBase\GlobalPropertyHandler.cs" />
+    <Compile Include="ProjectBase\GlobalSuppressions.cs" />
+    <Compile Include="ProjectBase\HierarchyNode.cs" />
+    <Compile Include="ProjectBase\IDEBuildLogger.cs" />
+    <Compile Include="ProjectBase\ImageHandler.cs" />
+    <Compile Include="ProjectBase\Interfaces.cs" />
+    <Compile Include="ProjectBase\LocalizableProperties.cs" />
+    <Compile Include="ProjectBase\Misc\ConnectionPointContainer.cs" />
+    <Compile Include="ProjectBase\Misc\ExternDll.cs" />
+    <Compile Include="ProjectBase\Misc\NativeMethods.cs" />
+    <Compile Include="ProjectBase\Misc\UnsafeNativeMethods.cs" />
+    <Compile Include="ProjectBase\NestedProjectBuildDependency.cs" />
+    <Compile Include="ProjectBase\NestedProjectNode.cs" />
+    <Compile Include="ProjectBase\NodeProperties.cs" />
+    <Compile Include="ProjectBase\OleServiceProvider.cs" />
+    <Compile Include="ProjectBase\Output.cs" />
+    <Compile Include="ProjectBase\OutputGroup.cs" />
+    <Compile Include="ProjectBase\ProjectBase.cs" />
+    <Compile Include="ProjectBase\ProjectConfig.cs" />
+    <Compile Include="ProjectBase\ProjectContainerNode.cs" />
+    <Compile Include="ProjectBase\ProjectDesignerDocumentManager.cs" />
+    <Compile Include="ProjectBase\ProjectDocumentsListener.cs" />
+    <Compile Include="ProjectBase\ProjectElement.cs" />
+    <Compile Include="ProjectBase\ProjectFactory.cs" />
+    <Compile Include="ProjectBase\ProjectFileConstants.cs" />
+    <Compile Include="ProjectBase\ProjectNode.CopyPaste.cs" />
+    <Compile Include="ProjectBase\ProjectNode.cs" />
+    <Compile Include="ProjectBase\ProjectNode.Events.cs" />
+    <Compile Include="ProjectBase\ProjectOptions.cs" />
+    <Compile Include="ProjectBase\ProjectPackage.cs" />
+    <Compile Include="ProjectBase\ProjectReferenceNode.cs" />
+    <Compile Include="ProjectBase\ProjectSecurityChecker.cs" />
+    <Compile Include="ProjectBase\PropertiesEditorLauncher.cs" />
+    <Compile Include="ProjectBase\ReferenceContainerNode.cs" />
+    <Compile Include="ProjectBase\ReferenceNode.cs" />
+    <Compile Include="ProjectBase\RegisteredProjectType.cs" />
+    <Compile Include="ProjectBase\SecurityWarningDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectBase\SecurityWarningDialog.Designer.cs">
+      <DependentUpon>SecurityWarningDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectBase\SelectionListener.cs" />
+    <Compile Include="ProjectBase\SettingsPage.cs" />
+    <Compile Include="ProjectBase\SingleFileGenerator.cs" />
+    <Compile Include="ProjectBase\SingleFileGeneratorFactory.cs" />
+    <Compile Include="ProjectBase\SolutionListener.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForBuildDependencyUpdate.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForProjectEvents.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForProjectOpen.cs" />
+    <Compile Include="ProjectBase\SolutionListenerForProjectReferenceUpdate.cs" />
+    <Compile Include="ProjectBase\StructuresEnums.cs" />
+    <Compile Include="ProjectBase\SuspendFileChanges.cs" />
+    <Compile Include="ProjectBase\TokenProcessor.cs" />
+    <Compile Include="ProjectBase\Tracing.cs" />
+    <Compile Include="ProjectBase\TrackDocumentsHelper.cs" />
+    <Compile Include="ProjectBase\TypeConverters.cs" />
+    <Compile Include="ProjectBase\UpdateSolutionEventsListener.cs" />
+    <Compile Include="ProjectBase\Url.cs" />
+    <Compile Include="ProjectBase\UserProjectSecurityChecker.cs" />
+    <Compile Include="ProjectBase\Utilities.cs" />
+    <Compile Include="ProjectBase\VsCommands.cs" />
+    <Compile Include="ProjectBase\VSShellUtilities.cs" />
+    <Compile Include="Projects\FSharp\ProjectManager.cs" />
+    <Compile Include="Templates\ReferenceWizard.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="Bistro.Designer.vsct">
+      <ResourceName>1000</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
+    <None Include="ProjectBase\Diagrams\AutomationClasses.cd" />
+    <None Include="ProjectBase\Diagrams\ConfigurationClasses.cd" />
+    <None Include="ProjectBase\Diagrams\DocumentManagerClasses.cd" />
+    <None Include="ProjectBase\Diagrams\HierarchyClasses.cd" />
+    <None Include="ProjectBase\Diagrams\PropertiesClasses.cd" />
+    <None Include="ProjectBase\Diagrams\ReferenceClasses.cd" />
+    <EmbeddedResource Include="Explorer\DesignerControl.resx">
+      <DependentUpon>DesignerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectBase\DontShowAgainDialog.resx">
+      <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectBase\ProjectBase.resx">
+      <DependentUpon>ProjectBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectBase\SecurityWarningDialog.resx">
+      <DependentUpon>SecurityWarningDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images_32bit.bmp" />
+    <EmbeddedResource Include="Resources\Images_24bit.bmp" />
+    <EmbeddedResource Include="Resources\Root.bmp" />
+    <EmbeddedResource Include="Resources\imagelis.bmp">
+      <Visible>true</Visible>
+      <LogicalName>Resources.imagelis.bmp</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\alert.png" />
+    <EmbeddedResource Include="Resources\bullet.png" />
+    <EmbeddedResource Include="Resources\green_star.png" />
+    <EmbeddedResource Include="Resources\lock.gif" />
+    <EmbeddedResource Include="Resources\mechanic.gif" />
+    <Content Include="Resources\Package.ico" />
+    <EmbeddedResource Include="Resources\white.PNG" />
+  </ItemGroup>
+  <!-- Browser file -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\BrowserFile\BrowserFile.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\BrowserFile\BrowserFile.Browser">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- JScript file -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\JScript\JScript.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\JScript\JScript.js">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- StyleSheet file -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\StyleSheet\StyleSheet.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\StyleSheet\StyleSheet.css">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- WebConfig file -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\WebConfig\WebConfig.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\WebConfig\Web.Config">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- HTML page -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\WebHTMLPage\WebHTMLPage.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\WebHTMLPage\HTMLPage.htm">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- Basic (empty) NDjango template -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\NDjango\NDjango.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\NDjango\NDjango.django">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\NDjango\NDjango.ico">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- Empty text file -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\Text\Text.ico">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\Text\TextFile.txt">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\Text\TextFile.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <!-- Fsharp source code -->
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\FSharpControllers\CodeFile.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\FSharpControllers\CodeFile.fs">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipItem>
+  </ItemGroup>
+  <ItemGroup>
+    <ZipProject Include="Templates\Projects\FSharp\base.django">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Controllers.fs">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\FSharpProject.fsproj">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\home.django">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Web.config">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Bistro.Core.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Bistro.Core.pdb">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Bistro.Extensions.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Bistro.Extensions.pdb">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Bistro.FSharpExtensions.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\Bistro.FSharpExtensions.pdb">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\default.htm">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\FSharpProject.ico">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\FSharpProject.vstemplate">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\NDjango.BistroIntegration.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\NDjango.BistroIntegration.pdb">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\NDjango.Core.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\NDjango.Core.pdb">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\NDjango.Filters.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\NDjango.Filters.pdb">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\FSharp\StructureMap.dll">
+      <OutputSubPath>Bistro</OutputSubPath>
+    </ZipProject>
+  </ItemGroup>
+  <PropertyGroup>
+    <!--
+    To specify a different registry root to register your package, uncomment the TargetRegistryRoot
+    tag and specify a registry root in it.
+    <TargetRegistryRoot></TargetRegistryRoot>
+    -->
+    <RegisterOutputPackage>true</RegisterOutputPackage>
+    <RegisterWithCodebase>true</RegisterWithCodebase>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\VSSDK\Microsoft.VsSDK.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

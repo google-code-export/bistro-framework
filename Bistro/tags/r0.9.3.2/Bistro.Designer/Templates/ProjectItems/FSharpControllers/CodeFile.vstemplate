@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>F# Source File</Name>
+    <Description>A blank F# source file (.fs)</Description>
+    <Icon Package="{91A04A73-4F2C-4E7C-AD38-C1A68E7DA05C}" ID="4005" />
+    <TemplateID>Microsoft.FSharp.CodeFile</TemplateID>
+    <ProjectType>Bistro</ProjectType>
+    <ProjectSubType>Bistro Web Application (F#)</ProjectSubType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>10</SortOrder>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Module.fs</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true">CodeFile.fs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>
