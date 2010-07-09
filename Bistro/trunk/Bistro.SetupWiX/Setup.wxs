@@ -4,6 +4,8 @@
     <?define ProductVersionTitle="0.9.3.2" ?>
     <?define VisualStudioRegistryRoot2008 = "Software\Microsoft\VisualStudio\9.0" ?>
     <?define VisualStudioRegistryRoot2010 = "Software\Microsoft\VisualStudio\10.0" ?>
+    <?define gac4.0 = $(env.windir)\Microsoft.Net\assembly\GAC_MSIL?>
+
     <?define UpgradeCode="{E63B2D78-54C6-4d2a-B3EF-219EF3AE8FBC}"?>
     <Product Id="276C4B07-61C1-4CF8-8638-30AD04ED9828" Name="Bistro $(var.ProductVersionTitle)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Hill30" UpgradeCode="$(var.UpgradeCode)">
         <Package InstallerVersion="200" Compressed="yes" />
@@ -54,6 +56,7 @@
             <RegistrySearch Id="RegSearch_DevenvExe_Path2010" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2010)\Setup\VS" Name="EnvironmentPath" Type="raw" />
         </Property>
         <Property Id="VSIX_PATH"/>
+        <Property Id="GAC4" Value="$(env.windir)\Microsoft.Net\assembly\GAC_MSIL"/>
         <Property Id="MVCFOUND">
             <RegistrySearch Id="MVCfound" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\ASP.NET MVC 2\Runtime" Name="InstallPath" />
         </Property>
@@ -66,24 +69,17 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="Hill30" Name="Hill30">
-
                     <Directory Id="INSTALLDIR" Name="Bistro">
-                        <Component Id="NDjangoMSI2010" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
-                            <Condition><![CDATA[VS2008FOUND = NULL]]></Condition>
-                            <File Id="NDJANGO08" Name="NDjangoSetup.msi" Source="lib\NDjangoSetup2010.msi" />
-                        </Component>
-                        <Component Id="NDjangoMSIExtended" Guid="7D7CCB7A-68A4-4E05-AA89-5A985C680559">
-                            <Condition><![CDATA[VS2008FOUND <> NULL]]></Condition>
-                            <File Id="NDJANGO10" Name="NDjangoSetup.msi" Source="lib\NDjangoExtended.msi" />
+                        <Component Id="NDjangoMSI" Guid="05FCB39B-E868-42A4-B508-958EA17050A3">
+                            <File Id="NDJANGO" Name="NDjangoSetup.msi" Source="lib\NDjango.msi" />
                         </Component>
                         <Component Id="BistroAssemblies" Guid="EA80C8A8-63BE-4D5E-BACB-9FA941CD0C7C">
                             <RemoveFolder Id="RemoveMain" Directory="INSTALLDIR" On="uninstall" />
-                            <!--<RegistryValue Root="HKLM" Key="Software\Hill30\Bistro" Name="InstallDir" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />-->
+                            <RegistryValue Root="HKLM" Key="Software\Hill30\Bistro" Name="InstallDir" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
                             <File Id="Bistro.Core.dll" Name="Bistro.Core.dll" Source="lib\Bistro.Core.dll" DiskId="1" />
                             <File Id="Bistro.Extensions.dll" Name="Bistro.Extensions.dll" Source="lib\Bistro.Extensions.dll" DiskId="1" />
                             <File Id="Bistro.FSharpExtensions.dll" Name="Bistro.FSharpExtensions.dll" Source="lib\Bistro.FSharpExtensions.dll" />
                             <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="..\lib\Newtonsoft.Json.dll" />
-                            <!--<File Id="NDjango.BistroIntegration.dll" Name="$(var.BistroIntegration.TargetFileName)" Source="$(var.BistroIntegration.TargetPath)" />-->
                             <File Id="BistroDesigner" Name="Bistro.Designer2008.dll" Source="lib\Bistro.Designer2008.dll" DiskId="1" />
                         </Component>
                         <Component Id="Integration08" Guid="107F0C00-5F85-4F65-BB23-E11B6878E5C6">
@@ -94,8 +90,6 @@
                             <Condition><![CDATA[VS2010FOUND <> NULL]]></Condition>
                             <File Id="NDjango.BistroIntegration2010.dll" Name="NDjango.BistroIntegration2010.dll" Source="lib\NDjango.BistroIntegration2010.dll"/>
                         </Component>
-                        
-
                         <Component Id="ReadmeBistro" Guid="2F2DC3B8-A256-4AF2-B1D9-20C89AF5645A">
                             <File Id="ReadmeBistro" Name="Readme.txt" ShortName="README.TXT" Source="Readme.txt" />
                         </Component>
@@ -189,8 +183,23 @@
                     </Directory>
                 </Directory>
             </Directory>
-            
 
+          <!--C:\WINDOWS\Microsoft.NET\assembly\GAC_MSIL-->
+          <Directory Id="GAC4" Name="gac4Folder">
+            <Directory Id="WizardFolder" Name="ReferenceWizard2010">
+              <Directory Id="WizardSubFolder" Name="v4.0_1.0.0.0__1953bc817d270a86">
+                <Component Id="WizardDll2010" Guid="611EC43D-AB40-409E-9DD4-E4791445FDDD">
+                  <RemoveFolder Id="RemoveWizard" Directory="WizardFolder" On="uninstall" />
+                  <File Id="Wizard2010.dll" Name="ReferenceWizard2010.dll" DiskId = "1" src="lib\ReferenceWizard2010.dll"/>
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+            <Directory Id="GAC" Name="GAC">
+              <Component Id="WizardDll2008" Guid="1AAC7CE0-29BF-49A3-A895-A2CE0C8D1C06">
+                <File Id="Wizard2008.dll" LongName="ReferenceWizard2008.dll" DiskId = "1" src="lib\ReferenceWizard2008.dll" Assembly=".net" KeyPath="yes"/>
+              </Component>
+            </Directory>
 
             <Component Id="RegistryDesignerVSX2008" DiskId="1" Guid="5F720FC6-EC7C-44E2-BEE4-8130CE1B3F09">
                 <?include BistroDesigner2008Reg.wxi?>
@@ -213,6 +222,7 @@
             <ComponentRef Id="RegistryDesignerVSX2008" />
             <ComponentRef Id="RegistryProjectExtender" />
             <ComponentRef Id="Integration08"/>
+          <ComponentRef Id="WizardDll2008"/>
         </Feature>
         <Feature Id="VS10Extensions" Title="Visual Studio 2010 integration" Level="1">
             <Condition Level="0"><![CDATA[VS2010FOUND = NULL]]></Condition>
@@ -222,11 +232,11 @@
             <ComponentRef Id="InstalledItemTemplates2010" />
             <ComponentRef Id="CustomItemTemplates2010" />
             <ComponentRef Id="Integration10"/>
+            <ComponentRef Id="WizardDll2010"/>
 
         </Feature>
         <Feature Id="NDjango" Level="1">
-            <ComponentRef Id="NDjangoMSIExtended"/>
-            <ComponentRef Id="NDjangoMSI2010"/>
+            <ComponentRef Id="NDjangoMSI"/>
         </Feature>
         
         <Property Id="NDJANGONEEDED" Value="1" />
@@ -237,15 +247,15 @@
         <CustomAction Id="RunMSI10" Directory="INSTALLDIR" ExeCommand="&quot;msiexec.exe&quot;  /i &quot;[INSTALLDIR]Bistro\NDjangoSetup.msi&quot; AGREETOLICENSE=&quot;1&quot; INSTALLDIR=&quot;[INSTALLDIR]NDjango\NET40&quot;"  Return="ignore"/>-->
         <CustomAction Id="DevenvSetup2008" Property="DEVENV_EXE_PATH2008" ExeCommand="/setup" Impersonate="no" Execute="commit" />
         <CustomAction Id="DevenvSetup2010" Property="DEVENV_EXE_PATH2010" ExeCommand="/setup" Impersonate="no" Execute="commit" />
-        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]CSharp2008.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditBistroProject2008CustomAction" Return="ignore" Execute="commit" />
-        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]FSharp2008.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditFSharp2008CustomAction" Return="ignore" Execute="commit" />
+        <!--<CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]CSharp2008.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditBistroProject2008CustomAction" Return="ignore" Execute="commit" Impersonate="yes" />
+        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2008]FSharp2008.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditFSharp2008CustomAction" Return="ignore" Execute="commit"  />
         <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2010]CSharp2010.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditBistroProject2010CustomAction" Return="ignore" Execute="commit" />
-        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2010]FSharp2010.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditFSharp2010CustomAction" Return="ignore" Execute="commit" />
+        <CustomAction BinaryKey="EditTemplates" ExeCommand="&quot;[ProjectTemplatesBistro2010]FSharp2010.zip&quot; &quot;[INSTALLDIR]\&quot; &quot;[Hill30]NDjango\.NET35&quot; &quot;[Hill30]NDjango\.NET40&quot; &quot;[INSTALLDIR]\&quot;" Id="EditFSharp2010CustomAction" Return="ignore" Execute="commit" />-->
 
 
-        <CustomAction Id="InstallExtender2010"   Property = "VSIX_PATH"  ExeCommand="&quot;[INSTALLDIR]ProjectExtender2010.vsix&quot; /q" Return="ignore" Execute="deferred" />
+        <CustomAction Id="InstallExtender2010"   Property = "VSIX_PATH"  ExeCommand="&quot;[INSTALLDIR]ProjectExtender2010.vsix&quot; /q" Return="ignore" Execute="deferred"/>
         <CustomAction Id="InstallBistroDesigner2010"   Property = "VSIX_PATH"  ExeCommand="&quot;[INSTALLDIR]BistroDesigner2010.vsix&quot; /q" Return="ignore" Execute="deferred"/>
-        <CustomAction Id="SetExtensionDir" Property="EXTENSIONHILL30FILES" Value="[LocalAppDataFolder]\Microsoft\VisualStudio\10.0\Extensions\Hill30"/>
+        <CustomAction Id="SetExtensionDir" Property="EXTENSIONHILL30FILES" Value="[LocalAppDataFolder]\Microsoft\VisualStudio\10.0\Extensions\Hill30 Inc"/>
         <CustomAction Id="DeleteExtender2010" Directory = "INSTALLDIR" ExeCommand="&quot;cmd.exe&quot; /c rmdir /s /q &quot;[EXTENSIONHILL30FILES]\F# Project System Extender&quot;" Return="ignore"/>
         <CustomAction Id="DeleteDesigner2010" Directory = "INSTALLDIR" ExeCommand="&quot;cmd.exe&quot; /c rmdir /s /q &quot;[EXTENSIONHILL30FILES]\Bistro Designer&quot;" Return="ignore"/>
         <CustomAction  Id="SetVSIXPath"  Property="VSIX_PATH" Value="[ENVDIR_2010]\vsixinstaller.exe"/>
@@ -253,12 +263,12 @@
         <InstallExecuteSequence>
             <RemoveExistingProducts Before ="InstallInitialize" />
             <!--It is important to update templates before calling devenv /setup-->
-            <Custom Action="EditBistroProject2008CustomAction" After="WriteRegistryValues"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <!--<Custom Action="EditBistroProject2008CustomAction" After="WriteRegistryValues"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
             <Custom Action="EditFSharp2008CustomAction" After="EditBistroProject2008CustomAction"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
             <Custom Action="EditBistroProject2010CustomAction" After="WriteRegistryValues"><![CDATA[(Not Installed AND VS2010FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
-            <Custom Action="EditFSharp2010CustomAction" After="EditBistroProject2010CustomAction"><![CDATA[(Not Installed AND VS2010FOUND <> NULL)OR (Installer AND REMOVE <> "ALL")]]></Custom>
-            <Custom Action="DevenvSetup2008" Before="InstallFinalize"><![CDATA[(Not Installed AND VS2008FOUND <> NULL) OR (Installer AND REMOVE <> "ALL") ]]></Custom>
-            <Custom Action="DevenvSetup2010" Before="InstallFinalize"><![CDATA[(Not Installed AND VS2010FOUND <> NULL) OR (Installer AND REMOVE <> "ALL")]]></Custom>
+            <Custom Action="EditFSharp2010CustomAction" After="EditBistroProject2010CustomAction"><![CDATA[(Not Installed AND VS2010FOUND <> NULL)OR (Installer AND REMOVE <> "ALL")]]></Custom>-->
+            <Custom Action="DevenvSetup2008" Before="InstallFinalize"><![CDATA[(VS2008FOUND <> NULL) AND (Not Installed OR REMOVE) ]]></Custom>
+            <Custom Action="DevenvSetup2010" Before="InstallFinalize"><![CDATA[(VS2010FOUND <> NULL) AND (Not Installed OR REMOVE)]]></Custom>
             <!--Run vsixinstaller.exe to install VS2010 extensions correctly-->
             <Custom Action="SetVSIXPath" Before="InstallFinalize"><![CDATA[Not Installed AND VS2010FOUND <> NULL]]></Custom>
             <Custom Action="InstallExtender2010"  After="SetVSIXPath"><![CDATA[Not Installed AND VS2010FOUND <> NULL]]></Custom>
@@ -268,8 +278,6 @@
             <Custom Action="DeleteDesigner2010" After="DeleteExtender2010"><![CDATA[REMOVE]]></Custom>
             <!--Run NdjangoSetup.msi if the option is chosen-->
             <Custom Action="InstallNDjango" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED]]></Custom>
-            <!--<Custom Action="RunMSI08" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED AND VS2010FOUND = NULL ]]></Custom>
-            <Custom Action="RunMSI10" After="InstallFinalize"><![CDATA[(Not Installed OR (Installer AND REMOVE <> "ALL")) AND NDJANGONEEDED AND VS2010FOUND <> NULL ]]></Custom>-->
         </InstallExecuteSequence>
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
         <WixVariable Id="WixUICostingPopupOptOut" Value="1" Overridable="yes" />
