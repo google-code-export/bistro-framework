@@ -1,0 +1,1 @@
+The bistro wiki is hosted externally at http://bistroframework.org. Head there for full documentation and reference guides.
